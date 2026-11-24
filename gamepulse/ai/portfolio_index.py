@@ -21,7 +21,7 @@ DATA = Path(__file__).resolve().parents[2] / "data"
 NOT_FOUND = "현재 분석 자료에서 확인되지 않습니다."
 OTHER_GAMES = ("발로란트", "롤", "리그 오브 레전드", "리그오브레전드", "lol", "메이플", "로스트아크", "로아", "원신", "마인크래프트", "배틀필드",
                "서든", "카트라이더", "메이플스토리", "디아블로", "스타크래프트", "세븐나이츠", "리니지", "나혼렙", "몬길")
-STATIC_BASE = "https://dbswnsghek3-cmyk.github.io/gamepulse-ai/"
+STATIC_BASE = "https://dbswnsghek3-cmyk.github.io/gamepulse.ai/"
 STATIC_FILE = {"overwatch": "overwatch.html", "pubg": "pubg.html", "fconline": "fconline.html", "dnf": "dnf.html"}
 NAMES = {"overwatch": "오버워치", "pubg": "PUBG: NEW START", "fconline": "FC 온라인", "dnf": "던전앤파이터"}
 TAB_NAMES = {

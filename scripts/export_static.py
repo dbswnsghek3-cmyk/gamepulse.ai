@@ -50,9 +50,9 @@ DOCS = ROOT / "docs"
 import csv as _csv  # noqa: E402
 OW_VERIFIED = sum(1 for r in _csv.DictReader(open(ROOT / "data" / "overwatch" / "opinions.csv", encoding="utf-8")) if r["verification_status"] == "검증 완료")
 IMG_DIR = DOCS / "assets" / "img"
-LIVE_URL = "https://gamepulse-ai1.streamlit.app/"
-REPO_URL = "https://github.com/dbswnsghek3-cmyk/gamepulse-ai"
-SITE_URL = "https://dbswnsghek3-cmyk.github.io/gamepulse-ai/"
+LIVE_URL = "https://gamepulse-ai2.streamlit.app/"
+REPO_URL = "https://github.com/dbswnsghek3-cmyk/gamepulse.ai"
+SITE_URL = "https://dbswnsghek3-cmyk.github.io/gamepulse.ai/"
 KST = dt.timezone(dt.timedelta(hours=9))
 
 # (앱 페이지 id, 파일명, 메뉴 이름, 차트 기본 분류)
