@@ -1,0 +1,110 @@
+{
+  "_note": "오버워치 04 BM · 05 마케팅 · 06 사업 효과. 'user_plan' 은 사용자가 확정한 기획안, 'assumption' 은 시뮬레이션용 기획 가정(실제 데이터 아님), 'pending' 은 실제 상점 캡처·공식 자료로 채울 작업용 공백.",
+  "existing_bm": {
+    "status": "pending",
+    "note": "실제 게임 상점 캡처와 공식 자료로 채울 예정 · 확인 전에는 가격·구성을 적지 않는다",
+    "products": [
+      {"name": "일반 스킨", "sale": "", "price": "", "unlock": "", "source": ""},
+      {"name": "전설 스킨", "sale": "", "price": "", "unlock": "", "source": ""},
+      {"name": "프리미엄 배틀패스", "sale": "", "price": "", "unlock": "", "source": ""},
+      {"name": "얼티밋 배틀패스", "sale": "", "price": "", "unlock": "", "source": ""},
+      {"name": "신화 스킨", "sale": "", "price": "", "unlock": "재화(신화 프리즘) 기반 해금", "source": ""},
+      {"name": "신화 무기 스킨", "sale": "", "price": "", "unlock": "", "source": ""},
+      {"name": "오버워치 코인", "sale": "", "price": "", "unlock": "", "source": ""},
+      {"name": "신화 프리즘", "sale": "", "price": "", "unlock": "", "source": ""}
+    ]
+  },
+  "growth_skin": {
+    "status": "user_plan",
+    "concept": "구매로 시작하고, 플레이로 완성하는 스킨",
+    "summary": "최초 구매 후 실제 경기 플레이로 외형이 5단계까지 성장",
+    "levels": [
+      {"lv": "Lv.1", "cond": "최초 구매", "reward": "기본 스킨"},
+      {"lv": "Lv.2", "cond": "10경기", "reward": "색상 및 장식 변화"},
+      {"lv": "Lv.3", "cond": "30경기", "reward": "무기 외형 변화"},
+      {"lv": "Lv.4", "cond": "60경기", "reward": "고급 외형 및 전용 연출"},
+      {"lv": "Lv.5", "cond": "100경기", "reward": "완전체 스킨 및 전용 프로필"}
+    ],
+    "levels_note": "경기 횟수와 단계별 보상은 기획 가정 · 추후 조정",
+    "vs_mythic": [
+      {"item": "해금 방식", "mythic": "재화(신화 프리즘)로 단계 해금", "growth": "실제 경기 플레이로 단계 해금"},
+      {"item": "추가 결제로 단계 건너뛰기", "mythic": "", "growth": "불가"},
+      {"item": "성장 기간", "mythic": "", "growth": "제한 없음"},
+      {"item": "전투 능력 변화", "mythic": "", "growth": "없음"}
+    ],
+    "overlap_check": [
+      {"item": "기존 영웅 성장 시스템과 중복 여부", "result": ""},
+      {"item": "유사 상품(플레이 연동 외형) 존재 여부", "result": ""}
+    ],
+    "principles": [
+      {"group": "공정성", "items": ["공격력·체력·스킬 성능 등 전투 능력 변화 없음",
+                                  "피격 판정·시야·스킬 식별·전투 시인성에 영향 없음"]},
+      {"group": "성장 규칙", "items": ["승리·킬 수·경쟁전 티어와 무관하게 성장",
+                                    "정상 경기 내 영웅별 플레이 시간에 비례해 진척 (특정 영웅 강제 방지)",
+                                    "추가 결제로 단계 건너뛰기 불가 · 성장 기간 제한 없음"]},
+      {"group": "악용·팀플레이", "items": ["잠수·고의 패배 등 비정상 플레이는 진척 제외",
+                                       "스킨 성장 때문에 팀플레이에 지장이 생기지 않도록 설계"]}
+    ],
+    "purpose": "구매 이후에도 계속 플레이할 이유를 만들어 매출과 잔존율을 함께 개선"
+  },
+  "marketing": {
+    "status": "user_plan",
+    "name": "PROVE IT.",
+    "slogan_ko": "증명하세요.",
+    "card": {"bg": "#25282D", "main": "#F99E1A", "sub": "#FFFFFF"},
+    "logo": "assets/overwatch/brand/overwatch_logo.png",
+    "directions": [
+      {"t": "완전체 달성 인증", "d": "성장형 스킨 Lv.5 달성을 인증"},
+      {"t": "스트리머 성장 챌린지", "d": "영웅별 스트리머가 스킨을 키우는 과정"},
+      {"t": "유저 자발적 확산", "d": "커뮤니티·SNS 인증 공유"},
+      {"t": "기존·복귀 유저 노출", "d": "접속 유저에게 상품 노출"},
+      {"t": "성장 과정 공개", "d": "단계별 외형 변화를 미리 공개"}
+    ],
+    "funnel": ["캠페인 노출", "게임 접속·복귀", "상품 확인", "스킨 구매", "지속 플레이", "완전체 달성", "SNS 인증"],
+    "kpis": [
+      {"group": "매출", "items": ["상품 구매 전환율", "순증 매출", "기존 스킨 매출 잠식 여부"]},
+      {"group": "참여", "items": ["단계별 성장 달성률", "캠페인 참여율"]},
+      {"group": "잔존", "items": ["구매 유저 D7·D30 잔존율"]},
+      {"group": "가드레일", "items": ["경기 중 영웅 교체율", "비정상 플레이 발생률"]}
+    ]
+  },
+  "simulation": {
+    "status": "assumption",
+    "period": "출시 후 1개 분기(13주)",
+    "note": "모든 값은 기획 가정이며 실제 매출·내부 데이터가 아니다. 실제 상점 가격과 내부 지표가 확인되면 교체한다.",
+    "scenarios": ["보수적", "기본", "낙관적"],
+    "restart": {
+      "added_d7_scale": [0.5, 1.0, 1.5],
+      "keep_rate": [50, 60, 70],
+      "pur": [3.0, 5.0, 8.0],
+      "arppu": [15000, 25000, 35000]
+    },
+    "skin": {
+      "exposed_users": 100000,
+      "conversion": [1.0, 2.0, 3.0],
+      "price": 20000,
+      "cannibalization": [40, 25, 15]
+    },
+    "platform_fee": 30,
+    "cost": {
+      "restart_effort": 11,
+      "skin_effort": 6,
+      "monthly_cost_per_person": 6000000,
+      "marketing": 50000000
+    },
+    "labels": {
+      "added_d7": "A 복귀 브리핑 + C 첫 10경기 미션의 분기 순증 D7 잔존 (05 실험 설계 MDE 기준) × 시나리오 배수",
+      "keep_rate": "순증 D7 잔존 유저 중 분기 내 활성 유지 비율",
+      "pur": "활성 유저 중 분기 결제 비율",
+      "arppu": "결제 유저 1명의 분기 결제액",
+      "exposed_users": "상품에 노출되는 활성 유저 (기존 시뮬레이션의 '코호트 외 활성 유저' 가정과 같음)",
+      "conversion": "노출 유저 중 성장형 스킨 구매 비율",
+      "price": "성장형 스킨 1개 판매가 · 실제 상점 가격 확인 후 교체",
+      "cannibalization": "성장형 스킨 매출 중 기존 스킨을 대신 산 몫 (순증에서 제외)",
+      "platform_fee": "결제·플랫폼 수수료 (판매 채널별로 다를 수 있어 단일 가정)",
+      "restart_effort": "A~C 개발·운영 공수 (기존 RICE 노력 합계)",
+      "skin_effort": "성장형 스킨 개발 공수",
+      "marketing": "PROVE IT. 캠페인 집행비"
+    }
+  }
+}

@@ -25,7 +25,7 @@ STATIC_BASE = "https://dbswnsghek3-cmyk.github.io/gamepulse.ai/"
 STATIC_FILE = {"overwatch": "overwatch.html", "pubg": "pubg.html", "fconline": "fconline.html", "dnf": "dnf.html"}
 NAMES = {"overwatch": "오버워치", "pubg": "PUBG: NEW START", "fconline": "FC 온라인", "dnf": "던전앤파이터"}
 TAB_NAMES = {
-    "overwatch": {"01": "문제와 결론", "02": "실제 근거", "03": "원인 가설", "04": "개선안 체험", "05": "KPI·A/B 테스트", "06": "실행·제안"},
+    "overwatch": {"01": "핵심 요약", "02": "데이터 및 문제 분석", "03": "개선 전략", "04": "BM 분석 및 개선", "05": "마케팅 전략", "06": "KPI 및 사업 효과", "07": "최종 실행 계획"},
     "pubg": {"01": "문제·결론", "02": "실제 유저 근거", "03": "원인 가설", "04": "해결책 데모", "05": "KPI·A/B 테스트", "06": "실행·사업 판단"},
     "fconline": {"01": "문제 정의", "02": "실제 유저 근거", "03": "원인 · 게임 화면", "04": "해결 전략", "05": "데모·KPI·실험", "06": "실행·예산·리스크"},
     "dnf": {"01": "문제 정의", "02": "유저 의견·한계", "03": "원인", "04": "개선안", "05": "시뮬레이터·KPI", "06": "로드맵·판단"},
@@ -95,15 +95,15 @@ def _overwatch() -> list[Entry]:
     out.append(Entry("overwatch", "cause", "이탈 원인 흐름 (가설)",
                      " → ".join(f["step"] for f in d["problem"]["flow"]),
                      [f"{f['step']}: {f['desc']} · 근거 {f['basis']}" for f in d["problem"]["flow"]],
-                     [], [f["check"] for f in d["problem"]["flow"]], "03"))
+                     [], [f["check"] for f in d["problem"]["flow"]], "02"))
     for st_ in d["strategies"]:
         out.append(Entry("overwatch", "strategy", f"{st_['key']}. {st_['name']}", st_["tagline"],
                          [f"대상: {st_['target']}", f"기존 기능과 차이: {st_.get('vs_existing', '')}"],
-                         [st_.get("hypothesis", ""), st_.get("effect", "")], list(st_.get("kpis", [])), "04",
+                         [st_.get("hypothesis", ""), st_.get("effect", "")], list(st_.get("kpis", [])), "03",
                          " ".join(map(str, st_.get("flow", [])))))
     out.append(Entry("overwatch", "kpi", "KPI 정의", "주요·보조·가드레일 지표와 판단 규칙",
                      [f"{k['name']} ({k['role']}) · 분모: {k['denominator']}" for k in d["kpi_defs"]],
-                     [f"{r['result']}: {r['rule']}" for r in d["decision_rules"]], [k["name"] for k in d["kpi_defs"]], "05",
+                     [f"{r['result']}: {r['rule']}" for r in d["decision_rules"]], [k["name"] for k in d["kpi_defs"]], "06",
                      d["experiment"].get("note", "")))
     out.append(Entry("overwatch", "evidence", "실제 근거와 한계", s.get("limit", ""),
                      [_clean(o.get("quote") or o.get("text") or o) for o in d.get("rep_opinions", [])[:3] if isinstance(o, dict)],
@@ -112,10 +112,20 @@ def _overwatch() -> list[Entry]:
     out.append(Entry("overwatch", "priority", "우선 실행: A 복귀 브리핑", s["conclusion"],
                      [f"{k} {pri[k]['name']}: {pri[k].get('priority_reason', '')}" for k in ("A", "C", "B") if k in pri],
                      [f"1단계 A {pri['A']['name']} — {pri['A']['tagline']}", "2단계 C 첫 10경기 미션 → 3단계 B 학습 카드 (수동형)"],
-                     list(pri["A"].get("kpis", [])), "06", "우선 먼저 순서 1순위 실행"))
+                     list(pri["A"].get("kpis", [])), "07", "우선 먼저 순서 1순위 실행"))
     out.append(Entry("overwatch", "plan", "실행 범위 · 리스크", "MVP 단계와 리스크 대응",
                      [f"리스크: {r['risk']} → {r['response']}" for r in d["risks"]], list(d["mvp"]["in"]),
-                     [], "06", "예산 비용 일정 담당 " + " ".join(o["team"] for o in d["pilot"].get("owners", []))))
+                     [], "07", "예산 비용 일정 담당 " + " ".join(o["team"] for o in d["pilot"].get("owners", []))))
+    bz = _load("overwatch/business.json")   # 04 BM · 05 마케팅 (사용자 확정 기획안 · 수치는 기획 가정)
+    gs, mk = bz["growth_skin"], bz["marketing"]
+    out.append(Entry("overwatch", "bm", f"신규 BM: 성장형 스킨 — {gs['concept']}", gs["summary"],
+                     [f"{x['lv']} {x['cond']} → {x['reward']}" for x in gs["levels"]] + [gs["levels_note"]],
+                     [i for g in gs["principles"] for i in g["items"]] + [gs["purpose"]],
+                     [k for g in mk["kpis"] for k in g["items"] if "구매" in k or "성장" in k or "잠식" in k], "04",
+                     "BM 과금 상품 스킨 신화 배틀패스 매출 성장형"))
+    out.append(Entry("overwatch", "marketing", f"마케팅: {mk['name']} {mk['slogan_ko']}", "성장형 스킨 성장 과정을 증명하게 만드는 캠페인",
+                     [f"{x['t']}: {x['d']}" for x in mk["directions"]], [" → ".join(mk["funnel"])],
+                     [k for g in mk["kpis"] for k in g["items"]], "05", "마케팅 캠페인 광고 SNS 스트리머 챌린지 PROVE IT"))
     return out
 
 

@@ -56,8 +56,9 @@ SITE_URL = "https://dbswnsghek3-cmyk.github.io/gamepulse.ai/"
 KST = dt.timezone(dt.timedelta(hours=9))
 
 # (앱 페이지 id, 파일명, 메뉴 이름, 차트 기본 분류)
-PAGES = [("overwatch", "overwatch.html", "오버워치 · PROJECT RE:START", "real"), ("pubg", "pubg.html", "PUBG · NEW START", "real"),
+PAGES = [("overwatch", "overwatch.html", "오버워치 · PROJECT RE:START", "real"),
          ("fconline", "fconline.html", "FC 온라인 · 축구 게임인가, 주식 게임인가?", "real"),
+         ("pubg", "pubg.html", "PUBG · NEW START", "real"),
          ("dnf", "dnf.html", "던전앤파이터 · 클리어했는데 왜 성장한 느낌이 없을까?", "real")]
 PAGES += [("home", "home.html", "사이트 홈 · 개요", "sample")]
 PAGES += [(g, f"{g}.html", GAMES[g]["name"], "sample") for g in GAME_ORDER if g not in ("overwatch", "pubg", "fconline", "dnf")]
@@ -345,7 +346,7 @@ def run_page(page: str, tab: str | None = None, tab_key: str = "ow_tab") -> AppT
 
 def overwatch_extras() -> dict[str, str]:
     """기본 화면에 안 보이는 시안 단계(A 복귀 브리핑 1~3단계)를 클릭해 얻은 화면을 탭 끝에 덧붙인다."""
-    at = run_page("overwatch", tab=OW_TABS[3])
+    at = run_page("overwatch", tab=OW_TABS[2])
     shots = []
     at.button(key="ow_a_start").click().run()
     for step in range(1, 4):
@@ -366,13 +367,13 @@ TAB_JS = """<script>(function(){
   var bar=document.querySelector('.ow-tabbar'); if(!bar) return;
   function show(n, write){
     document.querySelectorAll('.ow-pane').forEach(function(p){ p.hidden = p.getAttribute('data-tab')!==n; });
-    bar.querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-selected', String(b.getAttribute('data-tab')===n)); });
+    bar.querySelectorAll('button').forEach(function(b){ var on=b.getAttribute('data-tab')===n; b.setAttribute('aria-selected', String(on)); if(on && bar.scrollWidth>bar.clientWidth) bar.scrollLeft = b.offsetLeft - (bar.clientWidth - b.offsetWidth)/2; });
     if (write) history.replaceState(null, '', '#t'+n);   /* 해시만 바꾸고 스크롤은 그대로 */
     if (window.Plotly) document.querySelectorAll('#pane-'+n+' .sx-chart-c').forEach(function(c){
       if (!c.closest('details:not([open])')) Plotly.Plots.resize(c); });
   }
   bar.querySelectorAll('button').forEach(function(b){ b.addEventListener('click', function(){ show(b.getAttribute('data-tab'), true); }); });
-  function fromHash(){ var m=(location.hash||'').match(/^#t?(0[1-6])$/); show(m?m[1]:'01', false); }
+  function fromHash(){ var m=(location.hash||'').match(/^#t?(0[1-9])$/); show(m?m[1]:'01', false); }
   window.addEventListener('hashchange', fromHash); fromHash();
 })();</script>"""
 
@@ -420,7 +421,7 @@ def overwatch_btn_actions() -> dict:
     """오버워치 04 시안 버튼: '3분 요약 보기' → 1~3단계 미리보기 펼침 · 나머지는 앱이 띄우는 안내 문구 그대로."""
     acts = {"ow_a_start": {"t": "open", "sel": "#ow-a-steps"}}
     for k in ("ow_a_later", "ow_b_practice", "ow_b_off"):
-        at = run_page("overwatch", tab=OW_TABS[3])
+        at = run_page("overwatch", tab=OW_TABS[2])
         before = [i.value for i in at.info]
         at.button(key=k).click().run()
         new = [i.value for i in at.info if i.value not in before]
@@ -531,17 +532,21 @@ def tabbed_body(pid: str, labels: list[str], tab_key: str, kind: str, extras: di
     """6개 탭을 각각 실행해 모은 뒤, 탭 버튼 + 패널(선택한 1개만 표시) + JS 로 합친다.
     숨은 패널의 내용도 HTML 에 그대로 있어 글자만 읽는 도구는 모든 탭을 읽을 수 있다. 주소 #t04 로 바로 열 수 있다."""
     OW_TABS_ = labels
-    prefix, panes, charts = None, [], 0
+    prefix, panes, charts, tail = None, [], 0, None
     for i, label in enumerate(OW_TABS_):
         n = label[:2]
         ex = Exporter(kind, id_prefix=f"p{n}_")
-        ex.tab_extras = extras if i == 3 else {}
+        ex.tab_extras = extras if i == (2 if pid == "overwatch" else 3) else {}
         at = run_page(pid, tab=label, tab_key=tab_key)
         body = ex.children(at.main, 0)
         pre, mark, rest = body.partition('<div class="ow-pane-mark"')
         if not mark:
             raise RuntimeError(f"탭 {label}: 탭 경계 표식을 찾지 못함")
         pane = rest.split("</div>", 1)[1]
+        if pid == "overwatch":   # 개편: 탭마다 반복되던 어시스턴트 안내·하단 고지는 페이지 끝에 한 번만
+            pane, cut, tail_ = pane.partition('<div class="gp-xlinks"')
+            if cut and tail is None:
+                tail = cut + tail_
         prefix = prefix if prefix is not None else pre
         hide = "" if (i == 0 or all_visible) else " hidden"
         more = pane_extra(n) if pane_extra else ""
@@ -552,7 +557,7 @@ def tabbed_body(pid: str, labels: list[str], tab_key: str, kind: str, extras: di
         f'<button type="button" role="tab" id="tb-{lab[:2]}" aria-controls="pane-{lab[:2]}" data-tab="{lab[:2]}" '
         f'aria-selected="{"true" if j == 0 else "false"}"><b>{lab[:2]}</b>{H.escape(lab[3:])}</button>'
         for j, lab in enumerate(OW_TABS_)) + "</div>")
-    return prefix.replace("<!--OW_TABBAR-->", tabbar) + "".join(panes) + TAB_JS, charts
+    return prefix.replace("<!--OW_TABBAR-->", tabbar) + "".join(panes) + (tail or "") + TAB_JS, charts
 
 
 def save_images(doc: str) -> str:
@@ -677,7 +682,7 @@ def page_html(title: str, desc: str, current: str, body: str, toc: list, charts:
     own_legend = current in ("overwatch.html", "pubg.html", "fconline.html", "dnf.html")   # 탭형 프로젝트는 앱이 배지 설명을 직접 표시
     note = ("" if current == "index.html" else
             f'<div class="sx-note"><b>정적 보고서</b> · <a href="{LIVE_URL}">원본 앱</a> 스냅샷 ({gen}) · '
-            + ("01~06 탭으로 섹션 전환 · " if own_legend else "")
+            + (("01~07" if current == "overwatch.html" else "01~06") + " 탭으로 섹션 전환 · " if own_legend else "")
             + '버튼·슬라이더는 기본값 · 차트 수치는 "차트 데이터 표"에</div>')
     # 접힌 펼치기 안의 차트는 숨은 상태로 그려지므로, 펼칠 때 너비를 다시 맞춘다
     resize = ("<script>document.addEventListener('toggle',function(e){var d=e.target;if(d.tagName==='DETAILS'&&d.open&&window.Plotly){"
@@ -793,7 +798,7 @@ def main() -> int:
             doc = save_images(page_html(name, desc, fname, body, [], n_charts > 0, gen))
             (DOCS / fname).write_text(doc, encoding="utf-8")
             written.append(DOCS / fname)
-            print(f"  {fname:18} 차트 {n_charts:2} · {len(doc) / 1024:,.0f} KB · 탭 6개")
+            print(f"  {fname:18} 차트 {n_charts:2} · {len(doc) / 1024:,.0f} KB · 탭 {doc.count('role="tab"')}개")
             continue
         ex = Exporter(kind)
         at = run_page(pid)

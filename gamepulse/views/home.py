@@ -56,12 +56,12 @@ def _games() -> list[dict]:
         {"id": "overwatch", "name": "오버워치", "proj": "PROJECT RE:START", "img": ow_img, "png": False, "blur": ow_blur,
          "credit": "실제 게임 화면 · 작성자 캡처", "problem": ow["summary"]["headline"], "answer": "A 복귀 브리핑(놓친 변경점 3분 요약) → C 첫 10경기 학습 미션 → B 전투 학습 카드",
          "kpi": "복귀 D7 잔존율"},
-        {"id": "pubg", "name": "PUBG", "proj": "NEW START", "img": "assets/pubg/brand/pubg_logo.png", "png": True, "blur": (),
-         "credit": "로고 © KRAFTON", "problem": pb["cover"]["copy"], "answer": "A1 경기별 코칭으로 신규 정착 + B1 복귀 광고 «다시 낙하할 시간»은 디지털 파일럿부터",
-         "kpi": "신규 D7 · 순증 D30 재정착 유저당 비용"},
         {"id": "fconline", "name": "FC 온라인", "proj": "축구 게임인가, 주식 게임인가?", "img": "assets/fconline/main_screen.jpg", "png": False, "blur": (),
          "credit": "실제 게임 메인 화면 · 작성자 캡처", "problem": "구단 가치 급락과 강화 실패로 인한 이탈 위험, 그리고 조작 환경의 공정성", "answer": "A 구단 가치 급락 완충 프로그램 · B 강화 실패 후 재기 프로그램 · C 분리 없는 조작 공정성 개선",
          "kpi": "급락 경험 유저 D7 · 강화 실패 후 D7 재접속률"},
+        {"id": "pubg", "name": "PUBG", "proj": "NEW START", "img": "assets/pubg/brand/pubg_logo.png", "png": True, "blur": (),
+         "credit": "로고 © KRAFTON", "problem": pb["cover"]["copy"], "answer": "A1 경기별 코칭으로 신규 정착 + B1 복귀 광고 «다시 낙하할 시간»은 디지털 파일럿부터",
+         "kpi": "신규 D7 · 순증 D30 재정착 유저당 비용"},
         {"id": "dnf", "name": "던전앤파이터", "proj": "시즌의 가치 회복", "img": dn["cover"]["logo"] if "/" in dn["cover"]["logo"] else f"assets/dnf/{dn['cover']['logo']}",
          "png": True, "blur": (), "credit": "로고 © NEOPLE", "problem": "고난도 던전을 클리어해도 보상이 운에 갈려 성장이 쌓이지 않는다",
          "answer": "B 지정 장비 진척 게이지: 목표를 정하고 기대 미만 클리어도 진척으로 쌓이게 (확률·경매 유지) · 소규모 파일럿", "kpi": "주간 고난도 재도전율 · 목표 획득 전 이탈률 · 재화 공급 ±5%"},
@@ -75,7 +75,7 @@ def render() -> None:
     section("4개 게임 · 핵심 문제와 대표 전략", "게임마다 문제 → 근거 → 원인 → 개선안 → KPI → 실행 판단 (01~06 탭)")
     games = _games()
     for i, g in enumerate(games):
-        if i % 2 == 0:   # 두 개씩 한 줄 → 모바일·정적 화면에서도 메뉴 순서(오버워치 → PUBG → FC → 던파) 유지
+        if i % 2 == 0:   # 두 개씩 한 줄 → 모바일·정적 화면에서도 메뉴 순서(오버워치 → FC → PUBG → 던파) 유지
             cols = st.columns(2)
         with cols[i % 2]:
             src = ""

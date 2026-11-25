@@ -9,7 +9,7 @@
 
 from __future__ import annotations
 
-GAME_ORDER = ["overwatch", "pubg", "fconline", "dnf"]
+GAME_ORDER = ["overwatch", "fconline", "pubg", "dnf"]
 
 GAMES = {
     # ------------------------------------------------------------------
