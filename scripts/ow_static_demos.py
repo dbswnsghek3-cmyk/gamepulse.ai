@@ -28,7 +28,8 @@ def pkg_demo(root: Path) -> str:
     inp = "".join(f'<label class="ox-f"><span>{H.escape(f["label"])} <small>({H.escape(f["unit"])})</small></span>'
                   f'<input type="number" data-p="{f["key"]}" min="{f["min"]}" max="{f["max"]}" step="{f["step"]}"></label>' for f in s["fields"])
     return f"""<div class="ox-demo-pkg" id="oxPkg"><div id="oxPkgRes"></div>
-<div class="ox-fields three">{inp}</div><div class="ox-presets"><button type="button" class="ox-btn" id="oxPkgReset">초기화</button></div></div>
+<details class="sx-exp"><summary>가정값 바꾸기 · 노출 유저 · 전환율 · 개별·3개·5개 구매 비중 <span class="sx-more">펼쳐보기</span></summary>
+<div class="sx-exp-b"><div class="ox-fields three">{inp}</div><div class="ox-presets"><button type="button" class="ox-btn" id="oxPkgReset">초기화</button></div></div></details></div>
 <script>(function(){{
 var C={_j(cfg)};
 var ins=document.querySelectorAll('#oxPkg input[data-p]');
@@ -176,8 +177,9 @@ def imp_demo(root: Path) -> str:
                              f'<div class="ow-chart-u">{u}</div></div><div id="{i}" class="sx-chart-c" style="height:320px"></div></div>')
     return f"""<div class="ox-demo-imp" id="oxImp"><div id="oxImpRes"></div>
 <div class="ox-presets">{presets}<button type="button" class="ox-btn" data-ipreset="__reset">초기화</button></div>
-<div class="ox-fields">{pop}</div>{rows}
-<div class="ox-chart2">{chart("oxImpRate", "지표별 기존 vs 개선", "% · 회색 = 기존, 주황 = 개선 (가정)")}{chart("oxImpRev", "분기 예상 매출: 기존 vs 시나리오", "만 원 · 회색 = 기존, 주황 = 개선 시나리오")}</div></div>
+<div class="ox-chart2">{chart("oxImpRate", "지표별 기존 vs 개선", "% · 회색 = 기존, 주황 = 개선 (가정)")}{chart("oxImpRev", "분기 예상 매출: 기존 vs 시나리오", "만 원 · 회색 = 기존, 주황 = 개선 시나리오")}</div>
+<details class="sx-exp"><summary>가정값 바꾸기 · 노출 유저 · 복귀율 · D7·D30 잔존율 · 구매 전환율 · 평균 결제 금액 <span class="sx-more">펼쳐보기</span></summary>
+<div class="sx-exp-b"><div class="ox-fields">{pop}</div>{rows}</div></details></div>
 <script>(function(){{
 var C={_j({"pop": c["pop"], "metrics": c["metrics"], "defaults": c["defaults"], "presets": c["presets"]})};
 var BASE='#9CA3AF', IMP='#F99E1A', box=document.getElementById('oxImp'), ins=box.querySelectorAll('input[data-i]'), L={{}};

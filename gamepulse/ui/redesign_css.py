@@ -370,3 +370,12 @@ body:has(.gp-ow-page) .ow-pane .sx-tabnav a.on { background: var(--ow-acc); bord
 body:has(.gp-ow-page) .ow-pane .sx-tab-h { display: none; }
 @media (max-width: 760px) { .ox-fields.two { grid-template-columns: 1fr; } }
 """
+
+# 9차: 06 전략 카드
+OW_REDESIGN_CSS += """
+.ox-mcards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem 1.2rem; margin: 0.4rem 0 0.8rem; }
+.ox-mcards > div { border-top: 3px solid var(--ow-acc); padding-top: 0.55rem; display: flex; flex-direction: column; gap: 0.15rem; }
+.ox-mcards b { font-size: 0.98rem; color: var(--ox-text); } .ox-mcards span { font-size: 0.88rem; color: var(--ox-text); }
+.ox-mcards em { font-style: normal; font-weight: 800; color: var(--ow-ink); } .ox-mcards small { font-size: 0.78rem; color: var(--ox-muted); }
+@media (max-width: 760px) { .ox-mcards { grid-template-columns: 1fr; } }
+"""

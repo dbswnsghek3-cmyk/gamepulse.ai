@@ -1614,31 +1614,34 @@ def _t6_business(rs: dict, plan: dict, bz: dict) -> None:
     mo = bz["marketing_ops"]
     h("마케팅·운영 전략 6개로 복귀율 → 잔존 → 구매 전환 → 객단가를 차례로 올린다", "mock", num="09",
       name="KPI 및 사업성 시뮬레이션", lead=escape(mo["note"]))
-    table(["전략", "실행 방식", "타깃 유저", "개선 목표", "측정 KPI"],
-          [[f"<b>{escape(m['name'])}</b>", escape(m["how"]), escape(m["target"]), f"<b>{escape(m['goal'])}</b>", escape(m["kpi"])]
-           for m in mo["items"]], cls="ox-mops")
+    html('<div class="ox-mcards">' + "".join(
+        f'<div><b>{escape(m["name"])}</b><span>{escape(m["target"])} → <em>{escape(m["goal"])}</em></span><small>KPI {escape(m["kpi"])}</small></div>'
+        for m in mo["items"]) + "</div>")
     gt = bz["gtm"]
-    h("제안별 타깃 · 마케팅 채널 · 실행 방식 · 목표 KPI", "mock", escape(gt["note"]))
-    table(["제안", "타깃 유저", "마케팅 채널", "실행 방식", "목표 KPI"],
-          [[f"<b>{escape(m['name'])}</b>", escape(m["target"]), escape(m["channel"]), escape(m["how"]), escape(m["kpi"])]
-           for m in gt["items"]], cls="ox-mops")
+    with st.expander("전략별 실행 방식 · 제안별 타깃·마케팅 채널·목표 KPI (RE:START · YOUR CHOICE · YOUR HERO)"):
+        table(["전략", "실행 방식", "타깃 유저", "개선 목표", "측정 KPI"],
+              [[f"<b>{escape(m['name'])}</b>", escape(m["how"]), escape(m["target"]), f"<b>{escape(m['goal'])}</b>", escape(m["kpi"])]
+               for m in mo["items"]], cls="ox-mops")
+        table(["제안", "타깃 유저", "마케팅 채널", "실행 방식", "목표 KPI"],
+              [[f"<b>{escape(m['name'])}</b>", escape(m["target"]), escape(m["channel"]), escape(m["how"]), escape(m["kpi"])]
+               for m in gt["items"]], cls="ox-mops")
+        st.caption(gt["note"])
     _imp_sim(bz)
     _pkg_sim(bz)
-    h("판단 KPI · 복귀율과 매출은 따로 본다", "mock")
-    table(["트랙", "지표", "기준", "판단"], [
+    kpi_box = st.expander("판단 KPI · 복귀율과 매출은 따로 본다 (07 최종 판단표와 같은 기준)")
+    with kpi_box:
+      table(["트랙", "지표", "기준", "판단"], [
         ["<b>복귀율</b> · RE:START A", "복귀 D7 잔존율", f"{rr['base']['D7']:.0f}% → {rr['base']['D7'] + rr['mde']['D7']:.0f}% (목표·가정 +{rr['mde']['D7']:.1f}%p)", "95% 신뢰구간 하한 &gt; 0 이고 목표 이상이면 확대"],
         ["<b>복귀율</b> · RE:START C", "신규 D7 잔존율", f"{nw['base']['D7']:.0f}% → {nw['base']['D7'] + nw['mde']['D7']:.0f}% (목표·가정 +{nw['mde']['D7']:.1f}%p)", "A 결과 후 실험 2로 판정"],
         ["<b>매출</b> · YOUR CHOICE", "패키지 구매 전환율 · 평균 결제 금액", "판매 테스트의 기준값 확인 후 목표 설정", "개별 스킨 잠식을 빼고도 순증일 때 확대"],
         ["<b>매출</b> · YOUR HERO", "투표 참여율 · 참여 유저 구매 전환율", "투표 파일럿의 기준값 확인 후 목표 설정", "제작 비용 대비 예상 수익이 남을 때 제작"],
-    ], cls="ox-kpit")
+      ], cls="ox-kpit")
     b = _biz_base(bz)
     need = f"{b['bep']:.1f}%" if b["bep_state"] == "ok" else "100%를 넘는 수준"
-    h("고급 사업성 분석 · 신규 스킨을 직접 만들 때의 조건", "sim",
-      "손익분기·개발비·마케팅비·수수료·잠식률·ROI는 확인된 내부 비용이 아니라 입력 가정이다")
+    h("고급 사업성 분석 · 신규 스킨을 직접 만들 때", "sim", "비용·수수료·잠식률은 확인된 내부 값이 아닌 입력 가정")
     html('<div class="ox-purpose"><span>수익성 확보 조건</span>'
-         f'기본 가정(개발 17인월·마케팅비 포함)으로는 신규 스킨 구매 전환율 {need}가 손익분기선이다. '
-         '그래서 ① 신규 스킨 제작비가 들지 않는 YOUR CHOICE(상품 구성·운영·마케팅 비용은 발생)로 먼저 매출을 확인하고 ② YOUR HERO 투표로 수요가 큰 영웅만 만들며 '
-         '③ 맞춤 노출·복귀 캠페인으로 노출 유저와 전환율을 키운다. 조건을 바꿔 보려면 아래를 펼친다.</div>')
+         f'신규 스킨을 직접 만들면 구매 전환율 {need}가 손익분기선(기본 가정)이다 → YOUR CHOICE로 먼저 매출을 확인하고, '
+         'YOUR HERO 투표로 수요가 큰 영웅만 만든다.</div>')
     with st.expander("고급 사업성 분석 열기 · 손익분기 · 개발비 · 마케팅비 · 수수료 · 잠식률 · ROI (모두 가정)"):
         _biz_sim(bz)
     with st.expander("A/B 실험 설계 · KPI 정의 10개 · 표본·일정 · 판단 기준"):
@@ -1686,20 +1689,23 @@ def _imp_sim(bz: dict) -> None:
     for i, name in enumerate(c["presets"]):
         cols[i].button(name, key=f"im_preset_{i}", on_click=_sim_apply, args=(_imp_preset(c, name), IMP_KEYS), width="stretch")
     cols[3].button("초기화", key="im_reset", on_click=_sim_apply, args=(dict(c["defaults"]), IMP_KEYS), width="stretch")
-    for f, col in zip(c["pop"], st.columns(2)):
+    chart_box = st.container()
+    inp_box = st.expander("가정값 바꾸기 · 노출 유저 · 복귀율 · D7·D30 잔존율 · 구매 전환율 · 평균 결제 금액")
+    with inp_box:
+      for f, col in zip(c["pop"], st.columns(2)):
         col.number_input(f"{f['label']} ({f['unit']})", min_value=int(f["min"]), max_value=int(f["max"]), step=int(f["step"]),
                          key=IMP_KEYS + f["key"])
-    for m in c["metrics"]:
-        c1, c2, c3 = st.columns([1.3, 1, 1])
-        c1.markdown(f"**{m['label']}**  \n{m['why']}")
-        cast, fmt = (float, "%.1f") if m["step"] < 1 else (int, "%d")
-        for col, k, lab in [(c2, m["k0"], "기존"), (c3, m["k1"], "개선")]:
-            hi = cast(m["max"])
-            if k.startswith("d30_"):                     # D30 ≤ D7 (D30 잔존 유저는 D7 잔존 유저에 포함)
-                hi = cast(st.session_state[IMP_KEYS + "d7_" + k[-1]])
-                st.session_state[IMP_KEYS + k] = min(st.session_state[IMP_KEYS + k], hi)
-            col.number_input(f"{lab} ({m['unit']})", min_value=cast(m["min"]), max_value=hi, step=cast(m["step"]), format=fmt,
-                             key=IMP_KEYS + k)
+      for m in c["metrics"]:
+          c1, c2, c3 = st.columns([1.3, 1, 1])
+          c1.markdown(f"**{m['label']}**  \n{m['why']}")
+          cast, fmt = (float, "%.1f") if m["step"] < 1 else (int, "%d")
+          for col, k, lab in [(c2, m["k0"], "기존"), (c3, m["k1"], "개선")]:
+              hi = cast(m["max"])
+              if k.startswith("d30_"):                     # D30 ≤ D7 (D30 잔존 유저는 D7 잔존 유저에 포함)
+                  hi = cast(st.session_state[IMP_KEYS + "d7_" + k[-1]])
+                  st.session_state[IMP_KEYS + k] = min(st.session_state[IMP_KEYS + k], hi)
+              col.number_input(f"{lab} ({m['unit']})", min_value=cast(m["min"]), max_value=hi, step=cast(m["step"]), format=fmt,
+                               key=IMP_KEYS + k)
     r = improve_sim(c, {k: st.session_state[IMP_KEYS + k] for k in c["defaults"]})
     with box:
         html(imp_result_html(r))
@@ -1707,7 +1713,7 @@ def _imp_sim(bz: dict) -> None:
     cats = ["복귀율", "D7 잔존율", "D30 잔존율", "구매 전환율"]
     v0 = [x["ret0"], x["d7_0"], x["d30_0"], x["conv0"]]
     v1 = [x["ret1"], x["d7_1"], x["d30_1"], x["conv1"]]
-    c1, c2 = st.columns(2, gap="medium")
+    c1, c2 = chart_box.columns(2, gap="medium")
     with c1:
         fig = go.Figure([go.Bar(x=cats, y=v0, name="기존", marker_color=C_BASE, text=[f"{v:g}%" for v in v0], textposition="outside", cliponaxis=False),
                          go.Bar(x=cats, y=v1, name="개선 (가정)", marker_color=C_IMP, text=[f"{v:g}%" for v in v1], textposition="outside", cliponaxis=False)])
@@ -1751,13 +1757,14 @@ def _pkg_sim(bz: dict) -> None:
     h("YOUR CHOICE 시뮬레이터: 전환율과 패키지 비중이 매출을 바꾼다", "sim", escape(s["note"]))
     html('<div class="ox-js-start" data-demo="pkg"></div>')
     box = st.container()
-    cols = st.columns(3)
+    pk_box = st.expander("가정값 바꾸기 · 노출 유저 · 전환율 · 개별·3개·5개 구매 비중")
+    cols = pk_box.columns(3)
     for j, f in enumerate(s["fields"]):
         fmt = "%.1f" if f["step"] < 1 else "%d"
         cast = float if f["step"] < 1 else int
         cols[j % 3].number_input(f"{f['label']} ({f['unit']})", min_value=cast(f["min"]), max_value=cast(f["max"]),
                                  step=cast(f["step"]), format=fmt, key=PKG_KEYS + f["key"])
-    st.button("초기화", key="pk_reset", on_click=_sim_apply, args=(dict(s["defaults"]), PKG_KEYS))
+    pk_box.button("초기화", key="pk_reset", on_click=_sim_apply, args=(dict(s["defaults"]), PKG_KEYS))
     r = package_sim(ch, {k: st.session_state[PKG_KEYS + k] for k in s["defaults"]})
     with box:
         html(pkg_result_html(r))
