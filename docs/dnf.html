@@ -1996,6 +1996,119 @@ body:has(.gp-ow-page) .ow-conclusion { background: #FFFFFF !important; border: 0
   body:has(.gp-ow-page) .ow-tabbar button { flex: 0 0 auto; }
   .st-key-ow_tab [data-testid="stRadioGroup"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
+
+/* 다른 게임용 포인트 컬러 토큰 (적용은 각 게임 확인 후) */
+:root { --fc-acc: #00C853; --fc-ink: #007A33; --pg-acc: #243B64; --pg-ink: #243B64; --df-acc: #B51D25; --df-ink: #B51D25; }
+
+/* 위계: 본문 섹션은 넓은 여백, 상세 보기는 가볍게 */
+.ox-h { margin: 3.4rem 0 1rem !important; }
+.ow-pane > .ox-h:first-of-type, .sx-pane-h + .ox-h { margin-top: 1.6rem !important; }
+body:has(.gp-ow-page) .sx-exp, .stApp:has(.gp-ow-page) [data-testid="stExpander"] details {
+  border: 0 !important; border-top: 1px solid var(--ox-line) !important; border-radius: 0 !important; box-shadow: none !important; margin: 0 !important; }
+body:has(.gp-ow-page) .sx-exp > summary, .stApp:has(.gp-ow-page) [data-testid="stExpander"] summary {
+  font-size: 0.88rem !important; font-weight: 600 !important; color: var(--ox-muted) !important; padding: 0.7rem 0 !important; }
+body:has(.gp-ow-page) .sx-exp > summary .sx-more { background: none !important; color: var(--ow-ink) !important; padding: 0 !important; }
+body:has(.gp-ow-page) .sx-exp[open] > summary { color: var(--ox-text) !important; }
+.ox-legend { margin-bottom: 0 !important; }
+
+/* 이미지 자리 (사용자 전달 이미지) */
+.ox-slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 0.8rem; margin: 1rem 0 0.4rem; }
+.ox-slot { aspect-ratio: 16 / 9; border: 1.5px dashed #D1D5DB; border-radius: 10px; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 0.25rem; text-align: center; padding: 0.6rem; color: var(--ox-muted); background: #FFFFFF; }
+.ox-slot b { font-size: 0.9rem; color: var(--ox-text); } .ox-slot small { font-size: 0.72rem; word-break: break-all; }
+.ox-img { margin: 0; } .ox-img img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--ox-line); }
+.ox-img figcaption { font-size: 0.78rem; color: var(--ox-muted); margin-top: 0.3rem; }
+
+/* 성장형 스킨 데모 */
+.ox-ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.4rem 1rem; align-items: center; margin: 0.4rem 0 1rem; }
+.ox-ctl label { grid-column: 1 / -1; font-size: 0.9rem; color: var(--ox-text); font-weight: 600; }
+.ox-ctl output { font-weight: 800; color: var(--ow-ink); margin-left: 0.3rem; }
+.ox-ctl input[type=range] { width: 100%; accent-color: var(--ow-acc); }
+.ox-btn { font: inherit; font-size: 0.88rem; font-weight: 700; padding: 0.45rem 0.95rem; border-radius: 8px; border: 1px solid var(--ox-line);
+  background: #FFFFFF; color: var(--ox-text); cursor: pointer; }
+.ox-btn:hover { border-color: var(--ow-acc); }
+.ox-skin-top { display: grid; grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: 1.4rem; align-items: center; }
+.ox-skin-now span { font-size: 0.78rem; font-weight: 800; color: var(--ox-muted); }
+.ox-skin-now strong { display: block; font-size: 2.6rem; font-weight: 900; color: var(--ox-text); line-height: 1.1; letter-spacing: -0.02em; }
+.ox-skin-now > b { display: block; font-size: 1.1rem; color: var(--ox-text); margin-top: 0.15rem; }
+.ox-skin-now p { margin: 0.5rem 0 0.6rem; font-size: 0.95rem; color: var(--ox-text); } .ox-skin-now p b { color: var(--ow-ink); }
+.ox-skin-now small { font-size: 0.8rem; color: var(--ox-muted); }
+.ox-bar { height: 10px; background: #F3F4F6; border-radius: 999px; overflow: hidden; margin-bottom: 0.3rem; }
+.ox-bar i { display: block; height: 100%; background: var(--ow-acc); border-radius: 999px; transition: width 0.2s; }
+.ox-lvl { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.5rem; margin: 1.4rem 0 0.4rem; }
+.ox-lvl > div { border-top: 4px solid #E5E7EB; padding: 0.65rem 0 0; display: flex; flex-direction: column; gap: 0.15rem; opacity: 0.55; }
+.ox-lvl > div.on { border-top-color: var(--ow-acc); opacity: 1; }
+.ox-lvl > div.cur b { color: var(--ow-ink); }
+.ox-lvl em { font-style: normal; font-size: 0.8rem; font-weight: 800; color: var(--ox-text); }
+.ox-lvl b { font-size: 0.94rem; color: var(--ox-text); line-height: 1.4; } .ox-lvl small { font-size: 0.78rem; color: var(--ox-muted); }
+.ox-protect { columns: 2; column-gap: 2rem; margin: 0.2rem 0 0; padding-left: 1.1rem; }
+.ox-protect li { font-size: 0.95rem; color: var(--ox-text); line-height: 1.55; margin-bottom: 0.35rem; break-inside: avoid; }
+
+/* 광고 카드: 16:9 고정 · 글자 크기도 카드 너비에 비례 */
+.ox-ad { container-type: inline-size; position: relative; background: var(--bg); border-radius: 12px; aspect-ratio: 16 / 9; width: 100%;
+  max-width: 760px; margin: 0.4rem 0 2rem; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.ox-ad-top { position: absolute; top: 8%; left: 0; right: 0; display: flex; justify-content: center; }
+.ox-ad-top img { height: 9cqw; max-height: 64px; width: auto; }
+.ox-ad-slot { font-size: 2.2cqw; color: #9CA3AF; border: 1px dashed #4B5563; border-radius: 6px; padding: 0.6cqw 2cqw; }
+.ox-ad-c { text-align: center; margin-top: 4cqw; }
+.ox-ad-main { color: var(--main); font-size: 15.5cqw; font-weight: 900; font-style: italic; letter-spacing: -0.03em; line-height: 1; }
+.ox-ad-sub { position: static !important; color: var(--sub); font-size: 4.6cqw; font-weight: 700; letter-spacing: 0.02em; margin-top: 2.2cqw; }
+
+/* 퍼널: 단계가 좁아지는 막대 (전환율은 표시하지 않음) */
+.ox-funnel { list-style: none; padding: 0; margin: 0.4rem 0 0.5rem; display: flex; flex-direction: column; gap: 0.3rem; max-width: 640px; }
+.ox-funnel li { width: var(--w); min-width: 13rem; display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem 0.9rem; border-radius: 6px;
+  background: #FEF3E2; color: var(--ox-text); }
+.ox-funnel li:nth-child(n+4) { background: #FDE7C4; } .ox-funnel li:last-child { background: var(--ow-acc); }
+.ox-funnel span { font-size: 0.78rem; font-weight: 800; color: var(--ow-ink); width: 1.1rem; } .ox-funnel li:last-child span { color: var(--ox-text); }
+.ox-funnel b { font-size: 0.95rem; }
+.ox-funnel-loop { font-size: 0.86rem; font-weight: 700; color: var(--ow-ink); margin: 0.2rem 0 0.3rem; }
+
+/* KPI 3단 */
+.ox-kpi3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.6rem; }
+.ox-kpi3 > div { border-top: 3px solid var(--ox-line); padding-top: 0.7rem; }
+.ox-kpi3 > div.g0 { border-top-color: var(--ow-acc); } .ox-kpi3 > div.g2 { border-top-color: #9CA3AF; }
+.ox-kpi3 b { display: block; font-size: 0.95rem; color: var(--ox-text); margin-bottom: 0.35rem; }
+.ox-kpi3 ul { margin: 0; padding-left: 1.05rem; } .ox-kpi3 li { font-size: 0.93rem; color: var(--ox-text); line-height: 1.6; }
+
+/* 사업 효과 시뮬레이터 */
+.ox-res { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--ox-line); border-bottom: 1px solid var(--ox-line); margin: 0.4rem 0 0.9rem; }
+.ox-res > div { padding: 1rem 1rem 1rem 0; display: flex; flex-direction: column; gap: 0.2rem; }
+.ox-res > div + div { padding-left: 1rem; border-left: 1px solid var(--ox-line); }
+.ox-res span { font-size: 0.8rem; font-weight: 700; color: var(--ox-muted); }
+.ox-res b { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; color: var(--ox-text); line-height: 1.2; }
+.ox-res .neg b { color: #DC2626; } .ox-res .pos b { color: #2563EB; }
+.ox-res small { font-size: 0.78rem; color: var(--ox-muted); line-height: 1.45; }
+.ox-verdict { border-left: 3px solid #DC2626; padding: 0.5rem 0 0.5rem 0.9rem; margin: 0 0 1.2rem; font-size: 1rem; color: var(--ox-text); }
+.ox-verdict.near { border-left-color: var(--ow-acc); } .ox-verdict.profit { border-left-color: #2563EB; }
+.ox-verdict small { display: block; font-size: 0.82rem; color: var(--ox-muted); margin-top: 0.2rem; }
+.ox-presets { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 0.9rem; }
+.ox-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0.8rem 1rem; margin: 0 0 0.9rem; }
+.ox-fields.basic { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ox-f { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem; color: var(--ox-text); font-weight: 600; }
+.ox-f small { color: var(--ox-muted); font-weight: 500; }
+.ox-f input { font: inherit; font-size: 0.95rem; font-weight: 500; padding: 0.45rem 0.6rem; border: 1px solid #D1D5DB; border-radius: 8px; width: 100%; box-sizing: border-box; }
+.ox-f input:focus { outline: 2px solid var(--ow-acc); outline-offset: 0; border-color: var(--ow-acc); }
+.ox-chart { margin: 1.2rem 0 0.4rem; min-width: 0; overflow: hidden; } .ox-chart .sx-chart-c { width: 100%; } .ox-chart2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.2rem; }
+.ox-note { font-size: 0.8rem; color: var(--ox-muted); margin: 0.5rem 0 0; }
+.ox-adv { margin-bottom: 0.4rem !important; }
+
+@media (max-width: 760px) {
+  .ox-skin-top { grid-template-columns: 1fr; }
+  .ox-lvl { grid-template-columns: 1fr; gap: 0; } .ox-lvl > div { border-top: 0; border-left: 4px solid #E5E7EB; padding: 0.45rem 0 0.45rem 0.75rem; }
+  .ox-lvl > div.on { border-left-color: var(--ow-acc); }
+  .ox-protect { columns: 1; }
+  .ox-kpi3 { grid-template-columns: 1fr; gap: 1rem; }
+  .ox-res { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ox-res > div { padding: 0.8rem 0.6rem 0.8rem 0; } .ox-res > div + div { padding-left: 0.6rem; }
+  .ox-res > div:nth-child(3) { border-left: 0; padding-left: 0; border-top: 1px solid var(--ox-line); } .ox-res > div:nth-child(4) { border-top: 1px solid var(--ox-line); }
+  .ox-res b { font-size: 1.25rem; }
+  .ox-fields.basic { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ox-chart2 { grid-template-columns: 1fr; }
+  .ox-funnel li { min-width: 0; width: max(var(--w), 64%); box-sizing: border-box; }
+}
+
+.ox-slot.skin, .ox-img.skin { aspect-ratio: 4 / 3; max-height: 15rem; }
+.ox-slots .ox-slot { aspect-ratio: 16 / 10; }
 </style>
 <style>
 body { margin: 0; background: #fff; color: #0B1F3A; }
@@ -2083,7 +2196,7 @@ button.sx-btn:hover, a.sx-btn:hover { border-color: #0B1F3A; background: #F4F7FC
   .sx-row { flex-direction: column; } .sx-col { flex: 1 1 auto !important; width: 100%; }
   .sx-tab-h { font-size: 1.2rem; }
 }
-</style></head><body><header class="sx-top"><div class="sx-top-in"><div class="gp-brand"><a href="index.html">Game<span>Pulse</span> AI</a></div><nav><a class="" href="index.html">보고서 첫 화면</a><a class="" href="home.html">사이트 홈 · 개요</a><a class="" href="overwatch.html">오버워치 · PROJECT RE:START</a><a class="" href="fconline.html">FC 온라인 · 축구 게임인가, 주식 게임인가?</a><a class="" href="pubg.html">PUBG · NEW START</a><a class="on" href="dnf.html">던전앤파이터 · 클리어했는데 왜 성장한 느낌이 없을까?</a><a class="" href="assistant.html">사업PM 어시스턴트</a></nav></div></header><main class="sx-main"><div class="sx-note"><b>정적 보고서</b> · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> 스냅샷 (2026-11-25 09:38 KST) · 01~06 탭으로 섹션 전환 · 버튼·슬라이더는 기본값 · 차트 수치는 "차트 데이터 표"에</div><style>
+</style></head><body><header class="sx-top"><div class="sx-top-in"><div class="gp-brand"><a href="index.html">Game<span>Pulse</span> AI</a></div><nav><a class="" href="index.html">보고서 첫 화면</a><a class="" href="home.html">사이트 홈 · 개요</a><a class="" href="overwatch.html">오버워치 · PROJECT RE:START</a><a class="" href="fconline.html">FC 온라인 · 축구 게임인가, 주식 게임인가?</a><a class="" href="pubg.html">PUBG · NEW START</a><a class="on" href="dnf.html">던전앤파이터 · 클리어했는데 왜 성장한 느낌이 없을까?</a><a class="" href="assistant.html">사업PM 어시스턴트</a></nav></div></header><main class="sx-main"><div class="sx-note"><b>정적 보고서</b> · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> 스냅샷 (2026-11-25 10:07 KST) · 01~06 탭으로 섹션 전환 · 버튼·슬라이더는 기본값 · 차트 수치는 "차트 데이터 표"에</div><style>
 /* ---- PUBG 정적 페이지 전용 (Streamlit 화면과 맞춤) ---- */
 /* Streamlit 본문 글꼴: 앱에 포함된 "Source Sans" 가변 글꼴(SIL OFL) 그대로 + 한글은 시스템 sans-serif → 글자 폭·줄바꿈 일치 */
 @font-face{font-family:"Source Sans";font-weight:100 900;font-style:normal;font-display:swap;src:url(assets/fonts/SourceSansVF-Upright.woff2) format("woff2")}
@@ -2222,4 +2335,4 @@ function mount(){var el=document.querySelector('.fc-live[data-k="d1"]'),a=docume
  if(el&&row){row.replaceWith(el);el.hidden=false;}
  ['dn','dp','dm','dk'].forEach(function(i){$(i).addEventListener('input',D);});$('dneu').addEventListener('change',D);D();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
-})();</script></main><footer class="sx-foot">GamePulse AI 정적 보고서 · 생성 2026-11-25 09:38 KST · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> · <a href="https://github.com/dbswnsghek3-cmyk/gamepulse.ai">GitHub 저장소</a> · 언급된 게임 및 상표는 각 권리자에게 있으며, 본 보고서는 해당 게임사와 관련이 없는 개인 분석물입니다.</footer></body></html>
+})();</script></main><footer class="sx-foot">GamePulse AI 정적 보고서 · 생성 2026-11-25 10:07 KST · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> · <a href="https://github.com/dbswnsghek3-cmyk/gamepulse.ai">GitHub 저장소</a> · 언급된 게임 및 상표는 각 권리자에게 있으며, 본 보고서는 해당 게임사와 관련이 없는 개인 분석물입니다.</footer></body></html>

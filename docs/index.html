@@ -1996,6 +1996,119 @@ body:has(.gp-ow-page) .ow-conclusion { background: #FFFFFF !important; border: 0
   body:has(.gp-ow-page) .ow-tabbar button { flex: 0 0 auto; }
   .st-key-ow_tab [data-testid="stRadioGroup"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
+
+/* 다른 게임용 포인트 컬러 토큰 (적용은 각 게임 확인 후) */
+:root { --fc-acc: #00C853; --fc-ink: #007A33; --pg-acc: #243B64; --pg-ink: #243B64; --df-acc: #B51D25; --df-ink: #B51D25; }
+
+/* 위계: 본문 섹션은 넓은 여백, 상세 보기는 가볍게 */
+.ox-h { margin: 3.4rem 0 1rem !important; }
+.ow-pane > .ox-h:first-of-type, .sx-pane-h + .ox-h { margin-top: 1.6rem !important; }
+body:has(.gp-ow-page) .sx-exp, .stApp:has(.gp-ow-page) [data-testid="stExpander"] details {
+  border: 0 !important; border-top: 1px solid var(--ox-line) !important; border-radius: 0 !important; box-shadow: none !important; margin: 0 !important; }
+body:has(.gp-ow-page) .sx-exp > summary, .stApp:has(.gp-ow-page) [data-testid="stExpander"] summary {
+  font-size: 0.88rem !important; font-weight: 600 !important; color: var(--ox-muted) !important; padding: 0.7rem 0 !important; }
+body:has(.gp-ow-page) .sx-exp > summary .sx-more { background: none !important; color: var(--ow-ink) !important; padding: 0 !important; }
+body:has(.gp-ow-page) .sx-exp[open] > summary { color: var(--ox-text) !important; }
+.ox-legend { margin-bottom: 0 !important; }
+
+/* 이미지 자리 (사용자 전달 이미지) */
+.ox-slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 0.8rem; margin: 1rem 0 0.4rem; }
+.ox-slot { aspect-ratio: 16 / 9; border: 1.5px dashed #D1D5DB; border-radius: 10px; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 0.25rem; text-align: center; padding: 0.6rem; color: var(--ox-muted); background: #FFFFFF; }
+.ox-slot b { font-size: 0.9rem; color: var(--ox-text); } .ox-slot small { font-size: 0.72rem; word-break: break-all; }
+.ox-img { margin: 0; } .ox-img img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--ox-line); }
+.ox-img figcaption { font-size: 0.78rem; color: var(--ox-muted); margin-top: 0.3rem; }
+
+/* 성장형 스킨 데모 */
+.ox-ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.4rem 1rem; align-items: center; margin: 0.4rem 0 1rem; }
+.ox-ctl label { grid-column: 1 / -1; font-size: 0.9rem; color: var(--ox-text); font-weight: 600; }
+.ox-ctl output { font-weight: 800; color: var(--ow-ink); margin-left: 0.3rem; }
+.ox-ctl input[type=range] { width: 100%; accent-color: var(--ow-acc); }
+.ox-btn { font: inherit; font-size: 0.88rem; font-weight: 700; padding: 0.45rem 0.95rem; border-radius: 8px; border: 1px solid var(--ox-line);
+  background: #FFFFFF; color: var(--ox-text); cursor: pointer; }
+.ox-btn:hover { border-color: var(--ow-acc); }
+.ox-skin-top { display: grid; grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: 1.4rem; align-items: center; }
+.ox-skin-now span { font-size: 0.78rem; font-weight: 800; color: var(--ox-muted); }
+.ox-skin-now strong { display: block; font-size: 2.6rem; font-weight: 900; color: var(--ox-text); line-height: 1.1; letter-spacing: -0.02em; }
+.ox-skin-now > b { display: block; font-size: 1.1rem; color: var(--ox-text); margin-top: 0.15rem; }
+.ox-skin-now p { margin: 0.5rem 0 0.6rem; font-size: 0.95rem; color: var(--ox-text); } .ox-skin-now p b { color: var(--ow-ink); }
+.ox-skin-now small { font-size: 0.8rem; color: var(--ox-muted); }
+.ox-bar { height: 10px; background: #F3F4F6; border-radius: 999px; overflow: hidden; margin-bottom: 0.3rem; }
+.ox-bar i { display: block; height: 100%; background: var(--ow-acc); border-radius: 999px; transition: width 0.2s; }
+.ox-lvl { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.5rem; margin: 1.4rem 0 0.4rem; }
+.ox-lvl > div { border-top: 4px solid #E5E7EB; padding: 0.65rem 0 0; display: flex; flex-direction: column; gap: 0.15rem; opacity: 0.55; }
+.ox-lvl > div.on { border-top-color: var(--ow-acc); opacity: 1; }
+.ox-lvl > div.cur b { color: var(--ow-ink); }
+.ox-lvl em { font-style: normal; font-size: 0.8rem; font-weight: 800; color: var(--ox-text); }
+.ox-lvl b { font-size: 0.94rem; color: var(--ox-text); line-height: 1.4; } .ox-lvl small { font-size: 0.78rem; color: var(--ox-muted); }
+.ox-protect { columns: 2; column-gap: 2rem; margin: 0.2rem 0 0; padding-left: 1.1rem; }
+.ox-protect li { font-size: 0.95rem; color: var(--ox-text); line-height: 1.55; margin-bottom: 0.35rem; break-inside: avoid; }
+
+/* 광고 카드: 16:9 고정 · 글자 크기도 카드 너비에 비례 */
+.ox-ad { container-type: inline-size; position: relative; background: var(--bg); border-radius: 12px; aspect-ratio: 16 / 9; width: 100%;
+  max-width: 760px; margin: 0.4rem 0 2rem; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.ox-ad-top { position: absolute; top: 8%; left: 0; right: 0; display: flex; justify-content: center; }
+.ox-ad-top img { height: 9cqw; max-height: 64px; width: auto; }
+.ox-ad-slot { font-size: 2.2cqw; color: #9CA3AF; border: 1px dashed #4B5563; border-radius: 6px; padding: 0.6cqw 2cqw; }
+.ox-ad-c { text-align: center; margin-top: 4cqw; }
+.ox-ad-main { color: var(--main); font-size: 15.5cqw; font-weight: 900; font-style: italic; letter-spacing: -0.03em; line-height: 1; }
+.ox-ad-sub { position: static !important; color: var(--sub); font-size: 4.6cqw; font-weight: 700; letter-spacing: 0.02em; margin-top: 2.2cqw; }
+
+/* 퍼널: 단계가 좁아지는 막대 (전환율은 표시하지 않음) */
+.ox-funnel { list-style: none; padding: 0; margin: 0.4rem 0 0.5rem; display: flex; flex-direction: column; gap: 0.3rem; max-width: 640px; }
+.ox-funnel li { width: var(--w); min-width: 13rem; display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem 0.9rem; border-radius: 6px;
+  background: #FEF3E2; color: var(--ox-text); }
+.ox-funnel li:nth-child(n+4) { background: #FDE7C4; } .ox-funnel li:last-child { background: var(--ow-acc); }
+.ox-funnel span { font-size: 0.78rem; font-weight: 800; color: var(--ow-ink); width: 1.1rem; } .ox-funnel li:last-child span { color: var(--ox-text); }
+.ox-funnel b { font-size: 0.95rem; }
+.ox-funnel-loop { font-size: 0.86rem; font-weight: 700; color: var(--ow-ink); margin: 0.2rem 0 0.3rem; }
+
+/* KPI 3단 */
+.ox-kpi3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.6rem; }
+.ox-kpi3 > div { border-top: 3px solid var(--ox-line); padding-top: 0.7rem; }
+.ox-kpi3 > div.g0 { border-top-color: var(--ow-acc); } .ox-kpi3 > div.g2 { border-top-color: #9CA3AF; }
+.ox-kpi3 b { display: block; font-size: 0.95rem; color: var(--ox-text); margin-bottom: 0.35rem; }
+.ox-kpi3 ul { margin: 0; padding-left: 1.05rem; } .ox-kpi3 li { font-size: 0.93rem; color: var(--ox-text); line-height: 1.6; }
+
+/* 사업 효과 시뮬레이터 */
+.ox-res { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--ox-line); border-bottom: 1px solid var(--ox-line); margin: 0.4rem 0 0.9rem; }
+.ox-res > div { padding: 1rem 1rem 1rem 0; display: flex; flex-direction: column; gap: 0.2rem; }
+.ox-res > div + div { padding-left: 1rem; border-left: 1px solid var(--ox-line); }
+.ox-res span { font-size: 0.8rem; font-weight: 700; color: var(--ox-muted); }
+.ox-res b { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; color: var(--ox-text); line-height: 1.2; }
+.ox-res .neg b { color: #DC2626; } .ox-res .pos b { color: #2563EB; }
+.ox-res small { font-size: 0.78rem; color: var(--ox-muted); line-height: 1.45; }
+.ox-verdict { border-left: 3px solid #DC2626; padding: 0.5rem 0 0.5rem 0.9rem; margin: 0 0 1.2rem; font-size: 1rem; color: var(--ox-text); }
+.ox-verdict.near { border-left-color: var(--ow-acc); } .ox-verdict.profit { border-left-color: #2563EB; }
+.ox-verdict small { display: block; font-size: 0.82rem; color: var(--ox-muted); margin-top: 0.2rem; }
+.ox-presets { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 0.9rem; }
+.ox-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0.8rem 1rem; margin: 0 0 0.9rem; }
+.ox-fields.basic { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ox-f { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem; color: var(--ox-text); font-weight: 600; }
+.ox-f small { color: var(--ox-muted); font-weight: 500; }
+.ox-f input { font: inherit; font-size: 0.95rem; font-weight: 500; padding: 0.45rem 0.6rem; border: 1px solid #D1D5DB; border-radius: 8px; width: 100%; box-sizing: border-box; }
+.ox-f input:focus { outline: 2px solid var(--ow-acc); outline-offset: 0; border-color: var(--ow-acc); }
+.ox-chart { margin: 1.2rem 0 0.4rem; min-width: 0; overflow: hidden; } .ox-chart .sx-chart-c { width: 100%; } .ox-chart2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.2rem; }
+.ox-note { font-size: 0.8rem; color: var(--ox-muted); margin: 0.5rem 0 0; }
+.ox-adv { margin-bottom: 0.4rem !important; }
+
+@media (max-width: 760px) {
+  .ox-skin-top { grid-template-columns: 1fr; }
+  .ox-lvl { grid-template-columns: 1fr; gap: 0; } .ox-lvl > div { border-top: 0; border-left: 4px solid #E5E7EB; padding: 0.45rem 0 0.45rem 0.75rem; }
+  .ox-lvl > div.on { border-left-color: var(--ow-acc); }
+  .ox-protect { columns: 1; }
+  .ox-kpi3 { grid-template-columns: 1fr; gap: 1rem; }
+  .ox-res { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ox-res > div { padding: 0.8rem 0.6rem 0.8rem 0; } .ox-res > div + div { padding-left: 0.6rem; }
+  .ox-res > div:nth-child(3) { border-left: 0; padding-left: 0; border-top: 1px solid var(--ox-line); } .ox-res > div:nth-child(4) { border-top: 1px solid var(--ox-line); }
+  .ox-res b { font-size: 1.25rem; }
+  .ox-fields.basic { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ox-chart2 { grid-template-columns: 1fr; }
+  .ox-funnel li { min-width: 0; width: max(var(--w), 64%); box-sizing: border-box; }
+}
+
+.ox-slot.skin, .ox-img.skin { aspect-ratio: 4 / 3; max-height: 15rem; }
+.ox-slots .ox-slot { aspect-ratio: 16 / 10; }
 </style>
 <style>
 body { margin: 0; background: #fff; color: #0B1F3A; }
@@ -2083,4 +2196,4 @@ button.sx-btn:hover, a.sx-btn:hover { border-color: #0B1F3A; background: #F4F7FC
   .sx-row { flex-direction: column; } .sx-col { flex: 1 1 auto !important; width: 100%; }
   .sx-tab-h { font-size: 1.2rem; }
 }
-</style></head><body><header class="sx-top"><div class="sx-top-in"><div class="gp-brand"><a href="index.html">Game<span>Pulse</span> AI</a></div><nav><a class="on" href="index.html">보고서 첫 화면</a><a class="" href="home.html">사이트 홈 · 개요</a><a class="" href="overwatch.html">오버워치 · PROJECT RE:START</a><a class="" href="fconline.html">FC 온라인 · 축구 게임인가, 주식 게임인가?</a><a class="" href="pubg.html">PUBG · NEW START</a><a class="" href="dnf.html">던전앤파이터 · 클리어했는데 왜 성장한 느낌이 없을까?</a><a class="" href="assistant.html">사업PM 어시스턴트</a></nav></div></header><main class="sx-main"><div class="gp-hero"><div class="gp-eyebrow">Static Report for Reviewers</div><h1>GamePulse AI 포트폴리오 보고서</h1><p>게임 이용자 문제를 데이터로 정의하고, 사업PM 관점의 개선 전략과 KPI를 설계합니다.</p></div><h2>검토자 안내</h2><ul class="sx-ul"><li>이 보고서는 <a href="https://gamepulse-ai2.streamlit.app/">원본 Streamlit 앱</a>을 자동 변환한 정적 HTML입니다. JavaScript 없이도 모든 글자를 읽을 수 있습니다.</li><li><b>오버워치 · PUBG · FC 온라인 · 던전앤파이터</b> 4개 페이지가 실제 자료 기반 분석입니다. 사업PM 어시스턴트의 정적 화면은 자주 묻는 질문 답변을 미리 담았고, 직접 질문은 <a href="https://gamepulse-ai2.streamlit.app/?page=assistant">원본 앱</a>에서 할 수 있습니다.</li><li>각 수치·차트에 출처 성격을 배지로 표시했습니다. 아래 배지 뜻을 참고하세요.</li><li>게임 스크린샷은 작성자가 직접 캡처한 최신 한국어 화면이며, 다른 플레이어 닉네임은 가림 처리했습니다.</li><li>생성 시각 2026-11-25 09:38 KST · 코드: <a href="https://github.com/dbswnsghek3-cmyk/gamepulse.ai">GitHub 저장소</a></li></ul><div class="sx-legend"><b>배지 뜻</b><span class="gp-badge k-real">실제 자료</span> 공개 출처·직접 캡처로 확인<span class="gp-badge k-interp">분석자 해석</span> 자료를 바탕으로 한 판단<span class="gp-badge k-hypo">검증 전 가설</span> 아직 입증되지 않음<span class="gp-badge k-mock">기획 시안</span> 게임에 없는 제안·계획<span class="gp-badge k-sim">가정 시뮬레이션</span> 가정값으로 계산 (실적 아님)<span class="gp-badge k-sample">예시 데이터</span> 시연용 가상 데이터</div><h2>페이지</h2><div class="sx-cards"><a class="sx-card feature" href="overwatch.html"><div class="k">대표 프로젝트 · 실제 자료 기반</div><h3>오버워치 · PROJECT RE:START</h3><p><b>복귀 후 달라진 전투에 적응하기 어렵다</b> — 놓친 변경점 브리핑 + 학습 순서 미션. 최신 한국어 게임 화면, 검증한 유저 의견 63건, 공식 업데이트·이용 지표를 근거로 개선안 A·B·C, 단계적 A/B 테스트, 가정 시뮬레이션까지 하나의 가정값으로 연결했습니다.</p></a><a class="sx-card feature" href="pubg.html"><div class="k">두 번째 프로젝트 · 실제 자료 기반</div><h3>PUBG · NEW START</h3><p><b>첫 치킨을 맛보기도 전에 떠나는 유저들. 그리고 돌아오지 않는 전우들.</b> — 신규 유저 정착(A 50%) · 휴면 유저 복귀(B 40%) · BM 신뢰·수익성(C 10%). 공식 자료와 Steam 리뷰(신규 45건 · 복귀 21건, 별도 표본)를 근거로 A1 경기별 코칭 데모, B1 복귀 광고 캠페인 «PUBG: 다시 낙하할 시간»과 클릭 가능한 랜딩페이지, A/B 테스트 설계를 만들었습니다.</p></a><a class="sx-card feature" href="fconline.html"><div class="k">세 번째 프로젝트 · 실제 자료 기반</div><h3>FC 온라인 · 축구 게임인가, 주식 게임인가?</h3><p><b>구단 가치 급락과 강화 실패로 인한 이탈 위험, 그리고 조작 환경의 공정성 문제</b> — A 구단 가치 급락 완충 프로그램 · B 강화 실패 후 재기 프로그램 · C 분리 없는 조작 공정성 개선. 공식 강화 확률·이적시장 안정화 공지, 작성자 캡처, 인벤 게시글을 근거로 BP 직접 보상 없는 재참여 미션·비거래성 소규모 보상과 악용 방지, 통합 매칭 유지 + 조작 최적화·성과 분석·훈련을 제안했습니다.</p></a><a class="sx-card feature" href="dnf.html"><div class="k">네 번째 프로젝트 · 실제 자료 기반</div><h3>던전앤파이터 · 시즌의 가치 회복</h3><p><b>고난도 콘텐츠를 클리어했는데도 왜 성장한 느낌이 부족할까? (시즌제와 확률 보상은 유지)</b> — 2026 미카엘라 하드 레이드의 전투·클리어 보상 실제 화면(유튜브 영상 캡처 2장), 공식 업데이트·특별 경매 공지, 2026 공식 게시판 유저 글을 근거로 기존 보장 시스템과 겹치지 않는 «지정 장비 진척 게이지»를 제안하고 확률 보상 시뮬레이터를 만들었습니다. 판단: B 지정 장비 진척 게이지 소규모 파일럿 → 공급 가드레일 통과 시 확대 · A는 시즌 전환 시점에 A/B</p></a><a class="sx-card" href="home.html"><div class="k">도구 화면</div><h3>사이트 홈 · 개요</h3><p>프로젝트 소개 · 4개 게임 핵심 문제 · 사업PM 어시스턴트 바로가기</p></a><a class="sx-card" href="assistant.html"><div class="k">도구 화면</div><h3>사업PM 어시스턴트</h3><p>포트폴리오 기반 검색형 PM 어시스턴트 (생성형 AI 아님) · 정적 화면은 게임별 자주 묻는 질문 답변 · 직접 질문은 원본 앱</p></a></div></main><footer class="sx-foot">GamePulse AI 정적 보고서 · 생성 2026-11-25 09:38 KST · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> · <a href="https://github.com/dbswnsghek3-cmyk/gamepulse.ai">GitHub 저장소</a> · 언급된 게임 및 상표는 각 권리자에게 있으며, 본 보고서는 해당 게임사와 관련이 없는 개인 분석물입니다.</footer></body></html>
+</style></head><body><header class="sx-top"><div class="sx-top-in"><div class="gp-brand"><a href="index.html">Game<span>Pulse</span> AI</a></div><nav><a class="on" href="index.html">보고서 첫 화면</a><a class="" href="home.html">사이트 홈 · 개요</a><a class="" href="overwatch.html">오버워치 · PROJECT RE:START</a><a class="" href="fconline.html">FC 온라인 · 축구 게임인가, 주식 게임인가?</a><a class="" href="pubg.html">PUBG · NEW START</a><a class="" href="dnf.html">던전앤파이터 · 클리어했는데 왜 성장한 느낌이 없을까?</a><a class="" href="assistant.html">사업PM 어시스턴트</a></nav></div></header><main class="sx-main"><div class="gp-hero"><div class="gp-eyebrow">Static Report for Reviewers</div><h1>GamePulse AI 포트폴리오 보고서</h1><p>게임 이용자 문제를 데이터로 정의하고, 사업PM 관점의 개선 전략과 KPI를 설계합니다.</p></div><h2>검토자 안내</h2><ul class="sx-ul"><li>이 보고서는 <a href="https://gamepulse-ai2.streamlit.app/">원본 Streamlit 앱</a>을 자동 변환한 정적 HTML입니다. JavaScript 없이도 모든 글자를 읽을 수 있습니다.</li><li><b>오버워치 · PUBG · FC 온라인 · 던전앤파이터</b> 4개 페이지가 실제 자료 기반 분석입니다. 사업PM 어시스턴트의 정적 화면은 자주 묻는 질문 답변을 미리 담았고, 직접 질문은 <a href="https://gamepulse-ai2.streamlit.app/?page=assistant">원본 앱</a>에서 할 수 있습니다.</li><li>각 수치·차트에 출처 성격을 배지로 표시했습니다. 아래 배지 뜻을 참고하세요.</li><li>게임 스크린샷은 작성자가 직접 캡처한 최신 한국어 화면이며, 다른 플레이어 닉네임은 가림 처리했습니다.</li><li>생성 시각 2026-11-25 10:07 KST · 코드: <a href="https://github.com/dbswnsghek3-cmyk/gamepulse.ai">GitHub 저장소</a></li></ul><div class="sx-legend"><b>배지 뜻</b><span class="gp-badge k-real">실제 자료</span> 공개 출처·직접 캡처로 확인<span class="gp-badge k-interp">분석자 해석</span> 자료를 바탕으로 한 판단<span class="gp-badge k-hypo">검증 전 가설</span> 아직 입증되지 않음<span class="gp-badge k-mock">기획 시안</span> 게임에 없는 제안·계획<span class="gp-badge k-sim">가정 시뮬레이션</span> 가정값으로 계산 (실적 아님)<span class="gp-badge k-sample">예시 데이터</span> 시연용 가상 데이터</div><h2>페이지</h2><div class="sx-cards"><a class="sx-card feature" href="overwatch.html"><div class="k">대표 프로젝트 · 실제 자료 기반</div><h3>오버워치 · PROJECT RE:START</h3><p><b>복귀 후 달라진 전투에 적응하기 어렵다</b> — 놓친 변경점 브리핑 + 학습 순서 미션. 최신 한국어 게임 화면, 검증한 유저 의견 63건, 공식 업데이트·이용 지표를 근거로 개선안 A·B·C, 단계적 A/B 테스트, 가정 시뮬레이션까지 하나의 가정값으로 연결했습니다.</p></a><a class="sx-card feature" href="pubg.html"><div class="k">두 번째 프로젝트 · 실제 자료 기반</div><h3>PUBG · NEW START</h3><p><b>첫 치킨을 맛보기도 전에 떠나는 유저들. 그리고 돌아오지 않는 전우들.</b> — 신규 유저 정착(A 50%) · 휴면 유저 복귀(B 40%) · BM 신뢰·수익성(C 10%). 공식 자료와 Steam 리뷰(신규 45건 · 복귀 21건, 별도 표본)를 근거로 A1 경기별 코칭 데모, B1 복귀 광고 캠페인 «PUBG: 다시 낙하할 시간»과 클릭 가능한 랜딩페이지, A/B 테스트 설계를 만들었습니다.</p></a><a class="sx-card feature" href="fconline.html"><div class="k">세 번째 프로젝트 · 실제 자료 기반</div><h3>FC 온라인 · 축구 게임인가, 주식 게임인가?</h3><p><b>구단 가치 급락과 강화 실패로 인한 이탈 위험, 그리고 조작 환경의 공정성 문제</b> — A 구단 가치 급락 완충 프로그램 · B 강화 실패 후 재기 프로그램 · C 분리 없는 조작 공정성 개선. 공식 강화 확률·이적시장 안정화 공지, 작성자 캡처, 인벤 게시글을 근거로 BP 직접 보상 없는 재참여 미션·비거래성 소규모 보상과 악용 방지, 통합 매칭 유지 + 조작 최적화·성과 분석·훈련을 제안했습니다.</p></a><a class="sx-card feature" href="dnf.html"><div class="k">네 번째 프로젝트 · 실제 자료 기반</div><h3>던전앤파이터 · 시즌의 가치 회복</h3><p><b>고난도 콘텐츠를 클리어했는데도 왜 성장한 느낌이 부족할까? (시즌제와 확률 보상은 유지)</b> — 2026 미카엘라 하드 레이드의 전투·클리어 보상 실제 화면(유튜브 영상 캡처 2장), 공식 업데이트·특별 경매 공지, 2026 공식 게시판 유저 글을 근거로 기존 보장 시스템과 겹치지 않는 «지정 장비 진척 게이지»를 제안하고 확률 보상 시뮬레이터를 만들었습니다. 판단: B 지정 장비 진척 게이지 소규모 파일럿 → 공급 가드레일 통과 시 확대 · A는 시즌 전환 시점에 A/B</p></a><a class="sx-card" href="home.html"><div class="k">도구 화면</div><h3>사이트 홈 · 개요</h3><p>프로젝트 소개 · 4개 게임 핵심 문제 · 사업PM 어시스턴트 바로가기</p></a><a class="sx-card" href="assistant.html"><div class="k">도구 화면</div><h3>사업PM 어시스턴트</h3><p>포트폴리오 기반 검색형 PM 어시스턴트 (생성형 AI 아님) · 정적 화면은 게임별 자주 묻는 질문 답변 · 직접 질문은 원본 앱</p></a></div></main><footer class="sx-foot">GamePulse AI 정적 보고서 · 생성 2026-11-25 10:07 KST · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> · <a href="https://github.com/dbswnsghek3-cmyk/gamepulse.ai">GitHub 저장소</a> · 언급된 게임 및 상표는 각 권리자에게 있으며, 본 보고서는 해당 게임사와 관련이 없는 개인 분석물입니다.</footer></body></html>

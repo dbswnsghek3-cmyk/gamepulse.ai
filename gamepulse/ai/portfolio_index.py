@@ -120,7 +120,7 @@ def _overwatch() -> list[Entry]:
     gs, mk = bz["growth_skin"], bz["marketing"]
     out.append(Entry("overwatch", "bm", f"신규 BM: 성장형 스킨 — {gs['concept']}", gs["summary"],
                      [f"{x['lv']} {x['cond']} → {x['reward']}" for x in gs["levels"]] + [gs["levels_note"]],
-                     [i for g in gs["principles"] for i in g["items"]] + [gs["purpose"]],
+                     list(gs["protection"]) + [gs["purpose"]],
                      [k for g in mk["kpis"] for k in g["items"] if "구매" in k or "성장" in k or "잠식" in k], "04",
                      "BM 과금 상품 스킨 신화 배틀패스 매출 성장형"))
     out.append(Entry("overwatch", "marketing", f"마케팅: {mk['name']} {mk['slogan_ko']}", "성장형 스킨 성장 과정을 증명하게 만드는 캠페인",

@@ -459,6 +459,13 @@ def assistant_answers(kind: str, base: AppTest) -> tuple[str, dict]:
 
 def overwatch_body(kind: str) -> tuple[str, int]:
     body, charts = tabbed_body("overwatch", OW_TABS, "ow_tab", kind, overwatch_extras())
+    # 성장형 스킨 · 사업 효과 시뮬레이터: Streamlit 위젯 구역을 같은 계산식의 JavaScript 데모로 교체
+    from ow_static_demos import demos as ow_demos
+    dm = ow_demos(ROOT)
+    body, n = re.subn(r'<div class="ox-js-start" data-demo="(\w+)"></div>.*?<div class="ox-js-end"></div>',
+                      lambda m: dm[m.group(1)], body, flags=re.S)
+    if n != len(dm):
+        raise RuntimeError(f"오버워치 JS 데모 교체 {n}/{len(dm)}개 · 표식 확인 필요")
     acts = overwatch_btn_actions()
     btn_check(body, acts, "overwatch")
     return body + btn_script(acts), charts
