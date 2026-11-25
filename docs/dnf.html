@@ -2191,6 +2191,25 @@ body:has(.gp-ow-page) .sx-exp[open] > summary { color: var(--ox-text) !important
 .ox-road p { margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--ox-text); line-height: 1.5; }
 .ox-road p span { display: block; font-size: 0.75rem; font-weight: 800; color: var(--ow-ink); }
 @media (max-width: 760px) { .ox-road { grid-template-columns: 1fr; } .ox-final td:first-child { white-space: normal; } }
+
+.ox-f select, .ox-search input { font: inherit; font-size: 0.95rem; padding: 0.45rem 0.6rem; border: 1px solid #D1D5DB; border-radius: 8px; width: 100%; box-sizing: border-box; background: #FFFFFF; }
+.ox-f select:focus, .ox-search input:focus { outline: 2px solid var(--ow-acc); border-color: var(--ow-acc); }
+.ox-fields.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ox-pager { display: flex; align-items: center; gap: 0.5rem; } .ox-pager b { font-size: 0.9rem; color: var(--ox-text); min-width: 6rem; text-align: center; }
+.ox-btn:disabled { opacity: 0.45; cursor: default; }
+.ox-btn.pri { background: var(--ow-acc); border-color: var(--ow-acc); color: var(--ox-text); }
+.ox-btns { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.ox-pills { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.ox-pill { font: inherit; font-size: 0.86rem; padding: 0.35rem 0.75rem; border-radius: 999px; border: 1px solid var(--ox-line); background: #FFFFFF; color: var(--ox-text); cursor: pointer; }
+.ox-pill.on { background: var(--ow-acc); border-color: var(--ow-acc); font-weight: 700; }
+.ox-toggle { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; color: var(--ox-text); cursor: pointer; }
+.ox-toggle input { accent-color: var(--ow-acc); width: 1rem; height: 1rem; }
+.ox-search { margin: 1rem 0 0.3rem; }
+.ox-scroll { max-height: 26rem; overflow: auto; }
+body:has(.gp-ow-page) .ow-pane .sx-tabnav a { cursor: pointer; color: var(--ox-text); background: #FFFFFF; border: 1px solid var(--ox-line); padding: 0.35rem 0.8rem; font-weight: 600; }
+body:has(.gp-ow-page) .ow-pane .sx-tabnav a.on { background: var(--ow-acc); border-color: var(--ow-acc); color: var(--ox-text); }
+body:has(.gp-ow-page) .ow-pane .sx-tab-h { display: none; }
+@media (max-width: 760px) { .ox-fields.two { grid-template-columns: 1fr; } }
 :root:has(.gp-theme[data-game="overwatch"]) { --g-acc: #F99E1A; --g-ink: #A35F00; --g-soft: #FEF3E2; --g-on: #1F2937; }
 :root:has(.gp-theme[data-game="fconline"]) { --g-acc: #16A34A; --g-ink: #15803D; --g-soft: #DCFCE7; --g-on: #FFFFFF; }
 :root:has(.gp-theme[data-game="pubg"]) { --g-acc: #142D50; --g-ink: #142D50; --g-soft: #E6ECF5; --g-on: #FFFFFF; }
@@ -2308,7 +2327,7 @@ button.sx-btn:hover, a.sx-btn:hover { border-color: #0B1F3A; background: #F4F7FC
   .sx-row { flex-direction: column; } .sx-col { flex: 1 1 auto !important; width: 100%; }
   .sx-tab-h { font-size: 1.2rem; }
 }
-</style></head><body><header class="sx-top"><div class="sx-top-in"><div class="gp-brand"><a href="index.html">Game<span>Pulse</span> AI</a></div><nav><a class="" href="index.html">보고서 첫 화면</a><a class="" href="home.html">사이트 홈 · 개요</a><a class="" href="overwatch.html">오버워치 · PROJECT RE:START</a><a class="" href="fconline.html">FC 온라인 · 축구 게임인가, 주식 게임인가?</a><a class="" href="pubg.html">PUBG · NEW START</a><a class="on" href="dnf.html">던전앤파이터 · 클리어했는데 왜 성장한 느낌이 없을까?</a><a class="" href="assistant.html">사업PM 어시스턴트</a></nav></div></header><main class="sx-main"><div class="sx-note"><b>정적 보고서</b> · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> 스냅샷 (2026-11-25 13:30 KST) · 01~06 탭으로 섹션 전환 · 버튼·슬라이더는 기본값 · 차트 수치는 "차트 데이터 표"에</div><style>
+</style></head><body><header class="sx-top"><div class="sx-top-in"><div class="gp-brand"><a href="index.html">Game<span>Pulse</span> AI</a></div><nav><a class="" href="index.html">보고서 첫 화면</a><a class="" href="home.html">사이트 홈 · 개요</a><a class="" href="overwatch.html">오버워치 · PROJECT RE:START</a><a class="" href="fconline.html">FC 온라인 · 축구 게임인가, 주식 게임인가?</a><a class="" href="pubg.html">PUBG · NEW START</a><a class="on" href="dnf.html">던전앤파이터 · 클리어했는데 왜 성장한 느낌이 없을까?</a><a class="" href="assistant.html">사업PM 어시스턴트</a></nav></div></header><main class="sx-main"><div class="sx-note"><b>정적 보고서</b> · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> 스냅샷 (2026-11-25 13:39 KST) · 01~06 탭으로 섹션 전환 · 버튼·슬라이더는 기본값 · 차트 수치는 "차트 데이터 표"에</div><style>
 /* ---- PUBG 정적 페이지 전용 (Streamlit 화면과 맞춤) ---- */
 /* Streamlit 본문 글꼴: 앱에 포함된 "Source Sans" 가변 글꼴(SIL OFL) 그대로 + 한글은 시스템 sans-serif → 글자 폭·줄바꿈 일치 */
 @font-face{font-family:"Source Sans";font-weight:100 900;font-style:normal;font-display:swap;src:url(assets/fonts/SourceSansVF-Upright.woff2) format("woff2")}
@@ -2447,4 +2466,4 @@ function mount(){var el=document.querySelector('.fc-live[data-k="d1"]'),a=docume
  if(el&&row){row.replaceWith(el);el.hidden=false;}
  ['dn','dp','dm','dk'].forEach(function(i){$(i).addEventListener('input',D);});$('dneu').addEventListener('change',D);D();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
-})();</script></main><footer class="sx-foot">GamePulse AI 정적 보고서 · 생성 2026-11-25 13:30 KST · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> · <a href="https://github.com/dbswnsghek3-cmyk/gamepulse.ai">GitHub 저장소</a> · 언급된 게임 및 상표는 각 권리자에게 있으며, 본 보고서는 해당 게임사와 관련이 없는 개인 분석물입니다.</footer></body></html>
+})();</script></main><footer class="sx-foot">GamePulse AI 정적 보고서 · 생성 2026-11-25 13:39 KST · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> · <a href="https://github.com/dbswnsghek3-cmyk/gamepulse.ai">GitHub 저장소</a> · 언급된 게임 및 상표는 각 권리자에게 있으며, 본 보고서는 해당 게임사와 관련이 없는 개인 분석물입니다.</footer></body></html>

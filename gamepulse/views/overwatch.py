@@ -483,7 +483,13 @@ def _steam_chart(steam: pd.DataFrame) -> None:
 
 
 def _pc_chart(pc: pd.DataFrame) -> None:
-    tracker = st.radio("집계원", ["게임트릭스", "더로그"], horizontal=True, key="ow_pc_tracker")
+    t = st.tabs(["게임트릭스", "더로그"])
+    for tab, tracker in zip(t, ["게임트릭스", "더로그"]):
+        with tab:
+            _pc_chart_one(pc, tracker)
+
+
+def _pc_chart_one(pc: pd.DataFrame, tracker: str) -> None:
     q = pc[pc["plottable"] & (pc["tracker"] == tracker)]
     if q.empty:
         st.info("선택한 집계원의 자료가 없습니다.")
@@ -522,7 +528,7 @@ def _pc_chart(pc: pd.DataFrame) -> None:
             mx = q.loc[q["share_pct"].idxmax()]
             rk = f" · {int(mx['rank'])}위" if pd.notna(mx["rank"]) else ""
             kp.append((f"기간 최고 {mx['period_start']:%m/%d}{rk}", f"{mx['share_pct']:.1f}%"))
-        ox_chart_card(fig, key="pc", kind="real", title=f"한국 PC방 점유율 ({tracker})",
+        ox_chart_card(fig, key=f"pc_{tracker}", kind="real", title=f"한국 PC방 점유율 ({tracker})",
                    unit="% · 회색 = 서비스 전, 파랑 = 후 · 가로선 = 주간",
                    kpis=kp, analysis=analysis,
                    decision="시장 반응 참고 · PC방 연계(D)는 A 검증 후 판단",
@@ -606,7 +612,9 @@ def _proto_a(heroes: dict, tl: pd.DataFrame, statuses: dict) -> None:
              lead="변경점 안내가 보이지 않음")
     with right:
         col_head("mock", "제안 · 접속 직후 복귀 브리핑")
+        html('<div class="ox-js-start" data-demo="a"></div>')
         _proto_a_body(heroes, tl)
+        html('<div class="ox-js-end"></div>')
 
 
 def _proto_a_body(heroes: dict, tl: pd.DataFrame) -> None:
@@ -663,7 +671,9 @@ def _proto_b(heroes: dict, statuses: dict) -> None:
              lead="상대 이름만 표시, 대응법 없음")
     with right:
         col_head("mock", "제안 · 경기 직후 전투 학습 카드 (수동형)")
+        html('<div class="ox-js-start" data-demo="b"></div>')
         _proto_b_body(heroes)
+        html('<div class="ox-js-end"></div>')
     st.caption("MVP 제외: '나를 처치한 기술' 자동 표시는 블리자드와 데이터 범위·정확도 확인 후 결정 · 카드 내용의 출처 화면(영웅 상세)은 02 탭 상세 보기")
 
 
@@ -712,7 +722,9 @@ def _proto_c(statuses: dict) -> None:
              lead="과제 = 경기 횟수, 학습 과제 없음")
     with right:
         col_head("mock", "제안 · 첫 10경기 학습 미션")
+        html('<div class="ox-js-start" data-demo="c"></div>')
         _proto_c_body()
+        html('<div class="ox-js-end"></div>')
     st.caption("설계 원칙 · " + " · ".join(MISSION_RULES))
 
 
@@ -792,6 +804,7 @@ def _opinions_all(rs: dict, ops: pd.DataFrame) -> None:
     v, other = ops[ops["verified"]], ops[~ops["verified"]]
     n_ko, n_en = int((v["language"] == "한국어").sum()), int((v["language"] == "영어").sum())
     plat = v["platform"].map(lambda p: "인벤" if "인벤" in p else ("디시인사이드" if "디시" in p else "블리자드 포럼")).value_counts()
+    html('<div class="ox-js-start" data-demo="ops"></div>')
     c1, c2 = st.columns(2)
     n_rep = int(v["opinion_id"].isin(rs["rep_opinions"]).sum())
     rep_label = f"대표 의견 {n_rep}건"
@@ -821,6 +834,7 @@ def _opinions_all(rs: dict, ops: pd.DataFrame) -> None:
                          "sentiment": "방향", "issue_category": "주 분류", "issue_tags": "보조 분류", "summary_ko": "요약",
                          "quote_original": "원문 발췌", "source_url": "원문", "collected_date": "확인일"}),
         hide_index=True, column_config={"원문": st.column_config.LinkColumn("원문", display_text="열기")})
+    html('<div class="ox-js-end"></div>')
     tiles([("검증 완료 의견", f"{len(v)}건", f"한국어 {n_ko} · 영어 {n_en}"),
            ("부정 · 중립 · 긍정", " · ".join(str(int((v['sentiment'] == s).sum())) for s in ["부정", "중립", "긍정"]), "기획자 분류"),
            ("미검증·제외", f"{len(other)}건", "Reddit·유튜브 미확인, 중복·주제 무관")])
@@ -998,6 +1012,7 @@ def _kpi_detail(rs: dict, plan: dict) -> None:
     table(["결과", "판단 기준"], [[f"<b>{escape(d['result'])}</b>", escape(d["rule"])] for d in rs["decision_rules"]])
     st.markdown(f"**측정 방법** — {ab['method']}  \n**배정** — {ab['unit']}  \n**즉시 중단** — {ab['stop_rule']}")
     st.markdown("**표본 계산기** · 기본값은 실험 1(복귀 D7)")
+    html('<div class="ox-js-start" data-demo="ss"></div>')
     c1, c2, c3 = st.columns(3)
     base = c1.number_input("대조군 D7 (%, 가정)", 1.0, 99.0, float(r["base"]["D7"]), step=1.0, key="ab_base")
     mde = c2.number_input("MDE · 배정 기준 (%p)", 0.1, 30.0, float(round(r["mde"]["D7"], 2)), step=0.1, key="ab_mde")
@@ -1010,6 +1025,7 @@ def _kpi_detail(rs: dict, plan: dict) -> None:
     tiles([("참여자 기준 필요 개선 폭", f"+{mde / part * 100:.1f}%p", "MDE ÷ 참여율"),
            ("그룹당 필요 표본", "—" if n_itt is None else f"{n_itt:,}명", "두 비율 차이 검정"),
            ("배정 기간", "—" if n_itt is None else f"{math.ceil(2 * n_itt / weekly)}주", "두 그룹 합 ÷ 주당 유입")])
+    html('<div class="ox-js-end"></div>')
 
 
 def _sim_inputs(rs: dict) -> dict:
@@ -1627,11 +1643,13 @@ def _t6_business(rs: dict, plan: dict, bz: dict) -> None:
         _biz_sim(bz)
     with st.expander("A/B 실험 설계 · KPI 정의 10개 · 표본·일정 · 판단 기준"):
         _kpi_detail(rs, plan)
+    html('<div class="ox-js-start" data-demo="ret"></div>')
     res_box = st.expander("잔존율 시뮬레이션 결과 · D7·D30 · 첫 10경기 퍼널 · DAU (가정)")
     with st.expander("잔존율 시뮬레이션 설정 (가정값)"):
         inputs = _sim_inputs(rs)
     with res_box:
         _sim_results(rs, plan, inputs)
+    html('<div class="ox-js-end"></div>')
 
 
 IMP_KEYS = "im_"

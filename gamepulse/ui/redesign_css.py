@@ -348,3 +348,25 @@ OW_REDESIGN_CSS += """
 .ox-road p span { display: block; font-size: 0.75rem; font-weight: 800; color: var(--ow-ink); }
 @media (max-width: 760px) { .ox-road { grid-template-columns: 1fr; } .ox-final td:first-child { white-space: normal; } }
 """
+
+# 8차: 정적 사이트 위젯 (선택·페이지·토글·하위 탭)
+OW_REDESIGN_CSS += """
+.ox-f select, .ox-search input { font: inherit; font-size: 0.95rem; padding: 0.45rem 0.6rem; border: 1px solid #D1D5DB; border-radius: 8px; width: 100%; box-sizing: border-box; background: #FFFFFF; }
+.ox-f select:focus, .ox-search input:focus { outline: 2px solid var(--ow-acc); border-color: var(--ow-acc); }
+.ox-fields.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ox-pager { display: flex; align-items: center; gap: 0.5rem; } .ox-pager b { font-size: 0.9rem; color: var(--ox-text); min-width: 6rem; text-align: center; }
+.ox-btn:disabled { opacity: 0.45; cursor: default; }
+.ox-btn.pri { background: var(--ow-acc); border-color: var(--ow-acc); color: var(--ox-text); }
+.ox-btns { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.ox-pills { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.ox-pill { font: inherit; font-size: 0.86rem; padding: 0.35rem 0.75rem; border-radius: 999px; border: 1px solid var(--ox-line); background: #FFFFFF; color: var(--ox-text); cursor: pointer; }
+.ox-pill.on { background: var(--ow-acc); border-color: var(--ow-acc); font-weight: 700; }
+.ox-toggle { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; color: var(--ox-text); cursor: pointer; }
+.ox-toggle input { accent-color: var(--ow-acc); width: 1rem; height: 1rem; }
+.ox-search { margin: 1rem 0 0.3rem; }
+.ox-scroll { max-height: 26rem; overflow: auto; }
+body:has(.gp-ow-page) .ow-pane .sx-tabnav a { cursor: pointer; color: var(--ox-text); background: #FFFFFF; border: 1px solid var(--ox-line); padding: 0.35rem 0.8rem; font-weight: 600; }
+body:has(.gp-ow-page) .ow-pane .sx-tabnav a.on { background: var(--ow-acc); border-color: var(--ow-acc); color: var(--ox-text); }
+body:has(.gp-ow-page) .ow-pane .sx-tab-h { display: none; }
+@media (max-width: 760px) { .ox-fields.two { grid-template-columns: 1fr; } }
+"""
