@@ -27,7 +27,7 @@ NAMES = {"overwatch": "오버워치", "pubg": "PUBG: NEW START", "fconline": "FC
 TAB_NAMES = {
     "overwatch": {"01": "개요·핵심 문제", "02": "게임 화면·VOC", "03": "PROJECT RE:START", "04": "기존 스킨 BM", "05": "신규 BM 제안", "06": "KPI·사업성", "07": "최종 판단"},
     "pubg": {"01": "문제·결론", "02": "실제 유저 근거", "03": "원인 가설", "04": "해결책 데모", "05": "KPI·A/B 테스트", "06": "실행·사업 판단"},
-    "fconline": {"01": "문제 정의", "02": "실제 유저 근거", "03": "원인 · 게임 화면", "04": "해결 전략", "05": "데모·KPI·실험", "06": "실행·예산·리스크"},
+    "fconline": {"01": "개요·시장", "02": "BM 강점", "03": "유저 VOC 50", "04": "구단 가치", "05": "MY CLUB WAR", "06": "FAIR PLAY", "07": "사업성·실행"},
     "dnf": {"01": "문제 정의", "02": "유저 의견·한계", "03": "원인", "04": "개선안", "05": "시뮬레이터·KPI", "06": "로드맵·판단"},
 }
 GAME_ALIASES = {
@@ -183,47 +183,33 @@ def _pubg() -> list[Entry]:
 
 
 def _fconline() -> list[Entry]:
-    d = _load("fconline/fc.json")
-    i = d["intro"]
-    co = d.get("core", {})
-    out = [Entry("fconline", "problem", "FC 온라인 대표 문제 (A·B 자산 손실 · C 보조)", co.get("problem", i["line"]),
-                 [f"{x}: {y}" for x, y in co.get("pm", [])[:3]],
-                 [f"{k}. {t} ({d['role'].get(k, '')})" for k, t in i["topics"]] + ([co["conclusion"]] if co else []),
-                 [f"{b}" for _, b, *_ in co.get("kpi", [])[:3]], "01", d.get("final_dir", "") + " 대표 핵심 문제 자산 손실 이탈")]
-    for track, sols in d["solutions"].items():
-        for s in sols:
-            out.append(Entry("fconline", "strategy", f"{s['k']}. {s['name']}", _clean(s["p"]), [],
-                             [_clean(s["c"]), f"부작용: {_clean(s.get('r', ''))}"], [_clean(s.get("v", ""))] + d["kpis"].get(track, []), "04"))
-    if d.get("core"):
-        out.append(Entry("fconline", "kpi", "핵심 KPI · 자산 손실 (A + B)", d["core"]["problem"],
-                         [f"{a} · {b}: 대상 {c} · 비교 {e} · {f}" for a, b, c, e, f in d["core"]["kpi"]],
-                         [d["core"]["conclusion"]], [f"{b} ({a})" for a, b, *_ in d["core"]["kpi"]], "05",
-                         "핵심 kpi 지표 측정 비교군 기간 잔존 재접속 재도전 cs 문의"))
-    out.append(Entry("fconline", "kpi", "KPI · 실험", "트랙별 측정 지표와 실험 설계",
-                     [f"[{e[0]}] 대조 {e[1]} vs 실험 {e[2]} · 대상 {e[3]}" for e in d["experiments"]],
-                     [f"중단 조건: {e[5]}" for e in d["experiments"] if len(e) > 5],
-                     [f"[{k}] {x}" for k, v in d["kpis"].items() for x in v], "05"))
-    dc = next((o for o in d["official"] if "datacenter" in o["url"]), None)
-    if dc:
-        out.append(Entry("fconline", "evidence", "공식 데이터센터 · 키보드·패드 이용 비중", dc["fact"],
-                         [f"{dc['title']} ({dc['date']})", "상위 랭킹 구간의 입력장치 비율 · 전체 이용자 비율이나 불공정성의 직접 증거가 아님"],
-                         ["통합 매칭 유지 + 키보드 입력 판정은 검증 전 가설로 실험 (C-1·C-2)"], d["kpis"]["C"][:3], "02",
-                         "키보드 패드 비율 퍼센트 비중 데이터센터 컨트롤러 몇"))
-        out[-1].sources = [(f"{dc['title']} ({dc['date']})", dc["url"])]
-    out.append(Entry("fconline", "strategy", "키보드·패드 통합 매칭을 유지하는 이유", d["c_excluded"],
-                     [f"{a}: {b} {c}" for a, b, c in d["c_why"]] + [d["c_why_note"]],
-                     [f"{x['key']}안 {x['name']}: {x['pro']} / {x['con']}" for x in d["c_policies"]] + [f"하지 않는 것: {d['c_not']}"],
-                     d["kpis"]["C"][:4], "04", "분리 매칭 통합 유지 이유 키보드 패드 나누 분리하지"))
-    out.append(Entry("fconline", "priority", "우선 실행: A 구단 가치 급락 완충 프로그램", d.get("final_dir", ""),
-                     [f"{p[0]} {p[1]}: {p[3]}" for p in d["priority"]],
-                     [f"{p[0]} {p[1]}: {p[2]}" for p in d["priority"]], d["kpis"]["A"][:3], "06", "우선 먼저 순서 1순위"))
-    out.append(Entry("fconline", "plan", "실행 우선순위 · 예산 · 리스크", d.get("final_dir", ""),
-                     [f"리스크: {r[0]} → {r[1]}" for r in d["risks"]],
-                     [f"{p[0]} {p[1]}: {p[2]} — {p[3]}" for p in d["priority"]],
-                     [], "06", "예산 비용 인월 " + " ".join(str(c[0]) for c in d["cost"]["items"])))
-    out[-1].evidence.insert(0, "예산(인월): " + " · ".join(f"{c[0]} {c[1]}" for c in d["cost"]["items"]) + f" × 월 {d['cost']['monthly_cost_per_person'] // 10000}만 원")
-    out.append(Entry("fconline", "evidence", "실제 유저 근거 건수", "유형별 근거 건수와 제외 사유",
-                     [" · ".join(map(str, c)) for c in d.get("counts", [])], [], [], "02"))
+    """FC 온라인 (2026-11 개편 · data/fconline/fc2.json)."""
+    d = _load("fconline/fc2.json")
+    m, bm, ca, rb, mc, fp = d["market"], d["bm"], d["care"], d["rebuild"], d["mcw"], d["fair"]
+    out = [Entry("fconline", "problem", "FC 온라인 핵심 문제와 전략 4개", d["cover"]["subtitle"],
+                 [" → ".join(d["chain"]), d["chain_note"]], [f"{a}: {b}" for a, b in d["final"]] + [d["final_msg"]],
+                 [k[1] for k in d["kpis"]], "01", "대표 문제 구단 가치 이탈 전략 요약")]
+    out.append(Entry("fconline", "evidence", "시장 경쟁력 · PC방 순위", m["caution"],
+                     [f"{p_['when']} {p_['rank']} {p_['share']} ({p_['src']})" for p_ in m["points"]], [f"{a}: {b}" for a, b in m["strengths"]], [],
+                     "01", "PC방 점유율 순위 월드컵 시장 경쟁"))
+    out.append(Entry("fconline", "bm", "기존 BM 강점", bm["insight"],
+                     [f"{b['name']}: {b['fact'] or '캡처 확인 필요'}" for b in bm["items"]], [bm["risk"]], [], "02",
+                     "BM 멤버십 페이백 버닝 강화 이적시장 시즌 패스 과금"))
+    out.append(Entry("fconline", "evidence", f"유저 VOC {len(d['voc'])}건", d["voc_note"],
+                     [f"{v['date']} {v['title']} — {v['summary']}" for v in d["voc"][:12]], [], [], "03", "VOC 유저 의견 커뮤니티 인벤"))
+    out.append(Entry("fconline", "strategy", f"{ca['name']} · {ca['slogan']}", ca["existing"],
+                     [f"{a}: {b}" for a, b in ca["features"]], list(ca["rules"]), list(ca["kpi"]), "04", "구단 가치 관리 리포트 알림 CARE"))
+    out.append(Entry("fconline", "strategy", f"{rb['name']} · {rb['slogan']}", "구단 가치 급락 유저에게 인생 강화·이탈 외의 선택지",
+                     [f"{a}: {b}" for a, b in rb["steps"]], list(rb["guard"]), list(rb["kpi"]), "04", "재건 REBUILD 강화 실패 급락 복귀"))
+    out.append(Entry("fconline", "marketing", f"{mc['name']} · {mc['slogan']}", mc["license"],
+                     [f"{a}: {b}" for a, b in mc["steps"]], list(mc["fair"]) + list(mc["external"]), list(mc["kpi"]), "05",
+                     "마케팅 팬덤 구단 대항전 아이콘매치 인플루언서 신규 유저"))
+    out.append(Entry("fconline", "strategy", f"{fp['name']} · 키보드와 패드", fp["other"],
+                     [f"키보드 {fp['controller']['kb']}% · 패드 {fp['controller']['pad']}% ({fp['controller']['date']} 상위 1만 1ON1)"] + [f"{a}: {b}" for a, b in fp["steps"]],
+                     [fp["stop"]], list(fp["kpi"]), "06", "키보드 패드 조작 분리 매칭 공정"))
+    out.append(Entry("fconline", "kpi", "KPI · 사업성 시뮬레이션", d["sims"]["keep"]["note"],
+                     [f"{k[0]}: {k[1]} · 성공 {k[4]}" for k in d["kpis"]], [f"{r_[0]} → {r_[1]}" for r_ in d["roadmap"]], [k[1] for k in d["kpis"]], "07",
+                     "KPI 시뮬레이션 이탈률 매출 보전 CPA LTV 로드맵 우선순위"))
     return out
 
 
@@ -330,6 +316,7 @@ def _game_defaults() -> dict[str, dict]:
     """게임별 공통 문제 정의 · 기본 근거 · 공식 출처 (모두 data/*.json 원문)."""
     ow, pb = _load("overwatch/restart.json"), _load("pubg/newstart.json")
     fc, dn = _load("fconline/fc.json"), _load("dnf/dnf.json")
+    fc2 = _load("fconline/fc2.json")
     src = lambda xs, t="title": [(f"{x.get(t) or x.get('src')} ({x['date']})", x["url"]) for x in xs if x.get("url")][:3]  # noqa: E731
     return {
         "overwatch": {"problem": f"{ow['summary']['headline']} — {ow['summary']['lead']}",
@@ -338,9 +325,9 @@ def _game_defaults() -> dict[str, dict]:
         "pubg": {"problem": f"{pb['cover']['question']} ({pb['cover']['subtitle']})",
                  "evidence": [f"{b['title']}: {b['line']}" for b in pb["return_barriers"][:2]] + [f"공식: {o['title']} ({o['date']})" for o in pb["official"][:1]],
                  "sources": src(pb["official"])},
-        "fconline": {"problem": fc.get("core", {}).get("problem") or " · ".join(f"{k} {t}" for k, t in fc["intro"]["topics"]),
-                     "evidence": [f"{c[0]}: {c[1]}" for c in fc.get("counts", [])[:3]],
-                     "sources": src(fc["official"])},
+        "fconline": {"problem": fc2["cover"]["subtitle"],
+                     "evidence": [f"PC방 {p_['when']} {p_['rank']} {p_['share']} ({p_['src']})" for p_ in fc2["market"]["points"][-2:]] + [fc2["voc_note"]],
+                     "sources": [(f"{p_['src']}", p_["url"]) for p_ in fc2["market"]["points"] if p_["url"]][:3]},
         "dnf": {"problem": dn["intro"]["question"],
                 "evidence": [f"유저 의견 {o['no']} ({o['date']}) {o['theme']} — {o['pm']}" for o in dn.get("key_opinions", [])[:3]],
                 "sources": [(f"{o['src']} ({o['date']})", o["url"]) for o in dn["official"] if o["date"].startswith("2026-")][-3:]},

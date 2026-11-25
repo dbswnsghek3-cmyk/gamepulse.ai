@@ -519,12 +519,16 @@ def pubg_body(kind: str) -> tuple[str, int]:
 
 
 def fconline_body(kind: str) -> tuple[str, int]:
-    """FC 온라인: 01~06을 모두 펼쳐 두고(JS 없이도 읽힘) A1·C 데모는 JS 조작판으로 교체."""
-    from fc_static_demos import demos as fc_demos
-    from pubg_static_demos import PAGE_CSS, PAGE_JS   # 같은 글꼴·하위 탭 처리 재사용
-    body, charts = tabbed_body("fconline", FC_TABS, "fc_tab", kind, {}, all_visible=True)
-    note = '<div class="sx-note">이 페이지는 JavaScript 없이도 01~06 내용을 모두 담고 있습니다. A 급락 완충 대상 판정과 C 조작 최적화 실험 비교는 이 페이지에서 직접 조작할 수 있습니다.</div>'
-    return PAGE_CSS + '<div class="pg-static">' + note + body + "</div>" + PAGE_JS + fc_demos(ROOT), charts
+    """FC 온라인 (2026-11 개편 · 7탭): 오버워치와 같은 탭 전환 · 위젯 구역은 같은 계산식의 JavaScript 로 교체."""
+    from fc_static_widgets import widgets as fc_widgets
+    from ow_static_widgets import SUBTAB_JS
+    body, charts = tabbed_body("fconline", FC_TABS, "fc_tab", kind, {})
+    dm = fc_widgets(ROOT)
+    body, n = re.subn(r'<div class="ox-js-start" data-demo="(\w+)"></div>.*?<div class="ox-js-end"></div>',
+                      lambda m: dm[m.group(1)], body, flags=re.S)
+    if n != len(dm):
+        raise RuntimeError(f"FC 온라인 JS 위젯 교체 {n}/{len(dm)}개 · 표식 확인 필요")
+    return body + SUBTAB_JS, charts
 
 
 def dnf_body(kind: str) -> tuple[str, int]:
@@ -552,7 +556,7 @@ def tabbed_body(pid: str, labels: list[str], tab_key: str, kind: str, extras: di
         if not mark:
             raise RuntimeError(f"탭 {label}: 탭 경계 표식을 찾지 못함")
         pane = rest.split("</div>", 1)[1]
-        if pid == "overwatch":   # 개편: 탭마다 반복되던 어시스턴트 안내·하단 고지는 페이지 끝에 한 번만
+        if pid in ("overwatch", "fconline"):   # 개편: 탭마다 반복되던 어시스턴트 안내·하단 고지는 페이지 끝에 한 번만
             pane, cut, tail_ = pane.partition('<div class="gp-xlinks"')
             if cut and tail is None:
                 tail = cut + tail_
@@ -691,7 +695,7 @@ def page_html(title: str, desc: str, current: str, body: str, toc: list, charts:
     own_legend = current in ("overwatch.html", "pubg.html", "fconline.html", "dnf.html")   # 탭형 프로젝트는 앱이 배지 설명을 직접 표시
     note = ("" if current == "index.html" else
             f'<div class="sx-note"><b>정적 보고서</b> · <a href="{LIVE_URL}">원본 앱</a> 스냅샷 ({gen}) · '
-            + (("01~07" if current == "overwatch.html" else "01~06") + " 탭으로 섹션 전환 · " if own_legend else "")
+            + (("01~07" if current in ("overwatch.html", "fconline.html") else "01~06") + " 탭으로 섹션 전환 · " if own_legend else "")
             + '버튼·슬라이더는 기본값 · 차트 수치는 "차트 데이터 표"에</div>')
     # 접힌 펼치기 안의 차트는 숨은 상태로 그려지므로, 펼칠 때 너비를 다시 맞춘다
     resize = ("<script>document.addEventListener('toggle',function(e){var d=e.target;if(d.tagName==='DETAILS'&&d.open&&window.Plotly){"
@@ -804,7 +808,7 @@ def main() -> int:
             from gamepulse.ui.theme import recolor_scripts
             body = recolor_scripts(body, pid)   # JavaScript 데모·차트의 기본 파랑 → 게임 테마 색
             desc = {"overwatch": GAMES[pid].get("theme", name), "pubg": "신규 유저 정착과 휴면 유저 재활성화 전략",
-                    "fconline": "구단 가치 하락 · 강화 리스크 · 키보드 vs 패드 경쟁 공정성",
+                    "fconline": "구단 가치 하락에 따른 이탈 방지 · 축구 팬덤 마케팅 · 키보드·패드 경쟁 환경",
                     "dnf": "시즌제 성장 가치 · 랜덤 보상과 성취감 · 확률 보상 + 누적 성장 보장"}[pid]
             doc = save_images(page_html(name, desc, fname, body, [], n_charts > 0, gen))
             (DOCS / fname).write_text(doc, encoding="utf-8")
