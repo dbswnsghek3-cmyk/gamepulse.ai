@@ -42,7 +42,7 @@ def funnel(cfg: dict, x0: dict) -> dict:
     d30 = signups * x["d30"] / 100
     ltv = x["pur"] / 100 * x["arppu"] * x["months"]        # D30 잔존 유저 1명의 기간 기대 매출
     revenue = d30 * ltv
-    cost = x["cost"]
+    cost = sum(v for k, v in x.items() if k.startswith("c_")) if any(k.startswith("c_") for k in x) else x.get("cost", 0)
     per = lambda n: cost / n if n > 0 else None           # noqa: E731
     bep_pur = (cost / (d30 * x["arppu"] * x["months"]) * 100) if d30 * x["arppu"] * x["months"] > 0 else None
     return {"x": x, "visits": visits, "signups": signups, "d7": d7, "d30": d30, "ltv": ltv, "revenue": revenue, "cost": cost,
@@ -59,13 +59,21 @@ def power(club0: float, club1: float, target0: float, target1: float) -> dict:
     return {"nominal": nominal, "p0": p0, "p1": p1, "real": real}
 
 
-def fandom(rows: list, w_avg: float = 0.5) -> list[dict]:
-    """rows = [[이름, 참여 인원, 1인당 평균 점수]] · 혼합 = (누적/최대누적)×(1−w) + (평균/최대평균)×w."""
-    out = [{"name": n, "people": p, "avg": a, "total": p * a} for n, p, a in rows]
-    mt, ma = max(r["total"] for r in out) or 1, max(r["avg"] for r in out) or 1
+def fandom(rows: list, w_total: float = 30) -> list[dict]:
+    """팬덤 경쟁 점수 (가상 모델).
+    누적 = 참여 인원 × 1인당 평균 · 정규화 누적 = 누적 ÷ 최고 누적 × 100 · 정규화 평균 = 평균 ÷ 최고 평균 × 100
+    최종 = 정규화 누적 × 규모 비중 + 정규화 평균 × (1 − 규모 비중)   (비중 합 = 100%)"""
+    w = min(max(float(w_total), 0.0), 100.0) / 100
+    out = [{"name": n, "people": max(float(p), 0.0), "avg": max(float(a), 0.0)} for n, p, a in rows]
     for r in out:
-        r["mixed"] = (r["total"] / mt) * (1 - w_avg) + (r["avg"] / ma) * w_avg
-    for key in ("total", "avg", "mixed"):
-        for i, r in enumerate(sorted(out, key=lambda r: -r[key]), 1):
-            r["rank_" + key] = i
+        r["total"] = r["people"] * r["avg"]
+    mt = max((r["total"] for r in out), default=0)
+    ma = max((r["avg"] for r in out), default=0)
+    for r in out:
+        r["n_total"] = r["total"] / mt * 100 if mt > 0 else 0.0
+        r["n_avg"] = r["avg"] / ma * 100 if ma > 0 else 0.0
+        r["score"] = r["n_total"] * w + r["n_avg"] * (1 - w)
+    for key in ("total", "avg", "score"):
+        for i_, r in enumerate(sorted(out, key=lambda r: -r[key]), 1):
+            r["rank_" + key] = i_
     return out
