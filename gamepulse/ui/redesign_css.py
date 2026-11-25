@@ -334,3 +334,17 @@ OW_REDESIGN_CSS += """
 OW_REDESIGN_CSS += """
 .ox-res .pos b { color: var(--ow-ink) !important; }
 """
+
+# 7차: 최종 판단표 · BM 로드맵 · 전략 카드 대상 줄
+OW_REDESIGN_CSS += """
+.ox-strats > div > small:first-of-type { color: var(--ow-ink); font-weight: 700; }
+.ox-final td { font-size: 0.88rem; vertical-align: top; } .ox-final td:first-child { white-space: nowrap; }
+.ox-road { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 0.4rem 0 1rem; }
+.ox-road > div { border-top: 3px solid var(--ow-acc); padding-top: 0.6rem; display: flex; flex-direction: column; gap: 0.2rem; }
+.ox-road em { font-style: normal; font-size: 1.5rem; font-weight: 900; color: var(--ow-acc); line-height: 1; }
+.ox-road b { font-size: 1rem; color: var(--ox-text); } .ox-road > div > small { font-size: 0.82rem; color: var(--ox-muted); }
+.ox-road ol { margin: 0.3rem 0; padding-left: 1.1rem; } .ox-road li { font-size: 0.9rem; color: var(--ox-text); line-height: 1.55; }
+.ox-road p { margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--ox-text); line-height: 1.5; }
+.ox-road p span { display: block; font-size: 0.75rem; font-weight: 800; color: var(--ow-ink); }
+@media (max-width: 760px) { .ox-road { grid-template-columns: 1fr; } .ox-final td:first-child { white-space: normal; } }
+"""

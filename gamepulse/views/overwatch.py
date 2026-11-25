@@ -1340,7 +1340,7 @@ def summary_rows(rs: dict, ops: pd.DataFrame, plan: dict, bz: dict) -> list[tupl
         ("주요 근거", f"유저 의견 {len(v)}건 중 {_learn(v)}건 학습·적응 어려움 · 공식 영웅 54명 · 캡처: 키리코 스킨 11종 vs 메르시 25종"),
         ("복귀율 전략", "PROJECT RE:START: 복귀 브리핑 → 첫 10경기 미션 → 전투 학습 카드"),
         ("매출 전략", "YOUR HERO (유저 참여형 스킨 제작) · YOUR CHOICE (선택형 스킨 패키지)"),
-        ("마케팅", "별도 캠페인 미정 · YOUR HERO 투표가 유저 참여 창구"),
+        ("마케팅", "휴면 복귀 캠페인 · YOUR HERO 투표 캠페인 · YOUR CHOICE 출시 프로모션 · 선호 영웅 맞춤 노출 · 시즌 패키지 (기획 시안)"),
         ("핵심 KPI", f"복귀 D7 +{mde:.1f}%p · 패키지 구매 전환율 · 평균 결제 금액 · 개별 스킨 매출 잠식"),
         ("예상 사업 효과", f"YOUR CHOICE 예시 입력 기준 매출 {pk['diff_pct']:+.0f}% · {bep} (모두 가정)"),
         ("주요 리스크", "학습 부담과 이탈의 인과는 미검증 · 할인 패키지의 개별 스킨 매출 잠식"),
@@ -1478,21 +1478,18 @@ def _t3_restart(rs: dict, ops: pd.DataFrame, heroes: dict, tl: pd.DataFrame, sta
     cc = code_counts(v)
     h("신규와 복귀를 나눠, 필요한 것만 먼저 보여 준다", "mock", num="05", name="신규·복귀 유저 개선 전략 — PROJECT RE:START",
       lead="영웅·밸런스·매칭은 그대로 · 모든 안내는 끌 수 있다")
-    html('<div class="ox-route"><div><span>접속</span><b>신규·복귀 구분</b></div><i>→</i>'
-         '<div class="r"><span>복귀 유저</span><b>A 복귀 브리핑</b><small>놓친 변경점 3분 + 추천 영웅</small></div>'
-         '<div class="n"><span>신규 유저</span><b>C 첫 10경기 미션</b><small>배우는 순서대로</small></div><i>→</i>'
-         '<div><span>경기 후</span><b>B 전투 학습 카드</b><small>어려웠던 상대 대응법</small></div></div>')
     html('<div class="ox-strats">'
-         '<div><em>A</em><b>복귀 브리핑</b><p>무엇이 바뀌었는지 모른 채 시작 → 마지막 접속 이후 바뀐 것만 3분 요약</p><small>KPI 복귀 D7 잔존율</small></div>'
-         '<div><em>C</em><b>첫 10경기 미션</b><p>무엇부터 익힐지 모름 → 역할·기술 → 상대 대응 → 팀 플레이 순서</p><small>KPI 신규 D7 잔존율</small></div>'
-         '<div><em>B</em><b>전투 학습 카드</b><p>왜 졌는지 모름 → 경기 후 상대 기술·대처법 확인</p><small>KPI 카드 사용률</small></div></div>')
-    t = st.tabs(["A 복귀 브리핑", "C 첫 10경기 미션", "B 전투 학습 카드"])
+         '<div><em>A</em><b>복귀 브리핑</b><small>복귀 유저 · 접속 직후</small><p>무엇이 바뀌었는지 모른 채 시작 → 마지막 접속 이후 바뀐 것만 3분 요약 + 추천 영웅</p><small>KPI 복귀 D7 잔존율</small></div>'
+         '<div><em>B</em><b>전투 학습 카드</b><small>신규·복귀 · 경기 후</small><p>왜 졌는지 모름 → 어려웠던 상대의 기술·대처법 확인</p><small>KPI 카드 사용률</small></div>'
+         '<div><em>C</em><b>첫 10경기 미션</b><small>신규 (복귀는 선택) · 첫 10경기</small><p>무엇부터 익힐지 모름 → 역할·기술 → 상대 대응 → 팀 플레이 순서</p><small>KPI 신규 D7 잔존율</small></div></div>')
+    st.caption("출시 순서는 RICE 우선순위에 따라 A → C → B (07 탭)")
+    t = st.tabs(["A 복귀 브리핑", "B 전투 학습 카드", "C 첫 10경기 미션"])
     with t[0]:
         _proto_a(heroes, tl, statuses)
     with t[1]:
-        _proto_c(statuses)
-    with t[2]:
         _proto_b(heroes, statuses)
+    with t[2]:
+        _proto_c(statuses)
     with st.expander("전략 6개 상세 · 문제 → 개선 방안 → 운영 방식 → 기대 효과 → 측정 KPI"):
         rows = [
             ("신규·복귀 구분 적응 경로", "신규와 복귀 유저가 같은 첫 화면에서 시작 (복귀 메인 화면에 변경점 안내 없음)",
@@ -1580,6 +1577,8 @@ def _t5_new_bm(bz: dict) -> None:
     html('<div class="ox-cols3">'
          f'<div><b>운영 방식</b>{bullets(ch["ops"])}</div><div><b>기대 효과</b>{bullets(ch["effects"])}</div>'
          f'<div><b>측정 KPI</b>{bullets(ch["kpis"])}</div></div>')
+    html('<div class="ox-purpose"><span>실행 순서 (기획안)</span>① YOUR CHOICE 기존 스킨 활용 테스트 → ② YOUR HERO 투표·수요 검증 → '
+         '③ 검증된 영웅만 신규 스킨 제작·출시 · 단계별 일정은 07 탭</div>')
 
 
 # ----------------------------------------------------------------------
@@ -1602,14 +1601,19 @@ def _t6_business(rs: dict, plan: dict, bz: dict) -> None:
     table(["전략", "실행 방식", "타깃 유저", "개선 목표", "측정 KPI"],
           [[f"<b>{escape(m['name'])}</b>", escape(m["how"]), escape(m["target"]), f"<b>{escape(m['goal'])}</b>", escape(m["kpi"])]
            for m in mo["items"]], cls="ox-mops")
+    gt = bz["gtm"]
+    h("제안별 타깃 · 마케팅 채널 · 실행 방식 · 목표 KPI", "mock", escape(gt["note"]))
+    table(["제안", "타깃 유저", "마케팅 채널", "실행 방식", "목표 KPI"],
+          [[f"<b>{escape(m['name'])}</b>", escape(m["target"]), escape(m["channel"]), escape(m["how"]), escape(m["kpi"])]
+           for m in gt["items"]], cls="ox-mops")
     _imp_sim(bz)
     _pkg_sim(bz)
     h("판단 KPI · 복귀율과 매출은 따로 본다", "mock")
     table(["트랙", "지표", "기준", "판단"], [
         ["<b>복귀율</b> · RE:START A", "복귀 D7 잔존율", f"{rr['base']['D7']:.0f}% → {rr['base']['D7'] + rr['mde']['D7']:.0f}% (목표·가정 +{rr['mde']['D7']:.1f}%p)", "95% 신뢰구간 하한 &gt; 0 이고 목표 이상이면 확대"],
         ["<b>복귀율</b> · RE:START C", "신규 D7 잔존율", f"{nw['base']['D7']:.0f}% → {nw['base']['D7'] + nw['mde']['D7']:.0f}% (목표·가정 +{nw['mde']['D7']:.1f}%p)", "A 결과 후 실험 2로 판정"],
-        ["<b>매출</b> · YOUR CHOICE", "패키지 구매 전환율 · 평균 결제 금액", "판매 테스트에서 측정 (목표값 미정)", "개별 스킨 잠식을 빼고도 순증일 때 확대"],
-        ["<b>매출</b> · YOUR HERO", "투표 참여율 · 참여 유저 구매 전환율", "투표 파일럿에서 측정 (목표값 미정)", "제작 비용 대비 예상 수익이 남을 때 제작"],
+        ["<b>매출</b> · YOUR CHOICE", "패키지 구매 전환율 · 평균 결제 금액", "판매 테스트의 기준값 확인 후 목표 설정", "개별 스킨 잠식을 빼고도 순증일 때 확대"],
+        ["<b>매출</b> · YOUR HERO", "투표 참여율 · 참여 유저 구매 전환율", "투표 파일럿의 기준값 확인 후 목표 설정", "제작 비용 대비 예상 수익이 남을 때 제작"],
     ], cls="ox-kpit")
     b = _biz_base(bz)
     need = f"{b['bep']:.1f}%" if b["bep_state"] == "ok" else "100%를 넘는 수준"
@@ -1617,7 +1621,7 @@ def _t6_business(rs: dict, plan: dict, bz: dict) -> None:
       "손익분기·개발비·마케팅비·수수료·잠식률·ROI는 확인된 내부 비용이 아니라 입력 가정이다")
     html('<div class="ox-purpose"><span>수익성 확보 조건</span>'
          f'기본 가정(개발 17인월·마케팅비 포함)으로는 신규 스킨 구매 전환율 {need}가 손익분기선이다. '
-         '그래서 ① 제작 전 YOUR HERO 투표로 수요가 큰 영웅만 만들고 ② 제작비가 없는 YOUR CHOICE로 먼저 매출을 확인하며 '
+         '그래서 ① 신규 스킨 제작비가 들지 않는 YOUR CHOICE(상품 구성·운영·마케팅 비용은 발생)로 먼저 매출을 확인하고 ② YOUR HERO 투표로 수요가 큰 영웅만 만들며 '
          '③ 맞춤 노출·복귀 캠페인으로 노출 유저와 전환율을 키운다. 조건을 바꿔 보려면 아래를 펼친다.</div>')
     with st.expander("고급 사업성 분석 열기 · 손익분기 · 개발비 · 마케팅비 · 수수료 · 잠식률 · ROI (모두 가정)"):
         _biz_sim(bz)
@@ -1802,21 +1806,36 @@ def _t7_plan(rs: dict, g: dict, statuses: dict, plan: dict, ops: pd.DataFrame, b
     r = plan["seg"]["복귀"]
     v = ops[ops["verified"]]
     b = _biz_base(bz)
-    h("복귀율은 A 파일럿부터, 매출은 제작비가 없는 YOUR CHOICE 테스트부터", "mock", num="10",
+    h("복귀율은 A 파일럿부터, 매출은 YOUR CHOICE → YOUR HERO → 신규 스킨 순서로", "mock", num="10",
       name="최종 인사이트 및 사업PM 관점의 실행 판단")
     html('<ol class="ox-ins">'
-         f'<li><b>진입장벽은 확인됐고, 이탈과의 연결은 아직이다.</b> 의견 {len(v)}건 중 {_learn(v)}건과 실제 화면이 학습 부담을 보여 주지만 '
+         f'<li><b>[실제 자료] 진입장벽은 확인됐고, 이탈과의 연결은 [검증 전]이다.</b> 의견 {len(v)}건 중 {_learn(v)}건과 실제 화면이 학습 부담을 보여 주지만 '
          '이탈 원인인지는 로그와 A/B 테스트로 확인한다.</li>'
-         '<li><b>스킨 상품 구성 차이는 화면으로 확인됐다.</b> 키리코 11종과 메르시 25종, 15개 고정 묶음은 사실이고, '
-         '유저 선호와 어긋나는지는 영웅별 플레이·구매 데이터로 확인한다.</li>'
-         f'<li><b>제작비가 드는 상품은 수요 확인이 먼저다.</b> 가정 기준 신규 스킨 손익분기 전환율은 '
+         '<li><b>[실제 자료] 스킨 상품 구성 차이는 화면으로 확인됐다.</b> 키리코 11종과 메르시 25종, 15개 고정 묶음은 사실이고, '
+         '유저 선호와 어긋나는지는 [검증 전] 영웅별 플레이·구매 데이터로 확인한다.</li>'
+         '<li><b>[가정 시뮬레이션] 신규 스킨을 만드는 일은 수요 확인이 먼저다.</b> 가정 기준 신규 스킨 손익분기 전환율은 '
          + (f"{b['bep']:.1f}%" if b["bep_state"] == "ok" else "달성 불가") +
-         '로 높다. 그래서 YOUR HERO는 투표로 수요를 본 뒤 제작하고, 기존 스킨을 쓰는 YOUR CHOICE를 먼저 시험한다.</li></ol>')
-    table(["트랙", "먼저 할 일", "확대 · 중단 기준"], [
-        ["<b>복귀율</b>", f"A 복귀 브리핑 {sc['decision'] + 2}주 파일럿 (복귀 유저 50:50)", f"복귀 D7 +{r['mde']['D7']:.1f}%p 이상 유의 → C·B 확대 · 미달 시 수정 후 재실험"],
-        ["<b>매출 ①</b>", "YOUR CHOICE 소규모 판매 테스트 (기존 스킨 대상 · 할인율 비교)", "패키지 전환율·평균 결제 금액 상승, 개별 스킨 잠식 제외 후 순증 → 확대"],
-        ["<b>매출 ②</b>", "YOUR HERO 투표 파일럿 (제작 전)", "투표 참여율·영웅별 선호 확인 → 제작 비용 대비 수익이 남는 영웅만 제작"],
-    ], cls="ox-two")
+         '로 높다. 신규 스킨 제작비가 들지 않는 YOUR CHOICE로 먼저 매출을 확인하고, YOUR HERO 투표로 수요를 본 뒤 제작한다.</li></ol>')
+    table(["실행 전략", "핵심 KPI", "기대 효과 (검증 전)", "확대 조건", "중단 · 보류 조건"], [
+        ["<b>PROJECT RE:START</b><br><small>A 복귀 브리핑부터</small>", f"복귀 D7 잔존율 (목표 +{r['mde']['D7']:.1f}%p · 가정)",
+         "복귀 첫 주 적응 · 잔존 개선", f"D7 효과의 95% 신뢰구간 하한 &gt; 0 이고 목표 이상 → C·B 확대",
+         "재실험에도 효과 없음 · 불만·신고율 유의 증가"],
+        ["<b>① YOUR CHOICE</b><br><small>기존 스킨 활용 테스트</small>", "패키지 구매 전환율 · 평균 결제 금액",
+         "구매 전환·객단가 상승", "잠식을 빼고도 순증 → 전체 출시·시즌 운영",
+         "개별 스킨 잠식이 순증보다 큼 · 평균 결제 금액 하락 → 구성·할인율 조정, 반복되면 중단"],
+        ["<b>② YOUR HERO</b><br><small>투표·수요 검증</small>", "투표 참여율 · 영웅별 선호도",
+         "제작 전 수요 확인 · 커뮤니티 참여", "선호가 뚜렷하고 손익분기 조건 충족 → 제작",
+         "참여가 낮아 수요 판단 불가 → 후보·채널 조정 후 1회 재시도"],
+        ["<b>③ 신규 스킨 제작·출시</b>", "출시 후 판매량 · 제작비 대비 수익",
+         "상품이 적은 영웅의 구매 수요 발굴", "제작비 대비 수익 기준 초과 → 다음 투표 회차",
+         "예상 수요가 손익분기 조건 미달 → 제작 보류"],
+    ], cls="ox-final")
+    rm = bz["roadmap"]
+    h("BM 실행 순서와 단계별 일정", "mock", escape(rm["note"]))
+    html('<div class="ox-road">' + "".join(
+        f'<div><em>{escape(st_["no"])}</em><b>{escape(st_["name"])}</b><small>{escape(st_["why"])}</small>'
+        '<ol>' + "".join(f"<li>{escape(x)}</li>" for x in st_["steps"]) + "</ol>"
+        f'<p><span>다음 단계 조건</span>{escape(st_["gate"])}</p></div>' for st_ in rm["stages"]) + "</div>")
     h(f"RE:START 파일럿 일정 · 준비 2주 + 운영 {sc['decision']}주")
     weeks = [("준비", "-2~0주", "이벤트 로그 · 실험 배정 · 기능 스위치 · CS 문구"),
              ("실험 1", f"{sc['e1_assign'][0]}~{sc['e1_assign'][1]}주", "A 복귀 브리핑 배정 (복귀 유저 50:50)"),
@@ -1825,7 +1844,7 @@ def _t7_plan(rs: dict, g: dict, statuses: dict, plan: dict, ops: pd.DataFrame, b
              ("결정", f"{sc['decision']}주", "C의 D30 확인 · 확대·수정·중단 최종 결정")]
     html('<div class="ox-gantt">' + "".join(f'<div><em>{escape(a)}</em><b>{escape(w)}</b><span>{escape(t)}</span></div>'
                                             for a, w, t in weeks) + "</div>")
-    st.caption("YOUR CHOICE·YOUR HERO 일정은 기획 확정 후 정한다.")
+    st.caption("RE:START 파일럿은 BM 단계와 별개로 병행한다 (목표 지표가 다름).")
     with st.expander("RE:START 확대 · 수정 · 중단 기준 (4단계)"):
         table(["결과", "기준"], [[f"<b>{escape(d['result'])}</b>", escape(d["rule"])] for d in rs["decision_rules"]])
     with st.expander("대표 전략 A 요약 · 우선순위 · 개발·운영 비용 검산"):
