@@ -25,7 +25,7 @@ STATIC_BASE = "https://dbswnsghek3-cmyk.github.io/gamepulse.ai/"
 STATIC_FILE = {"overwatch": "overwatch.html", "pubg": "pubg.html", "fconline": "fconline.html", "dnf": "dnf.html"}
 NAMES = {"overwatch": "오버워치", "pubg": "PUBG: NEW START", "fconline": "FC 온라인", "dnf": "던전앤파이터"}
 TAB_NAMES = {
-    "overwatch": {"01": "핵심 요약", "02": "데이터 및 문제 분석", "03": "개선 전략", "04": "BM 분석 및 개선", "05": "마케팅 전략", "06": "KPI 및 사업 효과", "07": "최종 실행 계획"},
+    "overwatch": {"01": "개요·핵심 문제", "02": "게임 화면·VOC", "03": "PROJECT RE:START", "04": "기존 스킨 BM", "05": "신규 BM 제안", "06": "KPI·사업성", "07": "최종 판단"},
     "pubg": {"01": "문제·결론", "02": "실제 유저 근거", "03": "원인 가설", "04": "해결책 데모", "05": "KPI·A/B 테스트", "06": "실행·사업 판단"},
     "fconline": {"01": "문제 정의", "02": "실제 유저 근거", "03": "원인 · 게임 화면", "04": "해결 전략", "05": "데모·KPI·실험", "06": "실행·예산·리스크"},
     "dnf": {"01": "문제 정의", "02": "유저 의견·한계", "03": "원인", "04": "개선안", "05": "시뮬레이터·KPI", "06": "로드맵·판단"},
@@ -116,16 +116,19 @@ def _overwatch() -> list[Entry]:
     out.append(Entry("overwatch", "plan", "실행 범위 · 리스크", "MVP 단계와 리스크 대응",
                      [f"리스크: {r['risk']} → {r['response']}" for r in d["risks"]], list(d["mvp"]["in"]),
                      [], "07", "예산 비용 일정 담당 " + " ".join(o["team"] for o in d["pilot"].get("owners", []))))
-    bz = _load("overwatch/business.json")   # 04 BM · 05 마케팅 (사용자 확정 기획안 · 수치는 기획 가정)
-    gs, mk = bz["growth_skin"], bz["marketing"]
-    out.append(Entry("overwatch", "bm", f"신규 BM: 성장형 스킨 — {gs['concept']}", gs["summary"],
-                     [f"{x['lv']} {x['cond']} → {x['reward']}" for x in gs["levels"]] + [gs["levels_note"]],
-                     list(gs["protection"]) + [gs["purpose"]],
-                     [k for g in mk["kpis"] for k in g["items"] if "구매" in k or "성장" in k or "잠식" in k], "04",
-                     "BM 과금 상품 스킨 신화 배틀패스 매출 성장형"))
-    out.append(Entry("overwatch", "marketing", f"마케팅: {mk['name']} {mk['slogan_ko']}", "성장형 스킨 성장 과정을 증명하게 만드는 캠페인",
-                     [f"{x['t']}: {x['d']}" for x in mk["directions"]], [" → ".join(mk["funnel"])],
-                     [k for g in mk["kpis"] for k in g["items"]], "05", "마케팅 캠페인 광고 SNS 스트리머 챌린지 PROVE IT"))
+    bz = _load("overwatch/business.json")   # 06 기존 스킨 BM(캡처 사실) · 07 YOUR HERO · 08 YOUR CHOICE (사용자 기획안)
+    ex, yh, yc = bz["existing_bm"], bz["your_hero"], bz["your_choice"]
+    out.append(Entry("overwatch", "bm", "기존 스킨 BM: 영웅별 스킨 수 차이 · 고정형 묶음 · 신화 스킨 단계 해금",
+                     "키리코 스킨 11종 vs 메르시 25종 · 묶음 상품 15개 6,900 코인 · 신화 스킨 50→10→10→10 프리즘 (작성자 캡처)",
+                     [f"{p['name']}: {p['price']} · {p['unlock']}" for p in ex["products"]], [], [], "04",
+                     "BM 과금 상품 스킨 신화 배틀패스 코인 프리즘 상점 묶음 패키지"))
+    out.append(Entry("overwatch", "bm", f"신규 BM ① {yh['title']} {yh['slogan']}", yh["purpose"],
+                     [f"{s_['t']}: {s_['d']}" for s_ in yh["steps"]], list(yh["effects"]), list(yh["kpis"]), "05",
+                     "YOUR HERO 유저 참여형 스킨 제작 투표 BM 신규"))
+    out.append(Entry("overwatch", "bm", f"신규 BM ② {yc['title']} {yc['slogan']}", yc["purpose"],
+                     [f"{t['name']}: 할인 {t['disc']}% · 예시 가격 {yc['base_price'] * t['n'] * (100 - t['disc']) // 100:,}원" for t in yc["tiers"]]
+                     + [yc["price_note"]], list(yc["effects"]), list(yc["kpis"]), "05",
+                     "YOUR CHOICE 선택형 스킨 패키지 할인 BM 신규 가격"))
     return out
 
 

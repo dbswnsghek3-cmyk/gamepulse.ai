@@ -27,6 +27,8 @@ def _translate_guard() -> tuple[bool, str]:
 
 _translate_guard()
 inject_css()
+from gamepulse.ui.theme import THEMES, install_chart_theme  # noqa: E402
+install_chart_theme()   # 차트의 기본 파랑을 현재 게임 테마 색으로 (데이터는 그대로)
 
 PAGES = {"home": "홈 · 개요"}
 PAGES.update({gid: f"{GAMES[gid]['name']}" for gid in GAME_ORDER})
@@ -52,6 +54,8 @@ with st.sidebar:
     st.caption("'실제 자료' 배지가 없는 수치·그래프는 예시·가정 데이터입니다. 원인 분석은 검증 전 가설입니다.")
 
 page = st.session_state["page"]
+if page in THEMES:   # 게임별 테마 색상 범위 표식 (CSS 가 이 페이지에만 색을 적용)
+    html(f'<div class="gp-theme" data-game="{page}"></div>')
 if page == "home":
     home.render()
 elif page == "assistant":

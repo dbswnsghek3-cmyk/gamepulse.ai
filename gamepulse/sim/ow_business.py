@@ -1,10 +1,10 @@
-"""오버워치 사업 효과 시뮬레이터 — 성장형 스킨 + RE:START 잔존 개선 (분기 기준 · 모든 입력은 기획 가정).
+"""오버워치 사업 효과 시뮬레이터 — 신규 스킨(YOUR HERO 출시 스킨) + RE:START 잔존 개선 (분기 기준 · 모든 입력은 기획 가정).
 
 정적 사이트의 JavaScript 시뮬레이터(scripts/ow_static_demos.py)는 이 파일과 같은 순서·같은 식으로 계산한다.
 
 계산 순서 (분기 = 91일)
   1 예상 구매 유저        = 노출 유저 × 구매 전환율
-  2 성장형 스킨 총매출    = 구매 유저 × 판매 가격
+  2 신규 스킨 총매출      = 구매 유저 × 판매 가격
   3 기존 상품 매출 잠식액 = 총매출 × 잠식률
   4 순증 상품 매출        = 총매출 − 잠식액
   5 순증 활성 유저        = 유입 × D30 개선폭 + 유입 × (D7 개선폭 − D30 개선폭) × (30 ÷ 91)
@@ -114,3 +114,48 @@ def profit_curve(sim: dict, x: dict, n: int = 41) -> tuple[list[float], list[flo
     hi = min(hi, 100.0)
     xs = [hi * i / (n - 1) for i in range(n)]
     return xs, [simulate(sim, {**x, "conv": c})["profit"] for c in xs]
+
+
+# ----------------------------------------------------------------------
+# YOUR CHOICE 선택형 스킨 패키지 시뮬레이터 (입력값 기반 가정 · 실제 매출 예측 아님)
+#   패키지 가격   = 기본 가격 × 스킨 수 × (1 − 할인율)
+#   구매자        = 노출 × 개선 후 전환율
+#   평균 결제 금액 = Σ 구매 비중 × 패키지 가격          (비중 합계 = 100% 일 때만 계산)
+#   예상 매출     = 구매자 × 평균 결제 금액
+#   기존 매출     = 노출 × 기존 전환율 × 기본 가격       (기존 구매자는 개별 스킨 1개 구매로 가정)
+#   할인액        = 구매자 × Σ 비중 × (정가 합계 − 패키지 가격)
+
+
+def tier_prices(cfg: dict) -> list[int]:
+    return [round(cfg["base_price"] * t["n"] * (100 - t["disc"]) / 100) for t in cfg["tiers"]]
+
+
+def package_sim(cfg: dict, x0: dict) -> dict:
+    s = cfg["sim"]
+    x = {}
+    for f in s["fields"]:
+        try:
+            v = float(x0.get(f["key"], s["defaults"][f["key"]]))
+        except (TypeError, ValueError):
+            v = float(s["defaults"][f["key"]])
+        if math.isnan(v):
+            v = float(s["defaults"][f["key"]])
+        x[f["key"]] = min(max(v, f["min"]), f["max"])
+    shares = [x["s1"], x["s3"], x["s5"]]
+    total = sum(shares)
+    ok = abs(total - 100) < 1e-6
+    prices = tier_prices(cfg)
+    base = cfg["base_price"]
+    rev0 = x["exposed"] * x["conv0"] / 100 * base
+    out = {"x": x, "share_total": total, "ok": ok, "prices": prices, "rev0": rev0}
+    if not ok:
+        return out
+    buyers = x["exposed"] * x["conv1"] / 100
+    avg = sum(sh / 100 * p for sh, p in zip(shares, prices))
+    skins = buyers * sum(sh / 100 * t["n"] for sh, t in zip(shares, cfg["tiers"]))
+    disc = buyers * sum(sh / 100 * (t["n"] * base - p) for sh, t, p in zip(shares, cfg["tiers"], prices))
+    rev1 = buyers * avg
+    out.update(buyers=buyers, avg=avg, rev1=rev1, skins=skins, discount=disc, diff=rev1 - rev0,
+               diff_pct=(rev1 - rev0) / rev0 * 100 if rev0 > 0 else None,
+               disc_pct=disc / (rev1 + disc) * 100 if (rev1 + disc) > 0 else None)
+    return out

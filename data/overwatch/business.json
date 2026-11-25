@@ -1,75 +1,65 @@
 {
-  "_note": "오버워치 04 BM · 05 마케팅 · 06 사업 효과. 'user_plan' = 사용자가 확정한 기획안, 'assumption' = 시뮬레이션용 기획 가정(실제 데이터 아님), 'pending' = 사용자가 전달할 실제 캡처·자료로 채울 작업용 공백. show_pending=false 이면 작업용 공백(이미지 자리·확인 예정 칸)을 공개 화면에서 숨긴다.",
-  "show_pending": true,
-  "images": {
-    "logo": {"file": "assets/overwatch/brand/overwatch_logo.png", "label": "오버워치 공식 로고"},
-    "store": [
-      {"file": "assets/overwatch/bm/store_main.png", "label": "상점 메인 화면"},
-      {"file": "assets/overwatch/bm/battle_pass.png", "label": "배틀패스 (프리미엄·얼티밋) 화면"},
-      {"file": "assets/overwatch/bm/mythic_skin.png", "label": "신화 스킨 · 신화 프리즘 화면"},
-      {"file": "assets/overwatch/bm/hero_progression.png", "label": "영웅 성장 시스템 화면"}
-    ],
-    "skin_levels": [
-      "assets/overwatch/bm/growth_lv1.png", "assets/overwatch/bm/growth_lv2.png", "assets/overwatch/bm/growth_lv3.png",
-      "assets/overwatch/bm/growth_lv4.png", "assets/overwatch/bm/growth_lv5.png"
-    ]
-  },
+  "_note": "오버워치 04 기존 BM · 05 신규 BM · 06 사업성. 'real' = 작성자 캡처로 확인한 사실, 'user_plan' = 사용자가 확정한 기획안, 'assumption' = 시뮬레이션용 가정(실제 데이터 아님). archived = 이전 기획안(성장형 스킨·PROVE IT.) 보관 · 화면 미표시.",
   "existing_bm": {
-    "status": "pending",
-    "note": "사용자가 전달할 상점 캡처·공식 자료로 채울 예정 · 확인 전에는 가격·구성을 적지 않는다",
+    "status": "real",
+    "note": "작성자 캡처 화면에서 직접 읽은 내용만 적음 · 원화 가격은 캡처에 없어 적지 않음",
     "products": [
-      {"name": "일반 스킨", "sale": "", "price": "", "unlock": "", "source": ""},
-      {"name": "전설 스킨", "sale": "", "price": "", "unlock": "", "source": ""},
-      {"name": "프리미엄 배틀패스", "sale": "", "price": "", "unlock": "", "source": ""},
-      {"name": "얼티밋 배틀패스", "sale": "", "price": "", "unlock": "", "source": ""},
-      {"name": "신화 스킨", "sale": "", "price": "", "unlock": "", "source": ""},
-      {"name": "신화 무기 스킨", "sale": "", "price": "", "unlock": "", "source": ""},
-      {"name": "오버워치 코인", "sale": "", "price": "", "unlock": "", "source": ""},
-      {"name": "신화 프리즘", "sale": "", "price": "", "unlock": "", "source": ""}
-    ]
-  },
-  "growth_skin": {
-    "status": "user_plan",
-    "concept": "구매로 시작하고, 플레이로 완성하다.",
-    "summary": "최초 구매 후 정상적인 게임 플레이로 스킨 외형이 5단계까지 성장",
-    "levels": [
-      {"lv": "Lv.1", "need": 0, "cond": "최초 구매", "reward": "기본 스킨"},
-      {"lv": "Lv.2", "need": 10, "cond": "누적 10경기 상당", "reward": "색상 및 장식 변화"},
-      {"lv": "Lv.3", "need": 30, "cond": "누적 30경기 상당", "reward": "무기 외형 변화"},
-      {"lv": "Lv.4", "need": 60, "cond": "누적 60경기 상당", "reward": "고급 외형 및 전용 연출"},
-      {"lv": "Lv.5", "need": 100, "cond": "누적 100경기 상당", "reward": "완전체 스킨 및 전용 프로필"}
-    ],
-    "levels_note": "경기 수는 기획 가정 · 실제 구현은 정상 경기 안에서 해당 영웅을 플레이한 시간에 비례해 진척 (1경기 상당 기준 시간은 플레이 데이터 확인 후 결정)",
-    "vs_mythic_note": "기존 신화 스킨·영웅 성장 시스템과의 차별성은 실제 자료 확인 후 확정",
-    "protection": [
-      "공격력·체력·스킬 성능 변화 없음",
-      "피격 판정·경쟁 공정성에 영향 없음",
-      "시야·스킬 식별·전투 시인성·사운드 식별 방해 금지",
-      "승리·킬 수·경쟁전 티어와 무관하게 성장",
-      "특정 영웅 선택이나 교체 제한 없음",
-      "추가 결제로 단계 건너뛰기 불가",
-      "성장 기간 제한 없음",
-      "잠수·고의 패배 등 비정상 플레이는 진척 제외"
-    ],
-    "purpose": "구매 이후에도 계속 플레이할 이유를 만들어 매출과 잔존율을 함께 개선"
-  },
-  "marketing": {
-    "status": "user_plan",
-    "name": "PROVE IT.",
-    "slogan_ko": "증명하세요.",
-    "card": {"bg": "#25282D", "main": "#F99E1A", "sub": "#FFFFFF"},
-    "directions": [
-      {"t": "완전체 달성 인증", "d": "성장형 스킨 Lv.5 달성을 인증"},
-      {"t": "스트리머 성장 챌린지", "d": "스트리머별로 영웅 스킨을 키우는 과정 공개"},
-      {"t": "커뮤니티·SNS 인증", "d": "유저가 직접 성장 과정을 공유"},
-      {"t": "기존·복귀 유저 노출", "d": "접속·복귀 유저에게 상품 노출"},
-      {"t": "성장 과정 공개", "d": "단계별 외형 변화를 미리 공개"}
-    ],
-    "funnel": ["캠페인 노출", "게임 접속·복귀", "상품 확인", "스킨 구매", "지속 플레이", "완전체 달성", "SNS 인증"],
-    "kpis": [
-      {"group": "핵심 KPI", "items": ["상품 구매 전환율", "순증 매출", "구매 유저 D7·D30 잔존율"]},
-      {"group": "보조 KPI", "items": ["캠페인 참여율", "복귀 유저 접속률", "단계별 성장 달성률", "완전체 달성률", "SNS 인증 참여율"]},
-      {"group": "게임플레이 보호 지표", "items": ["기존 상품 매출 잠식률", "경기 중 영웅 교체율", "비정상 플레이 발생률"]}
+      {
+        "name": "일반 스킨",
+        "sale": "영웅 스킨 목록에서 코인으로 개별 잠금 해제",
+        "price": "300 코인 4종 · 1,000 코인 1종 (키리코 목록)",
+        "unlock": "등급 표기는 선택한 스킨에만 보여 등급별 가격은 캡처에서 확인 안 됨",
+        "source": "kiriko_skins"
+      },
+      {
+        "name": "전설 스킨",
+        "sale": "코인 구매 · 전리품 상자(점쟁이) · '가끔 상점에서 획득 가능'(용기수)",
+        "price": "1,900 코인 4종 (키리코 목록 · 전설 점쟁이와 같은 주황색 표기)",
+        "unlock": "스킨마다 획득 경로가 다름",
+        "source": "kiriko_skins · mercy_skins"
+      },
+      {
+        "name": "프리미엄 배틀패스",
+        "sale": "배틀 패스 화면의 '배틀 패스 업그레이드'",
+        "price": "캡처에서 확인 안 됨",
+        "unlock": "'프리미엄으로 업그레이드해 즉시 3개의 보상을 잠금 해제' 문구 · 보상은 단계(14·12·8 등)별 잠금",
+        "source": "battle_pass"
+      },
+      {
+        "name": "얼티밋 배틀패스",
+        "sale": "캡처에서 확인 안 됨",
+        "price": "캡처에서 확인 안 됨",
+        "unlock": "캡처에서 확인 안 됨",
+        "source": "—"
+      },
+      {
+        "name": "신화 스킨",
+        "sale": "상점 '신화' 탭 · 신화 프리즘으로 단계 해금",
+        "price": "1레벨 50 + 2~4레벨 각 10 = 80 프리즘 (로드호그·우양 동일)",
+        "unlock": "4단계 · 레벨마다 기술 시각 효과·마스크/머리카락·색상·스킨 시각 효과 추가",
+        "source": "mythic_roadhog · mythic_wuyang"
+      },
+      {
+        "name": "신화 무기 스킨",
+        "sale": "캡처에서 확인 안 됨",
+        "price": "캡처에서 확인 안 됨",
+        "unlock": "캡처에서 확인 안 됨",
+        "source": "—"
+      },
+      {
+        "name": "오버워치 코인",
+        "sale": "상점·스킨 가격 단위",
+        "price": "묶음 상품 15종 6,900 코인 (정가 9,500 · 27% 할인) · 원화 환산 캡처에서 확인 안 됨",
+        "unlock": "상점 새로고침 6일 남음 표기",
+        "source": "store_main"
+      },
+      {
+        "name": "신화 프리즘",
+        "sale": "캡처에서 확인 안 됨",
+        "price": "캡처에서 확인 안 됨",
+        "unlock": "신화 스킨 단계 해금 재화 (키리코 '아마테라스'도 프리즘 표기)",
+        "source": "mythic_roadhog · kiriko_skins"
+      }
     ]
   },
   "simulation": {
@@ -78,44 +68,522 @@
     "d7_only_days": 30,
     "note": "모든 값은 기획 가정이며 실제 매출·내부 데이터가 아니다 · 매출·ARPPU·비용 모두 분기(13주) 기준",
     "defaults": {
-      "exposed": 100000, "price": 20000, "conv": 2.0, "marketing": 50000000,
-      "cannib": 25, "inflow": 195000, "d7_uplift": 2.0, "d30_uplift": 1.0,
-      "pur": 5.0, "arppu": 25000, "fee": 30, "dev_mm": 17, "mm_cost": 6000000, "other_cost": 0
+      "exposed": 100000,
+      "price": 20000,
+      "conv": 2.0,
+      "marketing": 50000000,
+      "cannib": 25,
+      "inflow": 195000,
+      "d7_uplift": 2.0,
+      "d30_uplift": 1.0,
+      "pur": 5.0,
+      "arppu": 25000,
+      "fee": 30,
+      "dev_mm": 17,
+      "mm_cost": 6000000,
+      "other_cost": 0
     },
     "presets": {
-      "보수적": {"conv": 1.0, "cannib": 40, "d7_uplift": 1.0, "d30_uplift": 0.5, "pur": 3.0, "arppu": 15000},
+      "보수적": {
+        "conv": 1.0,
+        "cannib": 40,
+        "d7_uplift": 1.0,
+        "d30_uplift": 0.5,
+        "pur": 3.0,
+        "arppu": 15000
+      },
       "기본": {},
-      "낙관적": {"conv": 3.0, "cannib": 15, "d7_uplift": 3.0, "d30_uplift": 1.5, "pur": 8.0, "arppu": 35000}
+      "낙관적": {
+        "conv": 3.0,
+        "cannib": 15,
+        "d7_uplift": 3.0,
+        "d30_uplift": 1.5,
+        "pur": 8.0,
+        "arppu": 35000
+      }
     },
     "fields": [
-      {"key": "exposed", "label": "캠페인 노출 유저", "unit": "명", "min": 0, "max": 10000000, "step": 10000, "basic": true,
-       "help": "상품에 노출되는 활성·복귀 유저 (기존 시뮬레이션의 '코호트 외 활성 유저' 가정과 같음)"},
-      {"key": "price", "label": "스킨 판매 가격", "unit": "원", "min": 0, "max": 200000, "step": 1000, "basic": true,
-       "help": "성장형 스킨 1개 판매가 · 실제 상점 가격 확인 후 교체"},
-      {"key": "conv", "label": "상품 구매 전환율", "unit": "%", "min": 0, "max": 100, "step": 0.1, "basic": true,
-       "help": "노출 유저 중 성장형 스킨 구매 비율"},
-      {"key": "marketing", "label": "마케팅 비용", "unit": "원", "min": 0, "max": 5000000000, "step": 5000000, "basic": true,
-       "help": "PROVE IT. 캠페인 집행비 (분기)"},
-      {"key": "cannib", "label": "기존 상품 매출 잠식률", "unit": "%", "min": 0, "max": 100, "step": 1,
-       "help": "성장형 스킨 매출 중 기존 상품을 대신 산 몫 (순증에서 제외)"},
-      {"key": "inflow", "label": "분기 신규·복귀 유입", "unit": "명", "min": 0, "max": 10000000, "step": 5000,
-       "help": "잔존율 개선이 적용되는 유저 (05 실험 설계의 분기 유입: 복귀 13만 + 신규 6.5만)"},
-      {"key": "d7_uplift", "label": "D7 잔존율 개선폭", "unit": "%p", "min": 0, "max": 50, "step": 0.1,
-       "help": "RE:START A·C 실험 목표(MDE)와 같음 · 배정 기준"},
-      {"key": "d30_uplift", "label": "D30 잔존율 개선폭", "unit": "%p", "min": 0, "max": 50, "step": 0.1,
-       "help": "D7 개선폭보다 클 수 없음 (D30 잔존 유저는 D7 잔존 유저에 포함)"},
-      {"key": "pur", "label": "결제율 (PUR)", "unit": "%", "min": 0, "max": 100, "step": 0.1,
-       "help": "순증 활성 유저 중 분기 결제 비율"},
-      {"key": "arppu", "label": "ARPPU (분기)", "unit": "원", "min": 0, "max": 1000000, "step": 1000,
-       "help": "결제 유저 1명의 분기 결제액"},
-      {"key": "fee", "label": "결제·플랫폼 수수료율", "unit": "%", "min": 0, "max": 99, "step": 1,
-       "help": "판매 채널별로 다를 수 있어 단일 가정"},
-      {"key": "dev_mm", "label": "개발 인력 (인월)", "unit": "인월", "min": 0, "max": 500, "step": 1,
-       "help": "RE:START A~C 11인월 + 성장형 스킨 6인월"},
-      {"key": "mm_cost", "label": "인월당 비용", "unit": "원", "min": 0, "max": 50000000, "step": 500000,
-       "help": "기존 실험 설계의 1인 월 비용 가정과 같음"},
-      {"key": "other_cost", "label": "기타 운영 비용", "unit": "원", "min": 0, "max": 5000000000, "step": 1000000,
-       "help": "서버·CS·보상 등 (확인 전이라 기본 0원)"}
+      {
+        "key": "exposed",
+        "label": "캠페인 노출 유저",
+        "unit": "명",
+        "min": 0,
+        "max": 10000000,
+        "step": 10000,
+        "basic": true,
+        "help": "신규 스킨에 노출되는 활성·복귀 유저 (기존 시뮬레이션의 '코호트 외 활성 유저' 가정과 같음)"
+      },
+      {
+        "key": "price",
+        "label": "스킨 판매 가격",
+        "unit": "원",
+        "min": 0,
+        "max": 200000,
+        "step": 1000,
+        "basic": true,
+        "help": "YOUR HERO로 출시하는 신규 스킨 1개 판매가 (기획 가정)"
+      },
+      {
+        "key": "conv",
+        "label": "상품 구매 전환율",
+        "unit": "%",
+        "min": 0,
+        "max": 100,
+        "step": 0.1,
+        "basic": true,
+        "help": "노출 유저 중 신규 스킨 구매 비율"
+      },
+      {
+        "key": "marketing",
+        "label": "마케팅 비용",
+        "unit": "원",
+        "min": 0,
+        "max": 5000000000,
+        "step": 5000000,
+        "basic": true,
+        "help": "투표·출시 캠페인 집행비 (분기 · 기획 가정)"
+      },
+      {
+        "key": "cannib",
+        "label": "기존 상품 매출 잠식률",
+        "unit": "%",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "help": "신규 스킨 매출 중 기존 스킨을 대신 산 몫 (순증에서 제외)"
+      },
+      {
+        "key": "inflow",
+        "label": "분기 신규·복귀 유입",
+        "unit": "명",
+        "min": 0,
+        "max": 10000000,
+        "step": 5000,
+        "help": "잔존율 개선이 적용되는 유저 (05 실험 설계의 분기 유입: 복귀 13만 + 신규 6.5만)"
+      },
+      {
+        "key": "d7_uplift",
+        "label": "D7 잔존율 개선폭",
+        "unit": "%p",
+        "min": 0,
+        "max": 50,
+        "step": 0.1,
+        "help": "RE:START A·C 실험 목표(MDE)와 같음 · 배정 기준"
+      },
+      {
+        "key": "d30_uplift",
+        "label": "D30 잔존율 개선폭",
+        "unit": "%p",
+        "min": 0,
+        "max": 50,
+        "step": 0.1,
+        "help": "D7 개선폭보다 클 수 없음 (D30 잔존 유저는 D7 잔존 유저에 포함)"
+      },
+      {
+        "key": "pur",
+        "label": "결제율 (PUR)",
+        "unit": "%",
+        "min": 0,
+        "max": 100,
+        "step": 0.1,
+        "help": "순증 활성 유저 중 분기 결제 비율"
+      },
+      {
+        "key": "arppu",
+        "label": "ARPPU (분기)",
+        "unit": "원",
+        "min": 0,
+        "max": 1000000,
+        "step": 1000,
+        "help": "결제 유저 1명의 분기 결제액"
+      },
+      {
+        "key": "fee",
+        "label": "결제·플랫폼 수수료율",
+        "unit": "%",
+        "min": 0,
+        "max": 99,
+        "step": 1,
+        "help": "판매 채널별로 다를 수 있어 단일 가정"
+      },
+      {
+        "key": "dev_mm",
+        "label": "개발 인력 (인월)",
+        "unit": "인월",
+        "min": 0,
+        "max": 500,
+        "step": 1,
+        "help": "RE:START A~C 11인월 + 신규 스킨 제작 6인월 (기획 가정)"
+      },
+      {
+        "key": "mm_cost",
+        "label": "인월당 비용",
+        "unit": "원",
+        "min": 0,
+        "max": 50000000,
+        "step": 500000,
+        "help": "기존 실험 설계의 1인 월 비용 가정과 같음"
+      },
+      {
+        "key": "other_cost",
+        "label": "기타 운영 비용",
+        "unit": "원",
+        "min": 0,
+        "max": 5000000000,
+        "step": 1000000,
+        "help": "서버·CS·보상 등 (확인 전이라 기본 0원)"
+      }
     ]
+  },
+  "archived": {
+    "growth_skin": {
+      "status": "user_plan",
+      "concept": "구매로 시작하고, 플레이로 완성하다.",
+      "summary": "최초 구매 후 정상적인 게임 플레이로 스킨 외형이 5단계까지 성장",
+      "levels": [
+        {
+          "lv": "Lv.1",
+          "need": 0,
+          "cond": "최초 구매",
+          "reward": "기본 스킨"
+        },
+        {
+          "lv": "Lv.2",
+          "need": 10,
+          "cond": "누적 10경기 상당",
+          "reward": "색상 및 장식 변화"
+        },
+        {
+          "lv": "Lv.3",
+          "need": 30,
+          "cond": "누적 30경기 상당",
+          "reward": "무기 외형 변화"
+        },
+        {
+          "lv": "Lv.4",
+          "need": 60,
+          "cond": "누적 60경기 상당",
+          "reward": "고급 외형 및 전용 연출"
+        },
+        {
+          "lv": "Lv.5",
+          "need": 100,
+          "cond": "누적 100경기 상당",
+          "reward": "완전체 스킨 및 전용 프로필"
+        }
+      ],
+      "levels_note": "경기 수는 기획 가정 · 실제 구현은 정상 경기 안에서 해당 영웅을 플레이한 시간에 비례해 진척 (1경기 상당 기준 시간은 플레이 데이터 확인 후 결정)",
+      "vs_mythic_note": "기존 신화 스킨·영웅 성장 시스템과의 차별성은 실제 자료 확인 후 확정",
+      "protection": [
+        "공격력·체력·스킬 성능 변화 없음",
+        "피격 판정·경쟁 공정성에 영향 없음",
+        "시야·스킬 식별·전투 시인성·사운드 식별 방해 금지",
+        "승리·킬 수·경쟁전 티어와 무관하게 성장",
+        "특정 영웅 선택이나 교체 제한 없음",
+        "추가 결제로 단계 건너뛰기 불가",
+        "성장 기간 제한 없음",
+        "잠수·고의 패배 등 비정상 플레이는 진척 제외"
+      ],
+      "purpose": "구매 이후에도 계속 플레이할 이유를 만들어 매출과 잔존율을 함께 개선"
+    },
+    "marketing": {
+      "status": "user_plan",
+      "name": "PROVE IT.",
+      "slogan_ko": "증명하세요.",
+      "card": {
+        "bg": "#25282D",
+        "main": "#F99E1A",
+        "sub": "#FFFFFF"
+      },
+      "directions": [
+        {
+          "t": "완전체 달성 인증",
+          "d": "성장형 스킨 Lv.5 달성을 인증"
+        },
+        {
+          "t": "스트리머 성장 챌린지",
+          "d": "스트리머별로 영웅 스킨을 키우는 과정 공개"
+        },
+        {
+          "t": "커뮤니티·SNS 인증",
+          "d": "유저가 직접 성장 과정을 공유"
+        },
+        {
+          "t": "기존·복귀 유저 노출",
+          "d": "접속·복귀 유저에게 상품 노출"
+        },
+        {
+          "t": "성장 과정 공개",
+          "d": "단계별 외형 변화를 미리 공개"
+        }
+      ],
+      "funnel": [
+        "캠페인 노출",
+        "게임 접속·복귀",
+        "상품 확인",
+        "스킨 구매",
+        "지속 플레이",
+        "완전체 달성",
+        "SNS 인증"
+      ],
+      "kpis": [
+        {
+          "group": "핵심 KPI",
+          "items": [
+            "상품 구매 전환율",
+            "순증 매출",
+            "구매 유저 D7·D30 잔존율"
+          ]
+        },
+        {
+          "group": "보조 KPI",
+          "items": [
+            "캠페인 참여율",
+            "복귀 유저 접속률",
+            "단계별 성장 달성률",
+            "완전체 달성률",
+            "SNS 인증 참여율"
+          ]
+        },
+        {
+          "group": "게임플레이 보호 지표",
+          "items": [
+            "기존 상품 매출 잠식률",
+            "경기 중 영웅 교체율",
+            "비정상 플레이 발생률"
+          ]
+        }
+      ]
+    },
+    "images_old": {
+      "logo": {
+        "file": "assets/overwatch/brand/overwatch_logo.png",
+        "label": "오버워치 공식 로고"
+      },
+      "store": [
+        {
+          "file": "assets/overwatch/bm/store_main.png",
+          "label": "상점 메인 화면"
+        },
+        {
+          "file": "assets/overwatch/bm/battle_pass.png",
+          "label": "배틀패스 (프리미엄·얼티밋) 화면"
+        },
+        {
+          "file": "assets/overwatch/bm/mythic_skin.png",
+          "label": "신화 스킨 · 신화 프리즘 화면"
+        },
+        {
+          "file": "assets/overwatch/bm/hero_progression.png",
+          "label": "영웅 성장 시스템 화면"
+        }
+      ],
+      "skin_levels": [
+        "assets/overwatch/bm/growth_lv1.png",
+        "assets/overwatch/bm/growth_lv2.png",
+        "assets/overwatch/bm/growth_lv3.png",
+        "assets/overwatch/bm/growth_lv4.png",
+        "assets/overwatch/bm/growth_lv5.png"
+      ]
+    },
+    "reason": "2026-11 사용자 지시로 신규 BM을 YOUR HERO · YOUR CHOICE로 변경 (신화 스킨이 이미 프리즘 단계 해금 구조라 성장형 스킨과 겹침)"
+  },
+  "capture_note": "작성자 직접 캡처 · 2026 시즌 5 진행 중 (배틀 패스 남은 기간 13일 시점) · 정확한 촬영일 미기록",
+  "shots": {
+    "logo": {
+      "file": "assets/overwatch/brand/overwatch_logo.png",
+      "label": "오버워치 로고",
+      "kind": "brand"
+    },
+    "hero_roster": {
+      "file": "assets/overwatch/screens_2026/hero_roster.png",
+      "label": "영웅 화면 · 54명 (돌격 15 · 공격 23 · 지원 16)",
+      "kind": "real"
+    },
+    "battle_pass": {
+      "file": "assets/overwatch/screens_2026/battle_pass.png",
+      "label": "배틀 패스 · 2026 시즌 5",
+      "kind": "real"
+    },
+    "store_main": {
+      "file": "assets/overwatch/screens_2026/store_main.png",
+      "label": "상점 추천 · 묶음 상품 15 (6,900 코인)",
+      "kind": "real"
+    },
+    "kiriko_skins": {
+      "file": "assets/overwatch/screens_2026/kiriko_skins.png",
+      "label": "키리코 스킨 1/11",
+      "kind": "real"
+    },
+    "mercy_skins": {
+      "file": "assets/overwatch/screens_2026/mercy_skins.png",
+      "label": "메르시 스킨 15/25",
+      "kind": "real"
+    },
+    "mythic_roadhog": {
+      "file": "assets/overwatch/screens_2026/mythic_roadhog.png",
+      "label": "신화 스킨 · 로드호그 과거의 기사",
+      "kind": "real"
+    },
+    "mythic_wuyang": {
+      "file": "assets/overwatch/screens_2026/mythic_wuyang.png",
+      "label": "신화 스킨 · 우양 용의 협객",
+      "kind": "real"
+    },
+    "your_hero": {
+      "file": "assets/overwatch/bm/01_YOUR_HERO.png",
+      "label": "YOUR HERO · 유저 참여형 스킨 제작",
+      "kind": "plan"
+    },
+    "your_choice": {
+      "file": "assets/overwatch/bm/02_YOUR_CHOICE.png",
+      "label": "YOUR CHOICE · 선택형 스킨 패키지",
+      "kind": "plan"
+    }
+  },
+  "your_hero": {
+    "status": "user_plan",
+    "title": "YOUR HERO.",
+    "slogan": "당신의 영웅도 주인공입니다.",
+    "kind": "유저 참여형 스킨 제작 프로젝트",
+    "purpose": "인기 영웅 중심의 스킨 판매 구조를 보완하고, 제작 전 유저 수요를 확인해 신규 상품의 투자 위험을 줄인다.",
+    "steps": [
+      {
+        "t": "기획",
+        "d": "신규 스킨 제작 후보 영웅과 콘셉트 선정"
+      },
+      {
+        "t": "참여",
+        "d": "유저 투표와 선호도 조사"
+      },
+      {
+        "t": "제작",
+        "d": "투표 결과와 사업성을 함께 검토한 뒤 제작·출시"
+      }
+    ],
+    "effects": [
+      "유저의 영웅 애착 강화",
+      "스킨 제작 전 수요 파악",
+      "상대적으로 상품이 적은 영웅의 구매 수요 발굴",
+      "유저 참여를 통한 커뮤니티 활성화",
+      "신규 스킨 제작의 투자 위험 완화"
+    ],
+    "kpis": [
+      "투표 참여율",
+      "영웅별 선호도",
+      "투표 참여 유저의 구매 전환율",
+      "출시 후 스킨 판매량",
+      "제작 비용 대비 수익"
+    ],
+    "image_note": "이미지 속 투표율·수치는 화면 예시이며 실제 데이터가 아님"
+  },
+  "your_choice": {
+    "status": "user_plan",
+    "title": "YOUR CHOICE.",
+    "slogan": "원하는 영웅, 원하는 스킨.",
+    "kind": "선택형 스킨 패키지",
+    "purpose": "기존 고정형 패키지의 선택권 한계를 보완하고, 유저가 원하는 스킨을 직접 구성하게 해 구매 만족도와 구매 전환율을 높인다.",
+    "base_price": 20000,
+    "price_note": "기획용 예시 가격 · 실제 오버워치 판매 가격이 아님",
+    "tiers": [
+      {
+        "name": "개별 스킨 1개",
+        "n": 1,
+        "disc": 0
+      },
+      {
+        "name": "스킨 3개 선택",
+        "n": 3,
+        "disc": 20
+      },
+      {
+        "name": "스킨 5개 선택",
+        "n": 5,
+        "disc": 30
+      }
+    ],
+    "ops": [
+      "패키지 대상 스킨 목록 제공",
+      "유저가 원하는 영웅과 스킨 선택",
+      "선택 수량에 따라 할인 적용",
+      "최종 구성 확인 후 구매"
+    ],
+    "effects": [
+      "유저의 상품 선택권 확대",
+      "원하지 않는 스킨이 섞인 패키지의 구매 부담 완화",
+      "여러 스킨 구매 유도",
+      "객단가 상승 가능성",
+      "기존 미구매 유저의 구매 전환 가능성"
+    ],
+    "kpis": [
+      "패키지 구매 전환율",
+      "평균 결제 금액",
+      "3개·5개 패키지 선택 비중",
+      "기존 미결제 유저의 구매 전환율",
+      "개별 스킨 매출 잠식 여부",
+      "전체 스킨 매출 순증 효과"
+    ],
+    "sim": {
+      "status": "assumption",
+      "note": "입력값 기반 가정 시뮬레이션 · 실제 매출 예측치가 아님 · 기존 매출은 '구매자가 개별 스킨 1개(20,000원)를 산다'고 가정",
+      "defaults": {
+        "exposed": 100000,
+        "conv0": 2.0,
+        "conv1": 2.0,
+        "s1": 70,
+        "s3": 20,
+        "s5": 10
+      },
+      "fields": [
+        {
+          "key": "exposed",
+          "label": "상품 노출 유저",
+          "unit": "명",
+          "min": 0,
+          "max": 10000000,
+          "step": 10000
+        },
+        {
+          "key": "conv0",
+          "label": "기존 구매 전환율",
+          "unit": "%",
+          "min": 0,
+          "max": 100,
+          "step": 0.1
+        },
+        {
+          "key": "conv1",
+          "label": "개선 후 예상 구매 전환율",
+          "unit": "%",
+          "min": 0,
+          "max": 100,
+          "step": 0.1
+        },
+        {
+          "key": "s1",
+          "label": "개별 스킨 구매 비중",
+          "unit": "%",
+          "min": 0,
+          "max": 100,
+          "step": 1
+        },
+        {
+          "key": "s3",
+          "label": "3개 패키지 구매 비중",
+          "unit": "%",
+          "min": 0,
+          "max": 100,
+          "step": 1
+        },
+        {
+          "key": "s5",
+          "label": "5개 패키지 구매 비중",
+          "unit": "%",
+          "min": 0,
+          "max": 100,
+          "step": 1
+        }
+      ]
+    }
   }
 }

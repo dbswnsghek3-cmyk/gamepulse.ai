@@ -54,8 +54,9 @@ def _games() -> list[dict]:
     ow_img, ow_blur = _ow_image()
     return [
         {"id": "overwatch", "name": "오버워치", "proj": "PROJECT RE:START", "img": ow_img, "png": False, "blur": ow_blur,
-         "credit": "실제 게임 화면 · 작성자 캡처", "problem": ow["summary"]["headline"], "answer": "A 복귀 브리핑(놓친 변경점 3분 요약) → C 첫 10경기 학습 미션 → B 전투 학습 카드",
-         "kpi": "복귀 D7 잔존율"},
+         "credit": "실제 게임 화면 · 작성자 캡처", "problem": "신규·복귀 유저의 학습 부담 · 영웅별 스킨 상품 차이와 고정형 묶음의 선택권 한계",
+         "answer": "복귀율: PROJECT RE:START (복귀 브리핑 → 첫 10경기 미션 → 전투 학습 카드) · 매출: YOUR HERO · YOUR CHOICE",
+         "kpi": "복귀 D7 잔존율 · 패키지 구매 전환율 · 평균 결제 금액"},
         {"id": "fconline", "name": "FC 온라인", "proj": "축구 게임인가, 주식 게임인가?", "img": "assets/fconline/main_screen.jpg", "png": False, "blur": (),
          "credit": "실제 게임 메인 화면 · 작성자 캡처", "problem": "구단 가치 급락과 강화 실패로 인한 이탈 위험, 그리고 조작 환경의 공정성", "answer": "A 구단 가치 급락 완충 프로그램 · B 강화 실패 후 재기 프로그램 · C 분리 없는 조작 공정성 개선",
          "kpi": "급락 경험 유저 D7 · 강화 실패 후 D7 재접속률"},

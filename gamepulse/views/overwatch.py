@@ -44,10 +44,10 @@ from gamepulse.ui.components import badge, html
 from gamepulse.views import game_page
 from gamepulse.views.deep_dives import DEEP_DIVES
 
-SECTIONS = [("01", "핵심 요약", "30초 요약"), ("02", "데이터 및 문제 분석", "의견·원인·자료"),
-            ("03", "개선 전략", "A·B·C 직접 눌러 보기"), ("04", "BM 분석 및 개선", "기존 상품 · 성장형 스킨"),
-            ("05", "마케팅 전략", "PROVE IT."), ("06", "KPI 및 사업 효과", "매출 · 비용 · 손익분기"),
-            ("07", "최종 실행 계획", "일정 · 확대·중단 기준")]
+SECTIONS = [("01", "개요·핵심 문제", "섹션 01·02"), ("02", "게임 화면·VOC", "섹션 03·04"),
+            ("03", "PROJECT RE:START", "섹션 05"), ("04", "기존 스킨 BM", "섹션 06"),
+            ("05", "신규 BM 제안", "섹션 07·08"), ("06", "KPI·사업성", "섹션 09"),
+            ("07", "최종 판단", "섹션 10")]
 ROOT_DIR = Path(__file__).resolve().parents[2]
 TAB_LABELS = [f"{n} {t}" for n, t, _ in SECTIONS]
 TAB_KEY = "ow_tab"
@@ -120,6 +120,12 @@ def nav() -> None:
 
 
 def badge_legend() -> None:
+    """배지 뜻은 한 줄로: '실제 자료'만 사실, 나머지는 해석·가설·제안·가정 계산."""
+    html(f'<div class="ow-badges"><span>{b_real()} 만 확인된 사실</span>'
+         f'<span>{b_hypo()} {b_mock()} {b_sim()} 은 검증 전 · 실적 아님</span></div>')
+
+
+def ox_badge_legend() -> None:
     """자료 성격 안내는 페이지에 한 번만 (섹션 제목 옆 작은 글자와 같은 표기)."""
     html('<div class="ox-legend"><b>실제 자료</b>만 확인된 사실 · 분석자 해석 · 검증 전 가설 · 기획 시안 · 가정 시뮬레이션은 실적이 아님</div>')
 
@@ -186,6 +192,30 @@ C_TREAT, C_CTRL, C_MUTED = "#2563EB", "#94A3B8", "#CBD5E1"
 
 
 def chart_card(fig: go.Figure, *, key: str, kind: str, title: str, unit: str, kpis: list[tuple[str, str]],
+               analysis: str, decision: str, basis: str, height: int = 360, legend: bool = True,
+               cols: tuple[str, str] = ("항목", "값"), series: str = "구분") -> None:
+    """차트 1개 = 배지·제목·단위 → 핵심 수치 → 차트 → 분석 결과 · 사업PM 의사결정 · 비교 기준.
+
+    kpis 의 값(value)은 HTML 을 허용한다(호출하는 쪽에서 숫자만 넣음).
+    cols = (범주 열 이름, 값 열 이름): 정적 보고서의 '차트 데이터 표' 열 제목으로 쓰인다 (layout.meta).
+    """
+    fig.update_layout(meta={"table": {"category": cols[0], "value": cols[1], "series": series, "title": title}})
+    with st.container(border=True, key=f"owc_{key}"):
+        chips = "".join(f'<div class="ow-kpi"><div class="ow-kpi-v">{v}</div><div class="ow-kpi-l">{escape(l)}</div></div>'
+                        for l, v in kpis)
+        html(f'<div class="ow-chart-h"><div class="ow-chart-t">{KIND[kind]()} {escape(title)}</div>'
+             f'<div class="ow-chart-u">{escape(unit)}</div></div>' + (f'<div class="ow-kpis">{chips}</div>' if chips else ""))
+        style(fig, None, height)
+        fig.update_layout(title=None, margin=dict(l=8, r=20, t=44 if legend else 12, b=44),
+                          legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0, title_text="", font=dict(size=12)),
+                          showlegend=legend, font=dict(size=13))
+        plot(fig)
+        # 차트 아래는 '사업PM 판단' 한 줄 + 해석·비교 기준 작은 한 줄 (핵심 수치는 차트 위 칩과 중복되므로 합침)
+        html(f'<div class="ow-chart-f2"><div class="pm"><b>사업PM 판단</b><span>{escape(decision)}</span></div></div>'
+             f'<div class="ow-chart-b">{escape(analysis)} · 기준: {escape(basis)}</div>')
+
+
+def ox_chart_card(fig: go.Figure, *, key: str, kind: str, title: str, unit: str, kpis: list[tuple[str, str]],
                analysis: str, decision: str, basis: str, height: int = 360, legend: bool = True,
                cols: tuple[str, str] = ("항목", "값"), series: str = "구분") -> None:
     """차트 1개 = 배지·제목·단위 → 핵심 수치 → 차트 → 분석 결과 · 사업PM 의사결정 · 비교 기준.
@@ -441,7 +471,7 @@ def _steam_chart(steam: pd.DataFrame) -> None:
                                hovertemplate="%{x|%Y-%m} · 월평균 %{y:,.0f}명<extra></extra>"))
         fig.update_yaxes(title="월평균 동시접속자 (명)", tickformat=",", rangemode="tozero", range=[0, d["avg_players"].max() * 1.18])
         fig.update_xaxes(title="월", tickformat="%y.%m", dtick="M1")
-        chart_card(fig, key="steam", kind="real", title="Steam 월평균 동시접속자 (12개월)",
+        ox_chart_card(fig, key="steam", kind="real", title="Steam 월평균 동시접속자 (12개월)",
                    unit="명 · 파랑 = 최고치",
                    kpis=[(f"최고 {pk['month']:%Y년 %m월}", f"{pk['avg_players']:,.0f}명"),
                          (f"최근 {last['month']:%Y년 %m월}", f"{last['avg_players']:,.0f}명"),
@@ -492,7 +522,7 @@ def _pc_chart(pc: pd.DataFrame) -> None:
             mx = q.loc[q["share_pct"].idxmax()]
             rk = f" · {int(mx['rank'])}위" if pd.notna(mx["rank"]) else ""
             kp.append((f"기간 최고 {mx['period_start']:%m/%d}{rk}", f"{mx['share_pct']:.1f}%"))
-        chart_card(fig, key="pc", kind="real", title=f"한국 PC방 점유율 ({tracker})",
+        ox_chart_card(fig, key="pc", kind="real", title=f"한국 PC방 점유율 ({tracker})",
                    unit="% · 회색 = 서비스 전, 파랑 = 후 · 가로선 = 주간",
                    kpis=kp, analysis=analysis,
                    decision="시장 반응 참고 · PC방 연계(D)는 A 검증 후 판단",
@@ -523,7 +553,7 @@ def _opinion_chart(v: pd.DataFrame) -> None:
                            textposition="outside", cliponaxis=False, hovertemplate="%{y}: %{x}건<extra></extra>"))
     fig.update_yaxes(autorange="reversed", automargin=True, title="")
     fig.update_xaxes(title="언급 수 (건)", range=[0, max(cnt.max(), 1) * 1.3 + 1], rangemode="tozero")
-    chart_card(fig, key="op", kind="real",
+    ox_chart_card(fig, key="op", kind="real",
                title=f"1위 '{top_cat}' {top_n}건 · 반대 사례(긍정적 학습 경험) {int(cnt.get('긍정적인 학습 경험', 0))}건도 함께 집계",
                unit="건 · 한 의견이 여러 유형에 걸치면 각각 셈 · 파랑 = 학습·적응 관련", kpis=[],
                analysis=f"학습·적응 관련 의견 {learn}/{len(v)}건 · 매칭 {int(cnt.get('매칭·실력 차이', 0))}건·비매너도 함께 추적",
@@ -734,13 +764,6 @@ KIND_TXT = {"real": "실제 자료", "interp": "분석자 해석", "hypo": "검�
             "plan": "기획 확정안", "pending": "작업 중"}
 
 
-def h(title: str, kind: str = "", lead: str = "") -> None:
-    """결론형 섹션 제목 · 자료 성격은 제목 옆 작은 글자 1개로만 표시 (배지 남발 방지)."""
-    k = f'<span class="ox-k {kind}">{KIND_TXT[kind]}</span>' if kind else ""
-    p = f"<p>{lead}</p>" if lead else ""
-    html(f'<div class="ox-h"><h3>{escape(title)}</h3>{k}{p}</div>')
-
-
 def stats(items: list[tuple[str, str, str]]) -> None:
     """대표 숫자 최대 3~4개: (값 HTML, 설명, 자료 성격)."""
     html('<div class="ox-stats">' + "".join(
@@ -762,96 +785,6 @@ def won(x: float) -> str:
 
 def _learn(v: pd.DataFrame) -> int:
     return int(sum(bool(set(opinion_codes(r)) & LEARNING_CODES) for _, r in v.iterrows()))
-
-
-def render() -> None:
-    g = GAMES["overwatch"]
-    try:
-        kp, rs, heroes = load_json("korea_publishing.json"), load_json("restart.json"), load_json("heroes.json")
-        bz = load_json("business.json")
-        steam, pc, ops, tl = load_steam(), load_pcbang(), load_opinions(), load_timeline()
-    except OverwatchDataError as e:
-        st.error(f"오버워치 자료를 불러오지 못했습니다: {e}")
-        return
-    statuses = all_status(load_manifest())
-
-    html('<div class="gp-ow-page"></div>')  # 오버워치 전용 CSS 범위 표식 (포인트 컬러 #F99E1A)
-    plan = experiment_plan(rs["experiment"])
-    _cover(rs, statuses)
-
-    i = tab_nav()
-    badge_legend()
-    html(f'<div class="ow-pane-mark" data-tab="{SECTIONS[i][0]}"></div>')  # 정적 보고서가 탭 경계를 찾는 표식
-    _FIGS.clear()
-    [lambda: _t1_summary(rs, ops, plan, bz),
-     lambda: _t2_analysis(rs, kp, steam, pc, ops, heroes, statuses),
-     lambda: _t3_strategy(rs, ops, heroes, tl, statuses, plan),
-     lambda: _t4_bm(bz),
-     lambda: _t5_marketing(bz),
-     lambda: _t6_business(rs, plan, bz),
-     lambda: _t7_plan(rs, g, statuses, plan, ops)][i]()
-    image_credits()
-
-
-def _cover(rs: dict, statuses: dict) -> None:
-    """탭 위 첫 화면: 프로젝트명 · 핵심 질문 · 대표 실제 화면 1장 (54명 영웅 선택 화면)."""
-    cv = rs["cover"]
-    stt = statuses.get("hero_select")
-    img = (f'<figure class="owx-img"><img src="data:image/jpeg;base64,{_src(stt, 1400)}" alt="실제 게임 화면: 영웅 54명이 한 화면에 나열된 영웅 선택 화면">'
-           '<figcaption>실제 게임 화면 · 영웅 54명이 한 화면에 · 작성자 캡처</figcaption></figure>') if stt is not None and stt.ok else ""
-    html(f'<div class="owx-hero"><div class="owx-t"><div class="ow-cover-t">{escape(cv["title"])}</div>'
-         '<div class="owx-q" role="heading" aria-level="1">복귀한 유저는<br>왜 첫 주에 막힐까?</div>'
-         f'<p class="owx-s">{escape(cv["copy"])} · 영웅·밸런스는 그대로, 정보만 보완</p></div>{img}</div>')
-
-
-# ----------------------------------------------------------------------
-# 01 핵심 요약
-def _t1_summary(rs: dict, ops: pd.DataFrame, plan: dict, bz: dict) -> None:
-    v = ops[ops["verified"]]
-    mde = plan["seg"]["복귀"]["mde"]["D7"]
-    h("복귀 첫 주의 정보 공백을 메우고, 플레이로 완성하는 스킨으로 매출까지 잇는다")
-    html('<div class="ox-path">'
-         f'<div><span>01 문제</span><b>바뀐 전투 정보가 복귀 장벽</b><small>의견 {len(v)}건 중 <em>{_learn(v)}건</em> 학습·적응 어려움 · 실제 자료</small></div>'
-         '<div><span>02 전략</span><b>A 복귀 브리핑 → C 첫 10경기 미션 → B 전투 학습 카드</b><small>영웅·밸런스·매칭은 그대로 · 기획 시안</small></div>'
-         '<div><span>03 BM·마케팅</span><b>성장형 스킨 × PROVE IT.</b><small>구매로 시작, 플레이로 완성 · 기획 시안</small></div>'
-         f'<div><span>04 검증</span><b>복귀 D7 <em>+{mde:.1f}%p</em> · 스킨 구매 전환율</b><small>목표·가정값 · 단계적 A/B 테스트</small></div>'
-         '</div>')
-    html('<div class="ox-sumt">' + "".join(f"<div><span>{escape(k)}</span><p>{escape(t)}</p></div>"
-                                            for k, t in summary_rows(rs, ops, plan, bz)) + "</div>")
-
-
-# ----------------------------------------------------------------------
-# 02 데이터 및 문제 분석 (기존 01 근거 · 02 근거 · 03 원인 가설 통합)
-def _t2_analysis(rs: dict, kp: dict, steam: pd.DataFrame, pc: pd.DataFrame, ops: pd.DataFrame, heroes: dict, statuses: dict) -> None:
-    v = ops[ops["verified"]]
-    cnt = code_counts(v)
-    h(f"유저 의견 {len(v)}건 중 {_learn(v)}건이 '바뀐 것을 따라잡기 어렵다'", "real",
-      "인벤·디시인사이드·블리자드 포럼 자발적 게시글 · 원문 직접 확인 · 전체 이용자 비율이 아님")
-    _opinion_chart(v)
-    rep = v[v["opinion_id"].isin(rs["rep_opinions"]) & (v["sentiment"] != "긍정")].sort_values("published_date", ascending=False).head(2)
-    if not rep.empty:
-        html(f'<div class="ow-grid2">{"".join(_opinion_card(r) for _, r in rep.iterrows())}</div>')
-    with st.expander(f"유저 의견 {len(v)}건 전체 · 검색 · 표본과 분류 기준"):
-        _opinions_all(rs, ops)
-
-    h("원인: '정보 과부하 → 전투 이해 실패'는 확인, 이탈과의 연결은 가설", "hypo")
-    p = rs["problem"]
-    html('<div class="ox-cause">' + '<i>→</i>'.join(
-        f'<div class="{f.get("kind", "hypo")}"><small>{KIND_TXT[f.get("kind", "hypo")]}</small><b>{escape(f["step"])}</b></div>'
-        for f in p["flow"]) + "</div>")
-    with st.expander(f"원인 {len(p['flow'])}단계 근거·검증 지표 · 다른 원인 {len(p['alternatives'])}가지"):
-        _cause_detail(p, v, cnt)
-    with st.expander(f"실제 게임 화면 · 영웅 선택·스킬 설명 · 공식 영웅 {len(heroes['heroes'])}명"):
-        _screens_detail(heroes, statuses)
-    with st.expander(f"블리자드 기존 지원 {len(rs['official'])}건 · 넥슨 퍼블리싱 범위"):
-        _official_detail(rs, kp)
-    with st.expander("시장 지표 (Steam 동시접속 · 한국 PC방 점유율) · 원자료 — 복귀 이탈과 인과 연결 안 함"):
-        c1, c2 = st.columns(2, gap="medium")
-        with c1:
-            _steam_chart(steam)
-        with c2:
-            _pc_chart(pc)
-        _metric_sources(pc)
 
 
 def _opinions_all(rs: dict, ops: pd.DataFrame) -> None:
@@ -961,25 +894,6 @@ def _official_detail(rs: dict, kp: dict) -> None:
 
 # ----------------------------------------------------------------------
 # 03 개선 전략 (A·B·C 데모)
-def _t3_strategy(rs: dict, ops: pd.DataFrame, heroes: dict, tl: pd.DataFrame, statuses: dict, plan: dict) -> None:
-    h("영웅·밸런스는 그대로, 정보만 보완한다: A → C → B 순서", "mock")
-    core = sorted([x for x in rs["strategies"] if x["core"]], key=lambda x: x.get("phase", ""))
-    html('<div class="ox-strats">' + "".join(
-        f'<div><em>{s["key"]}</em><b>{escape(s["name"])}</b><p>{escape(s["tagline"])}</p>'
-        f'<small>{escape(s.get("phase", ""))} · KPI {escape(s["kpis"][0])}</small></div>' for s in core) + "</div>")
-    t = st.tabs(["A 복귀 브리핑", "C 첫 10경기 미션", "B 전투 학습 카드"])
-    with t[0]:
-        _proto_a(heroes, tl, statuses)
-    with t[1]:
-        _proto_c(statuses)
-    with t[2]:
-        _proto_b(heroes, statuses)
-    with st.expander("전략 A~D 상세 · 대상 · 작동 흐름 · 부작용 · 근거 의견"):
-        _strategy_tables(rs, ops)
-    with st.expander("우선순위 근거 · RICE 점수 · 대안(영웅 선택 제한안) 비교"):
-        _priority_detail(rs, plan)
-
-
 def _strategy_tables(rs: dict, ops: pd.DataFrame) -> None:
     opmap = ops[ops["verified"]].set_index("opinion_id")
     for s in rs["strategies"]:
@@ -1009,7 +923,7 @@ def _priority_detail(rs: dict, plan: dict) -> None:
                            text=items["score"].round(0).astype(int).map("{:,}점".format), textposition="outside", cliponaxis=False))
     fig.update_yaxes(autorange="reversed", automargin=True, title="")
     fig.update_xaxes(title="RICE 점수 (점)", range=[0, items["score"].max() * 1.3], rangemode="tozero")
-    chart_card(fig, key="rice", kind="sim", title=f"RICE 1위는 {top['label']} ({top['score']:,.0f}점) → A → C → B 순서, D는 보류",
+    ox_chart_card(fig, key="rice", kind="sim", title=f"RICE 1위는 {top['label']} ({top['score']:,.0f}점) → A → C → B 순서, D는 보류",
                unit="점 · 도달×영향×확신÷노력 · 파랑 = 1순위", kpis=[], analysis="", decision="",
                basis="도달 = 분기 유입 × 참여율 · 06과 같은 가정값", height=300, legend=False, cols=("전략", "RICE 점수 (점)"))
     st.caption(f"{rc['formula']} · {rc['notes']}")
@@ -1027,7 +941,7 @@ def _priority_detail(rs: dict, plan: dict) -> None:
     fig.update_yaxes(autorange="reversed", automargin=True, title="")
     fig.update_xaxes(range=[0, 5.8], dtick=1, title="유리함 (점)")
     tot_r, tot_a = int(df["restart"].sum()), int(df["alt"].sum())
-    chart_card(fig, key="cmp", kind="interp", title=f"RE:START {tot_r}점 vs {cmp_['alt_name']} {tot_a}점 → 선택 자유를 지키는 안",
+    ox_chart_card(fig, key="cmp", kind="interp", title=f"RE:START {tot_r}점 vs {cmp_['alt_name']} {tot_a}점 → 선택 자유를 지키는 안",
                unit="1~5점 · 높을수록 유리 · 파랑 = 제안안", kpis=[], analysis="", decision="",
                basis="같은 5개 기준·같은 척도 · 정성 평가", height=380, cols=("평가 기준", "점수 (1~5점)"), series="안")
     st.caption(cmp_["alt_desc"] + " · " + cmp_["note"])
@@ -1172,7 +1086,7 @@ def _sim_results(rs: dict, plan: dict, x: dict) -> None:
         after.append(rate(d, "new_users"))
     fig = hpair(cats, before, after, xtitle="잔존율 (%)", names=("도입 전 · 대조군 (가정 기준값)", "도입 후 · 실험군 (가정)"))
     ri = cats.index("복귀 D7")
-    chart_card(fig, key="sim", kind="sim", title=f"복귀 D7 {before[ri]:.1f}% → {after[ri]:.1f}% (참여율 × 개선 폭)",
+    ox_chart_card(fig, key="sim", kind="sim", title=f"복귀 D7 {before[ri]:.1f}% → {after[ri]:.1f}% (참여율 × 개선 폭)",
                unit="% · 회색 = 대조군, 파랑 = 실험군 · 이름 옆 = 변화 폭", kpis=[], analysis="", decision="",
                basis="같은 코호트 전후 · 전체 = 인원 가중 평균", height=520, cols=("코호트 · 지표", "잔존율 (%)"), series="그룹")
     m10_b = f.loc[3, "base"] / f_total * 100 if f_total else float("nan")
@@ -1182,7 +1096,7 @@ def _sim_results(rs: dict, plan: dict, x: dict) -> None:
     fb = (fv["base"] / f_total * 100).tolist() if f_total else [0] * len(fv)
     fn_ = (fv["improved"] / f_total * 100).tolist() if f_total else [0] * len(fv)
     fig = hpair(list(fv["stage"]), fb, fn_, xtitle="접속 대비 (%)", names=("도입 전 · 대조군 (가정)", "도입 후 · 실험군 (가정)"), xmax=118)
-    chart_card(fig, key="funnel", kind="sim", title=f"신규 10경기 완료 {m10_b:.1f}% → {m10_n:.1f}% · 완료율만 오르고 D7이 그대로면 미션 수정",
+    ox_chart_card(fig, key="funnel", kind="sim", title=f"신규 10경기 완료 {m10_b:.1f}% → {m10_n:.1f}% · 완료율만 오르고 D7이 그대로면 미션 수정",
                unit="신규 접속 대비 % · 회색 = 대조군, 파랑 = 실험군", kpis=[], analysis="", decision="",
                basis=f"신규 {f_total:,}명(가정) · KPI와 같은 대상", height=400, cols=("단계", "신규 접속 대비 (%)"), series="그룹")
     dd = res.dau.pivot(index="day", columns="scenario", values="dau")
@@ -1193,7 +1107,7 @@ def _sim_results(rs: dict, plan: dict, x: dict) -> None:
     fig.add_scatter(x=app["day"], y=app["dau"], name="RE:START 적용 · 실험군 (가정)", line=dict(color=C_TREAT, width=2, dash="dot"))
     fig.update_yaxes(title="DAU (명)", tickformat=",", rangemode="tozero", range=[0, res.dau["dau"].max() * 1.1])
     fig.update_xaxes(title="코호트 유입 시작 후 경과일 (일)")
-    chart_card(fig, key="dau", kind="sim", title=f"{x['horizon']}일차 DAU 차이 {dau_n - dau_b:+,.0f}명 → DAU 대신 코호트 잔존율로 판단",
+    ox_chart_card(fig, key="dau", kind="sim", title=f"{x['horizon']}일차 DAU 차이 {dau_n - dau_b:+,.0f}명 → DAU 대신 코호트 잔존율로 판단",
                unit="명/일 · 세로축 0부터", kpis=[], analysis="", decision="",
                basis="잔존 곡선만 다르게 적용 · Steam과 무관", height=400, cols=("경과일 (일)", "DAU (명)"), series="시나리오")
     st.markdown("**KPI 연결 구조 (가설)**")
@@ -1206,55 +1120,6 @@ def _sim_results(rs: dict, plan: dict, x: dict) -> None:
 
 # ----------------------------------------------------------------------
 # 07 최종 실행 계획
-def _t7_plan(rs: dict, g: dict, statuses: dict, plan: dict, ops: pd.DataFrame) -> None:
-    sc = plan["sched"]
-    r = plan["seg"]["복귀"]
-    h(f"A 복귀 브리핑부터 {sc['decision'] + 2}주 파일럿, 결과를 보고 넓힌다", "mock",
-      f"준비 2주 + 운영 {sc['decision']}주 · D7이 MDE(+{r['mde']['D7']:.1f}%p) 이상 유의하게 오를 때만 C·B로 확대")
-    weeks = [("준비", "-2~0주", "이벤트 로그 · 실험 배정 · 기능 스위치 · CS 문구"),
-             ("실험 1", f"{sc['e1_assign'][0]}~{sc['e1_assign'][1]}주", "A 복귀 브리핑 배정 (복귀 유저 50:50)"),
-             ("실험 2", f"{sc['e2_assign'][0]}~{sc['e2_assign'][1]}주", f"C 학습 미션 배정 · {sc['e1_d7']}주차 A의 D7 1차 판정"),
-             ("실험 3", f"{sc['e3'][0]}~{sc['e3'][1]}주", f"B 수동형 사용성 · {sc['e1_d30']}주차 A의 D30 → 확대 확정"),
-             ("결정", f"{sc['decision']}주", "C의 D30 확인 · 확대·수정·중단 최종 결정")]
-    html('<div class="ox-gantt">' + "".join(f'<div><em>{escape(a)}</em><b>{escape(w)}</b><span>{escape(t)}</span></div>'
-                                            for a, w, t in weeks) + "</div>")
-    html(f'<div class="ox-purpose pend"><span>성장형 스킨 · PROVE IT. 일정</span>{_pending("기획 확정 후 반영")}</div>')
-    h("확대 · 수정 · 중단 기준")
-    table(["결과", "기준"], [[f"<b>{escape(d['result'])}</b>", escape(d["rule"])] for d in rs["decision_rules"]])
-    html(f'<div class="ow-conclusion"><b>최종 제안 · 영웅 선택은 그대로, A 복귀 브리핑부터 {sc["decision"] + 2}주 파일럿.</b><br>'
-         '안전 지표가 괜찮을 때만 C·B로 넓히고, 자동 원인 분석·PC방(D)은 그 결과를 본 뒤 결정한다.</div>')
-    with st.expander("대표 전략 A 요약 · 우선순위 · 개발·운영 비용 검산"):
-        _cost_detail(rs, plan, ops)
-    with st.expander("복귀 유저 정의 · 실패 대응 · 일정 민감도"):
-        _failure_detail(rs, plan)
-    with st.expander("MVP 범위 · 현실적인 제약과 대응 · 담당 · 이벤트 로그 · 롤백 기준"):
-        _ops_detail(rs)
-    with st.expander("한계 · 고지"):
-        note(rs["summary"]["limit"])
-        pending = [s for s in statuses.values() if not s.ok]
-        if pending:
-            st.caption(f"게임 화면 {len(pending)}종은 최신 한국어 스크린샷 검증 전이라 자리만 표시했습니다.")
-        st.caption(f"{rs['cover']['footnote']} · {rs['disclaimer']} · 자료 확인일 {COLLECTED_AT}")
-
-    # v0.1 예시 분석은 공개 본문에서 제외 · 로컬에서 GAMEPULSE_SHOW_ARCHIVE=1 일 때만 표시 (archive/README.md)
-    if os.getenv("GAMEPULSE_SHOW_ARCHIVE") != "1":
-        return
-    with st.expander("보관함 · v0.1 분석 (가상 예시 데이터 · 비공개)"):
-        t = st.tabs(["문제 정의", "불만 유형(가상)", "원인 가설", "개선 전략", "KPI", "심층 분석"])
-        with t[0]:
-            game_page._problem(g)
-        with t[1]:
-            game_page._complaints(g)
-        with t[2]:
-            game_page._hypotheses(g)
-        with t[3]:
-            game_page._strategies(g)
-        with t[4]:
-            game_page._kpis(g)
-        with t[5]:
-            DEEP_DIVES["overwatch"]()
-
-
 def _cost_detail(rs: dict, plan: dict, ops: pd.DataFrame) -> None:
     sc, seg = plan["sched"], plan["seg"]["복귀"]
     mc = rs["experiment"]["cost"]["monthly_cost_per_person"]
@@ -1319,214 +1184,6 @@ def _ops_detail(rs: dict) -> None:
     st.markdown("**롤백 기준** · " + " · ".join(pl["rollback"]))
 
 
-def _biz_base(bz: dict) -> dict:
-    from gamepulse.sim.ow_business import preset, simulate
-    sim = bz["simulation"]
-    return simulate(sim, preset(sim, "기본"))
-
-
-def summary_rows(rs: dict, ops: pd.DataFrame, plan: dict, bz: dict) -> list[tuple[str, str]]:
-    """01 탭 '한눈에 보기' · 홈 비교표와 같은 항목 (핵심 문제 → 리스크)."""
-    v = ops[ops["verified"]]
-    b = _biz_base(bz)
-    mde = plan["seg"]["복귀"]["mde"]["D7"]
-    bep = f"손익분기 구매 전환율 {b['bep']:.1f}%" if b["bep_state"] == "ok" else "손익분기 불가 조건"
-    return [
-        ("핵심 문제", "복귀 후 바뀐 영웅·스킬·역할을 실전에서 따라잡기 어렵다"),
-        ("주요 근거", f"유저 의견 {len(v)}건 중 {_learn(v)}건이 학습·적응 어려움 · 2026 신규 영웅 9명"),
-        ("대표 전략", "A 복귀 브리핑 → C 첫 10경기 미션 → B 전투 학습 카드"),
-        ("BM 전략", "성장형 스킨: 구매로 시작하고, 플레이로 완성 (전투 능력 변화 없음)"),
-        ("마케팅", "PROVE IT. 증명하세요. · 완전체 인증·스트리머 챌린지"),
-        ("핵심 KPI", f"복귀 D7 +{mde:.1f}%p · 스킨 구매 전환율 · 기존 상품 매출 잠식률"),
-        ("예상 사업 효과", f"기본 가정 분기 이익 {won(b['profit'])} · {bep} (기획 가정)"),
-        ("주요 리스크", "학습 부담 → 이탈은 검증 전 가설 · 성장형 스킨의 기존 상품 매출 잠식"),
-    ]
-
-
-def _pending(text: str) -> str:
-    return f'<span class="ox-pend">{escape(text)}</span>'
-
-
-def _img_slot(rel: str, label: str, show_pending: bool, cls: str = "") -> str:
-    """사용자가 전달할 실제 이미지 자리: 파일이 있으면 표시, 없으면 (작업 중일 때만) 빈 자리."""
-    p = ROOT_DIR / rel
-    if p.is_file():
-        mime = "png" if p.suffix.lower() == ".png" else "jpeg"
-        return (f'<figure class="ox-img {cls}"><img src="data:image/{mime};base64,{_png_b64(str(p), p.stat().st_mtime)}" '
-                f'alt="{escape(label)}"><figcaption>{escape(label)}</figcaption></figure>')
-    if not show_pending:
-        return ""
-    return f'<div class="ox-slot {cls}"><b>{escape(label)}</b><small>이미지 삽입 영역 · {escape(rel)}</small></div>'
-
-
-# ----------------------------------------------------------------------
-# 04 BM 분석 및 개선
-def _t4_bm(bz: dict) -> None:
-    ex, gs, im = bz["existing_bm"], bz["growth_skin"], bz["images"]
-    show = bz.get("show_pending", False)
-    filled = any(p[k] for p in ex["products"] for k in ("sale", "price", "unlock", "source"))
-    if show or filled:
-        h("기존 BM: 판매 상품 8종의 가격·판매 방식·해금 구조", "pending" if not filled else "real", escape(ex["note"]) if not filled else "")
-        table(["상품", "판매 방식", "가격", "구성·해금 구조", "출처"],
-              [[f"<b>{escape(p['name'])}</b>"] + [escape(p[k]) if p[k] else _pending("확인 예정") for k in ("sale", "price", "unlock", "source")]
-               for p in ex["products"]], cls="ox-bmt")
-        slots = "".join(_img_slot(s["file"], s["label"], show) for s in im["store"])
-        if slots:
-            html(f'<div class="ox-slots">{slots}</div>')
-
-    h(gs["concept"], "plan", escape(gs["summary"]))
-    html('<div class="ox-js-start" data-demo="skin"></div>')
-    _skin_demo(gs, im, show)
-    html('<div class="ox-js-end"></div>')
-    st.caption(gs["levels_note"])
-
-    h("게임플레이는 그대로: 외형만 성장한다", "plan")
-    html('<ul class="ox-protect">' + "".join(f"<li>{escape(x)}</li>" for x in gs["protection"]) + "</ul>")
-    html(f'<div class="ox-purpose"><span>사업 목적</span>{escape(gs["purpose"])}</div>')
-    if show:
-        st.caption(gs["vs_mythic_note"])
-
-
-def _skin_reset() -> None:
-    st.session_state["ow_skin_p"] = 0
-
-
-def _skin_demo(gs: dict, im: dict, show: bool) -> None:
-    """성장형 스킨 데모 (Streamlit) · 정적 사이트는 같은 규칙의 JavaScript 데모로 바뀐다 (scripts/ow_static_demos.py)."""
-    lv = gs["levels"]
-    top = lv[-1]["need"]
-    st.session_state.setdefault("ow_skin_p", 0)
-    c1, c2 = st.columns([4, 1], vertical_alignment="bottom")
-    p = c1.slider("누적 플레이 진척도 (경기 상당)", 0, top, key="ow_skin_p")
-    c2.button("초기화", key="ow_skin_reset", on_click=_skin_reset, width="stretch")
-    html(skin_state_html(gs, im, p, show))
-
-
-def skin_state_html(gs: dict, im: dict, p: float, show: bool) -> str:
-    lv = gs["levels"]
-    top = lv[-1]["need"]
-    cur = max(i for i, x in enumerate(lv) if p >= x["need"])
-    nxt = lv[cur + 1] if cur + 1 < len(lv) else None
-    remain = f"다음 단계 {nxt['lv']}까지 <b>{nxt['need'] - p:g}경기 상당</b>" if nxt else "<b>완전체 달성</b>"
-    steps = "".join(
-        f'<div class="{"on" if i <= cur else ""}{" cur" if i == cur else ""}"><em>{escape(x["lv"])}</em><b>{escape(x["reward"])}</b>'
-        f'<small>{escape(x["cond"])}</small></div>' for i, x in enumerate(lv))
-    slot = _img_slot(im["skin_levels"][cur], f"{lv[cur]['lv']} 스킨 이미지", show, "skin")
-    return (f'<div class="ox-skin"><div class="ox-skin-top">{slot}<div class="ox-skin-now">'
-            f'<span>현재 단계</span><strong>{escape(lv[cur]["lv"])}</strong><b>{escape(lv[cur]["reward"])}</b>'
-            f'<p>{remain}</p><div class="ox-bar"><i style="width:{p / top * 100:.0f}%"></i></div>'
-            f'<small>전체 성장 {p / top * 100:.0f}% · {p:g} / {top}경기 상당</small></div></div>'
-            f'<div class="ox-lvl">{steps}</div></div>')
-
-
-# ----------------------------------------------------------------------
-# 05 마케팅 전략
-def _t5_marketing(bz: dict) -> None:
-    mk, im = bz["marketing"], bz["images"]
-    show = bz.get("show_pending", False)
-    c = mk["card"]
-    logo = ROOT_DIR / im["logo"]["file"]
-    if logo.is_file():
-        top = f'<img src="data:image/png;base64,{_png_b64(str(logo), logo.stat().st_mtime)}" alt="{escape(im["logo"]["label"])}">'
-    else:
-        top = '<span class="ox-ad-slot">로고 삽입 영역</span>' if show else ""
-    h("PROVE IT. — 키운 스킨이 곧 실력의 증거가 된다", "plan")
-    html(f'<div class="ox-ad" style="--bg:{c["bg"]};--main:{c["main"]};--sub:{c["sub"]}"><div class="ox-ad-top">{top}</div>'
-         f'<div class="ox-ad-c"><div class="ox-ad-main">{escape(mk["name"])}</div><div class="ox-ad-sub">{escape(mk["slogan_ko"])}</div></div></div>')
-    html('<div class="ox-dirs">' + "".join(f'<div><b>{escape(d["t"])}</b><span>{escape(d["d"])}</span></div>'
-                                           for d in mk["directions"]) + "</div>")
-    h("노출에서 인증까지 7단계, 인증이 다시 노출이 된다")
-    n = len(mk["funnel"])
-    html('<ol class="ox-funnel">' + "".join(
-        f'<li style="--w:{100 - i * (55 / (n - 1)):.0f}%"><span>{i + 1}</span><b>{escape(s)}</b></li>' for i, s in enumerate(mk["funnel"]))
-         + '</ol><div class="ox-funnel-loop">↺ SNS 인증 → 다음 캠페인 노출</div>')
-    st.caption("단계별 전환율·이탈률은 실제 데이터가 없어 표시하지 않는다 · 캠페인 운영 후 측정")
-    h("성과는 3단계로 본다: 핵심 → 보조 → 게임플레이 보호")
-    html('<div class="ox-kpi3">' + "".join(
-        f'<div class="g{i}"><b>{escape(g["group"])}</b>{bullets(g["items"])}</div>' for i, g in enumerate(mk["kpis"])) + "</div>")
-
-
-# ----------------------------------------------------------------------
-# 06 KPI 및 사업 효과 · 인터랙티브 시뮬레이터
-SIM_KEYS = "bz_"
-
-
-def _sim_apply(values: dict) -> None:
-    for k, v in values.items():
-        st.session_state[SIM_KEYS + k] = v
-
-
-def _t6_business(rs: dict, plan: dict, bz: dict) -> None:
-    from gamepulse.sim.ow_business import GUARD_TEXT, VERDICT_TEXT, fields, preset, simulate
-    sim = bz["simulation"]
-    fs = fields(sim)
-    for k, v in sim["defaults"].items():                        # 첫 실행: 기본 가정값
-        st.session_state.setdefault(SIM_KEYS + k, v)
-    h("사업 효과 시뮬레이터: 구매 전환율이 손익을 가른다", "sim", escape(sim["note"]))
-    html('<div class="ox-js-start" data-demo="biz"></div>')
-    result_box = st.container()
-    cols = st.columns(4)
-    for i, name in enumerate(sim["presets"]):
-        cols[i].button(name, key=f"bz_preset_{i}", on_click=_sim_apply, args=(preset(sim, name),), width="stretch")
-    cols[3].button("초기화", key="bz_reset", on_click=_sim_apply, args=(dict(sim["defaults"]),), width="stretch")
-
-    def num(f, col):
-        fmt = "%.1f" if f["step"] < 1 else "%d"
-        cast = float if f["step"] < 1 else int
-        hi = cast(f["max"])
-        if f["key"] == "d30_uplift":            # D30 개선폭 ≤ D7 개선폭 (D30 잔존 유저는 D7 잔존 유저에 포함)
-            hi = cast(st.session_state[SIM_KEYS + "d7_uplift"])
-            st.session_state[SIM_KEYS + "d30_uplift"] = min(st.session_state[SIM_KEYS + "d30_uplift"], hi)
-        col.number_input(f"{f['label']} ({f['unit']})", min_value=cast(f["min"]), max_value=hi, step=cast(f["step"]),
-                         format=fmt, key=SIM_KEYS + f["key"], help=f["help"])
-    basic = [f for f in sim["fields"] if f.get("basic")]
-    cs = st.columns(len(basic))
-    for f, col in zip(basic, cs):
-        num(f, col)
-    with st.expander("고급 설정 · 잠식률 · 잔존율 개선폭 · PUR · ARPPU · 수수료 · 개발비 · 기타 운영비"):
-        adv = [f for f in sim["fields"] if not f.get("basic")]
-        for j in range(0, len(adv), 3):
-            cc = st.columns(3)
-            for f, col in zip(adv[j:j + 3], cc):
-                num(f, col)
-    x = {k: st.session_state[SIM_KEYS + k] for k in fs}
-    r = simulate(sim, x)
-    with result_box:
-        html(biz_result_html(r, VERDICT_TEXT, GUARD_TEXT))
-    _biz_charts(sim, r)
-
-    with st.expander("계산 순서 · 공식 · 현재 값"):
-        table(["단계", "계산", "현재 값"], biz_steps(r))
-        st.markdown("- 기간: 매출·ARPPU·비용 모두 **분기(91일)** 기준\n"
-                    "- 수수료는 유저 결제액(스킨 순증 매출 + 잔존 추가 매출)에만 적용하고, 비용에는 적용하지 않는다\n"
-                    "- 잔존 추가 매출은 스킨 매출과 따로 계산한다 (스킨 구매 여부와 무관한 RE:START 잔존 효과)\n"
-                    "- D30 잔존 유저는 D7 잔존 유저에 포함되므로 D7·D30을 더하지 않는다 · D7까지만 남은 유저는 분기 중 30일만 활성으로 본다\n"
-                    "- 자연 복귀 유저는 A/B 대조군과의 차이(배정 기준)만 개선폭으로 쓰므로 제외된다\n"
-                    "- 손익분기 구매 전환율은 위 이익 계산식에서 이익 = 0 이 되는 전환율을 직접 푼 값이다")
-    html('<div class="ox-js-end"></div>')
-    with st.expander("가정값 출처 · 기본 · 보수적 · 낙관적"):
-        names = list(sim["presets"])
-        table(["변수", *names, "설명"],
-              [[f"{escape(f['label'])} ({escape(f['unit'])})", *[f"{preset(sim, n)[f['key']]:,}" for n in names], escape(f["help"])]
-               for f in sim["fields"]])
-
-    h("성과 판단 KPI", "mock")
-    seg = plan["seg"]
-    rr, nw = seg["복귀"], seg["신규"]
-    b = _biz_base(bz)
-    table(["지표", "목표 · 기준", "판단"], [
-        ["<b>복귀 D7 잔존율</b> (A · 주요)", f"{rr['base']['D7']:.0f}% → {rr['base']['D7'] + rr['mde']['D7']:.0f}% · +{rr['mde']['D7']:.1f}%p", "95% 신뢰구간 하한 &gt; 0 이고 MDE 이상이면 확대"],
-        ["<b>신규 D7 잔존율</b> (C · 주요)", f"{nw['base']['D7']:.0f}% → {nw['base']['D7'] + nw['mde']['D7']:.0f}% · +{nw['mde']['D7']:.1f}%p", "A 결과 후 실험 2로 판정"],
-        ["<b>스킨 구매 전환율</b>", (f"손익분기 {b['bep']:.1f}% (기본 가정)" if b["bep_state"] == "ok" else "손익분기 불가 (기본 가정)"), "파일럿 전환율이 손익분기에 못 미치면 노출·비용 재검토"],
-        ["<b>기존 상품 매출 잠식률</b> (보호)", f"기본 가정 {sim['defaults']['cannib']}%", "가정보다 높으면 판매 시점·가격 조정"],
-    ])
-    with st.expander("A/B 실험 설계 · KPI 정의 10개 · 표본·일정 · 판단 기준"):
-        _kpi_detail(rs, plan)
-    res_box = st.expander("잔존율 시뮬레이션 결과 · D7·D30 · 첫 10경기 퍼널 · DAU (가정)")
-    with st.expander("잔존율 시뮬레이션 설정 (가정값)"):
-        inputs = _sim_inputs(rs)
-    with res_box:
-        _sim_results(rs, plan, inputs)
 
 
 def biz_result_html(r: dict, vt: dict, guard: str) -> str:
@@ -1551,7 +1208,7 @@ def biz_steps(r: dict) -> list[list[str]]:
     x = r["x"]
     return [
         ["1 예상 구매 유저", "노출 유저 × 구매 전환율", f"{r['buyers']:,.0f}명"],
-        ["2 성장형 스킨 총매출", "구매 유저 × 판매 가격", won(r["gross"])],
+        ["2 신규 스킨 총매출", "구매 유저 × 판매 가격", won(r["gross"])],
         ["3 기존 상품 매출 잠식액", "총매출 × 잠식률", won(-r["cannib"])],
         ["4 순증 상품 매출", "2 − 3", won(r["skin_net"])],
         ["5 순증 활성 유저", f"유입 × D30 개선폭 + 유입 × (D7 − D30 개선폭) × 30/91", f"{r['active']:,.0f}명"],
@@ -1585,7 +1242,7 @@ def _biz_charts(sim: dict, r: dict) -> None:
                     line=dict(color="white", width=2)), name="현재 입력")
     fig.update_xaxes(title="구매 전환율 (%)", ticksuffix="%")
     fig.update_yaxes(title="분기 이익 (만 원)", tickformat=",")
-    chart_card(fig, key="bzcurve", kind="sim", title="구매 전환율에 따른 분기 이익 · 점선 = 손익분기",
+    ox_chart_card(fig, key="bzcurve", kind="sim", title="구매 전환율에 따른 분기 이익 · 점선 = 손익분기",
                unit="만 원 · 파랑 = 이익, 빨강 = 손실", kpis=[], analysis="", decision="", basis="", height=340,
                cols=("구매 전환율 (%)", "분기 이익 (만 원)"), series="구분")
     names = list(sim["presets"])
@@ -1597,7 +1254,7 @@ def _biz_charts(sim: dict, r: dict) -> None:
                                text=[won(s["profit"]) for s in sc], textposition="outside", cliponaxis=False))
         fig.add_hline(y=0, line_color="#9CA3AF", line_width=1)
         fig.update_yaxes(title="분기 이익 (만 원)", tickformat=",")
-        chart_card(fig, key="bzscen", kind="sim", title="보수적 · 기본 · 낙관적 시나리오 이익",
+        ox_chart_card(fig, key="bzscen", kind="sim", title="보수적 · 기본 · 낙관적 시나리오 이익",
                    unit="만 원 · 전환율·잠식률·잔존 개선·PUR·ARPPU만 바꾸고 나머지는 현재 입력", kpis=[], analysis="", decision="",
                    basis="", height=320, legend=False, cols=("시나리오", "분기 이익 (만 원)"))
     with c2:
@@ -1609,6 +1266,485 @@ def _biz_charts(sim: dict, r: dict) -> None:
                                      totals=dict(marker=dict(color=C_TREAT if r["profit"] >= 0 else C_LOSS)),
                                      text=[won(s[1]) for s in steps], textposition="outside", connector=dict(line=dict(color="#E5E7EB"))))
         fig.update_yaxes(title="만 원", tickformat=",")
-        chart_card(fig, key="bzwf", kind="sim", title="총매출에서 이익까지 차감 구조",
+        ox_chart_card(fig, key="bzwf", kind="sim", title="총매출에서 이익까지 차감 구조",
                    unit="만 원 · 파랑 = 더함, 회색 = 뺌", kpis=[], analysis="", decision="", basis="", height=320, legend=False,
                    cols=("항목", "금액 (만 원)"))
+
+
+# ======================================================================
+# 2026-11 최종 구성: 10개 섹션을 7개 탭에 순서대로 배치
+#   01 개요·핵심 문제(01·02) · 02 게임 화면·VOC(03·04) · 03 RE:START(05) · 04 기존 스킨 BM(06)
+#   05 신규 BM(07·08) · 06 KPI·사업성(09) · 07 최종 판단(10)
+def h(title: str, kind: str = "", lead: str = "", num: str = "", name: str = "") -> None:
+    """결론형 섹션 제목 · num/name 이 있으면 '01 서비스 및 분석 개요' 번호 줄을 위에 붙인다."""
+    k = f'<span class="ox-k {kind}">{KIND_TXT[kind]}</span>' if kind else ""
+    p = f"<p>{lead}</p>" if lead else ""
+    n = f'<div class="ox-secn"><b>{num}</b>{escape(name)}</div>' if num else ""
+    html(f'<div class="ox-h{" n" if num else ""}">{n}<h3>{escape(title)}</h3>{k}{p}</div>')
+
+
+@st.cache_data(show_spinner=False, max_entries=24)
+def _jpg_b64(path: str, mtime: float) -> str:
+    """사용자가 준 캡처를 크기·비율 그대로 JPEG 로 (자르거나 늘리지 않음)."""
+    import io
+
+    from PIL import Image
+    with Image.open(path) as im:
+        rgb = im.convert("RGB")
+    buf = io.BytesIO()
+    rgb.save(buf, "JPEG", quality=86, optimize=True)
+    return base64.b64encode(buf.getvalue()).decode("ascii")
+
+
+def _fig(bz: dict, key: str, cap: str = "") -> str:
+    """클릭하면 원본 크기로 커지는 이미지 · 실제 화면과 기획 시안을 캡션 첫 단어로 구분."""
+    s = bz["shots"][key]
+    p = ROOT_DIR / s["file"]
+    if not p.is_file():
+        return ""
+    real = s["kind"] == "real"
+    tag = "실제 게임 화면" if real else "자체 제작 기획 시안"
+    src = "작성자 캡처 · 2026 시즌 5" if real else "실제 게임에 없음"
+    extra = f" · {escape(cap)}" if cap else ""
+    return (f'<figure class="ox-fig {"real" if real else "plan"}"><details class="ox-zoom"><summary title="클릭하면 크게 보기">'
+            f'<img src="data:image/jpeg;base64,{_jpg_b64(str(p), p.stat().st_mtime)}" alt="{escape(s["label"])}" loading="lazy"></summary></details>'
+            f'<figcaption><b>{tag}</b>{escape(s["label"])} · {src}{extra}</figcaption></figure>')
+
+
+def _pair(a: str, b: str) -> None:
+    html(f'<div class="ox-pair">{a}{b}</div>')
+
+
+def _facts(items: list[str]) -> str:
+    return '<ul class="ox-facts">' + "".join(f"<li>{x}</li>" for x in items) + "</ul>"
+
+
+def _biz_base(bz: dict) -> dict:
+    from gamepulse.sim.ow_business import preset, simulate
+    sim = bz["simulation"]
+    return simulate(sim, preset(sim, "기본"))
+
+
+def _pkg_base(bz: dict) -> dict:
+    from gamepulse.sim.ow_business import package_sim
+    c = bz["your_choice"]
+    return package_sim(c, c["sim"]["defaults"])
+
+
+def summary_rows(rs: dict, ops: pd.DataFrame, plan: dict, bz: dict) -> list[tuple[str, str]]:
+    """한눈에 보기 · 홈 비교표와 같은 항목."""
+    v = ops[ops["verified"]]
+    b, pk = _biz_base(bz), _pkg_base(bz)
+    mde = plan["seg"]["복귀"]["mde"]["D7"]
+    bep = f"신규 스킨 손익분기 전환율 {b['bep']:.1f}%" if b["bep_state"] == "ok" else "신규 스킨 손익분기 불가 조건"
+    return [
+        ("핵심 문제", "① 신규·복귀 유저의 학습 부담 ② 영웅별 스킨 상품 수 차이와 고정형 묶음의 선택권 한계"),
+        ("주요 근거", f"유저 의견 {len(v)}건 중 {_learn(v)}건 학습·적응 어려움 · 공식 영웅 54명 · 캡처: 키리코 스킨 11종 vs 메르시 25종"),
+        ("복귀율 전략", "PROJECT RE:START: 복귀 브리핑 → 첫 10경기 미션 → 전투 학습 카드"),
+        ("매출 전략", "YOUR HERO (유저 참여형 스킨 제작) · YOUR CHOICE (선택형 스킨 패키지)"),
+        ("마케팅", "별도 캠페인 미정 · YOUR HERO 투표가 유저 참여 창구"),
+        ("핵심 KPI", f"복귀 D7 +{mde:.1f}%p · 패키지 구매 전환율 · 평균 결제 금액 · 개별 스킨 매출 잠식"),
+        ("예상 사업 효과", f"YOUR CHOICE 예시 입력 기준 매출 {pk['diff_pct']:+.0f}% · {bep} (모두 가정)"),
+        ("주요 리스크", "학습 부담과 이탈의 인과는 미검증 · 할인 패키지의 개별 스킨 매출 잠식"),
+    ]
+
+
+# ======================================================================
+def render() -> None:
+    g = GAMES["overwatch"]
+    try:
+        kp, rs, heroes = load_json("korea_publishing.json"), load_json("restart.json"), load_json("heroes.json")
+        bz = load_json("business.json")
+        steam, pc, ops, tl = load_steam(), load_pcbang(), load_opinions(), load_timeline()
+    except OverwatchDataError as e:
+        st.error(f"오버워치 자료를 불러오지 못했습니다: {e}")
+        return
+    statuses = all_status(load_manifest())
+
+    html('<div class="gp-ow-page"></div>')  # 오버워치 전용 CSS 범위 표식 (포인트 컬러 #F99E1A)
+    plan = experiment_plan(rs["experiment"])
+    _cover(bz, heroes)
+
+    i = tab_nav()
+    ox_badge_legend()
+    html(f'<div class="ow-pane-mark" data-tab="{SECTIONS[i][0]}"></div>')  # 정적 보고서가 탭 경계를 찾는 표식
+    _FIGS.clear()
+    [lambda: _t1_overview(rs, ops, plan, bz, heroes),
+     lambda: _t2_screens_voc(rs, kp, steam, pc, ops, heroes, statuses, bz),
+     lambda: _t3_restart(rs, ops, heroes, tl, statuses, plan),
+     lambda: _t4_skin_bm(bz),
+     lambda: _t5_new_bm(bz),
+     lambda: _t6_business(rs, plan, bz),
+     lambda: _t7_plan(rs, g, statuses, plan, ops, bz)][i]()
+    image_credits()
+
+
+def _cover(bz: dict, heroes: dict) -> None:
+    """첫 화면: 로고 · 분석 주제 두 가지 (복귀율 전략 / 매출 전략을 구분)."""
+    lg = ROOT_DIR / bz["shots"]["logo"]["file"]
+    logo = (f'<img class="owx-logo" src="data:image/png;base64,{_png_b64(str(lg), lg.stat().st_mtime)}" alt="오버워치 로고">'
+            if lg.is_file() else "")
+    html(f'<div class="owx-hero ox-cover">{logo}<div class="owx-t"><div class="ow-cover-t">OVERWATCH · 사업PM 분석</div>'
+         '<div class="owx-q" role="heading" aria-level="1">진입장벽은 낮추고,<br>스킨 선택권은 넓힌다</div>'
+         '<div class="ox-tracks"><span><b>복귀율</b>신규·복귀 유저 진입장벽 → PROJECT RE:START</span>'
+         '<span><b>매출</b>스킨 중심 BM → YOUR HERO · YOUR CHOICE</span></div></div></div>')
+
+
+# ----------------------------------------------------------------------
+# 탭 01 · 섹션 01 서비스 및 분석 개요 · 02 핵심 문제 정의
+def _t1_overview(rs: dict, ops: pd.DataFrame, plan: dict, bz: dict, heroes: dict) -> None:
+    v = ops[ops["verified"]]
+    n_new = sum(1 for x in heroes["heroes"] if x.get("new_2026"))
+    h("두 문제를 따로 본다: 복귀율은 진입장벽, 매출은 스킨 상품 구성", "", num="01", name="서비스 및 분석 개요",
+      lead="블리자드 개발 · 한국 PC(Steam 제외)는 2026-08-12부터 넥슨이 퍼블리싱 (2026-03-30 계약 발표) · 공식 영웅 54명 (2026-11-19 확인)")
+    stats([(f"{len(v)}건", "검증한 유저 의견 (인벤·디시·블리자드 포럼)", "real"),
+           (f"{len(rs['official'])}건", "확인한 공식 업데이트", "real"),
+           ("13장", "작성자 게임 캡처 (영웅·상점·스킨·전투)", "real")])
+    table(["구분", "문제", "제안", "판단 지표"], [
+        ["<b>복귀율</b>", "신규·복귀 유저의 학습 부담", "PROJECT RE:START", f"복귀 D7 잔존율 (목표 +{plan['seg']['복귀']['mde']['D7']:.1f}%p)"],
+        ["<b>매출</b>", "영웅별 상품 차이 · 고정형 묶음", "YOUR HERO · YOUR CHOICE", "패키지 구매 전환율 · 평균 결제 금액"],
+    ], cls="ox-two")
+    st.caption("두 전략은 목표 지표가 달라 따로 실험하고 따로 판단한다.")
+
+    h(f"배울 것은 계속 늘고, 스킨 상품은 영웅·구성에 따라 고를 폭이 다르다", "", num="02", name="핵심 문제 정의")
+    html('<div class="ox-prob">'
+         '<div><span>① 신규·복귀 유저 진입장벽</span>' + _facts([
+             f"공식 영웅 <b>54명</b> · 2026년 신규 <b>{n_new}명</b>",
+             "영웅 1명 설명 <b>10개</b> (무기·궁극기·기술 3·지속 능력·특전 4 · 시온 기준)",
+             f"유저 의견 {len(v)}건 중 <b>{_learn(v)}건</b>이 학습·적응 어려움",
+             "복귀 시 메인 화면에 변경점 요약 없음"]) +
+         '<small>학습 부담이 실제 이탈로 이어지는지는 내부 로그와 A/B 테스트로 확인해야 한다.</small></div>'
+         '<div><span>② 스킨 중심 BM</span>' + _facts([
+             "영웅별 스킨 수 표기: 키리코 <b>11종</b> · 메르시 <b>25종</b>",
+             "상점 추천 묶음: 15개 고정 구성 <b>6,900 코인</b> (정가 9,500 · 27% 할인)",
+             "신화 스킨은 프리즘 <b>50 → 10 → 10 → 10</b> 단계 해금 (로드호그·우양 동일)",
+             "개별 스킨 가격 300 · 1,000 · 1,900 코인 (키리코 목록)"]) +
+         '<small>유저가 원하는 영웅과 판매 상품이 어긋나는지는 영웅별 플레이·구매 데이터로 확인해야 한다.</small></div></div>')
+    with st.expander("한눈에 보기 · 8개 항목 요약"):
+        html('<div class="ox-sumt">' + "".join(f"<div><span>{escape(k)}</span><p>{escape(t)}</p></div>"
+                                                for k, t in summary_rows(rs, ops, plan, bz)) + "</div>")
+
+
+# ----------------------------------------------------------------------
+# 탭 02 · 섹션 03 실제 게임 화면 기반 분석 · 04 유저 의견 및 VOC 분석
+def _t2_screens_voc(rs: dict, kp: dict, steam: pd.DataFrame, pc: pd.DataFrame, ops: pd.DataFrame, heroes: dict,
+                    statuses: dict, bz: dict) -> None:
+    h("영웅 54명이 한 화면에, 이름과 설명은 고른 영웅만 보인다", "real", num="03", name="실제 게임 화면 기반 분석")
+    html(_fig(bz, "hero_roster"))
+    html(_facts(["돌격 15 · 공격 23 · 지원 16 = 54명 (공식 영웅 페이지 수와 같음)",
+                 "초상화에는 이름이 없고, 고른 영웅(오리사)만 이름·역할 특성·소개가 보인다",
+                 "영웅마다 레벨 표시(오리사 1레벨)가 따로 있다"]))
+    with st.expander(f"다른 실제 화면 · 영웅 선택(실전)·스킬 설명 · 공식 영웅 {len(heroes['heroes'])}명 목록"):
+        _screens_detail(heroes, statuses)
+
+    v = ops[ops["verified"]]
+    other = ops[~ops["verified"]]
+    plat = v["platform"].map(lambda p: "인벤" if "인벤" in p else ("디시인사이드" if "디시" in p else "블리자드 포럼")).value_counts()
+    reddit = int(other["verification_status"].str.contains("Reddit").sum())
+    h(f"유저 의견 {len(v)}건 중 {_learn(v)}건이 '바뀐 것을 따라잡기 어렵다'", "real", num="04", name="유저 의견 및 VOC 분석",
+      lead=(f"원문을 직접 확인한 {len(v)}건 (기준 50건 충족) · " + " · ".join(f"{k} {n}" for k, n in plat.items())
+            + f" · 제외·대기 {len(other)}건 (Reddit {reddit}건은 수집 환경 접근 차단) · 한 의견이 여러 유형에 걸치면 각각 집계"))
+    _opinion_chart(v)
+    rep = v[v["opinion_id"].isin(rs["rep_opinions"]) & (v["sentiment"] != "긍정")].sort_values("published_date", ascending=False).head(2)
+    if not rep.empty:
+        html(f'<div class="ow-grid2">{"".join(_opinion_card(r) for _, r in rep.iterrows())}</div>')
+    p = rs["problem"]
+    html('<div class="ox-cause">' + '<i>→</i>'.join(
+        f'<div class="{f.get("kind", "hypo")}"><small>{KIND_TXT[f.get("kind", "hypo")]}</small><b>{escape(f["step"])}</b></div>'
+        for f in p["flow"]) + "</div>")
+    st.caption("정보 과부하·전투 이해 실패는 의견으로 확인 · 반복 패배와 이탈의 연결은 아직 확인하지 않음")
+    with st.expander(f"유저 의견 {len(v)}건 전체 · 원문 링크 · 검색 · 표본과 분류 기준"):
+        _opinions_all(rs, ops)
+    with st.expander(f"원인 {len(p['flow'])}단계 근거·검증 지표 · 다른 원인 {len(p['alternatives'])}가지"):
+        _cause_detail(p, v, code_counts(v))
+    with st.expander(f"블리자드 기존 지원 {len(rs['official'])}건 · 넥슨 퍼블리싱 범위"):
+        _official_detail(rs, kp)
+    with st.expander("시장 지표 (Steam 동시접속 · 한국 PC방 점유율) · 원자료 — 복귀 이탈과 인과 연결 안 함"):
+        c1, c2 = st.columns(2, gap="medium")
+        with c1:
+            _steam_chart(steam)
+        with c2:
+            _pc_chart(pc)
+        _metric_sources(pc)
+
+
+# ----------------------------------------------------------------------
+# 탭 03 · 섹션 05 PROJECT RE:START
+def _t3_restart(rs: dict, ops: pd.DataFrame, heroes: dict, tl: pd.DataFrame, statuses: dict, plan: dict) -> None:
+    v = ops[ops["verified"]]
+    cc = code_counts(v)
+    h("신규와 복귀를 나눠, 지금 필요한 정보만 먼저 보여 준다", "mock", num="05", name="신규·복귀 유저 개선 전략 — PROJECT RE:START",
+      lead="영웅·밸런스·매칭은 바꾸지 않는다 · 모든 안내는 끌 수 있다 · 기대 효과는 검증 전")
+    rows = [
+        ("신규·복귀 구분 적응 경로", "신규와 복귀 유저가 같은 첫 화면에서 시작 (복귀 메인 화면에 변경점 안내 없음)",
+         "접속 이력으로 신규·복귀를 나눠 첫 안내를 다르게", "90일 이상 미접속 = 복귀 → A · 신규 → C · 둘 다 끄기 가능",
+         "필요 없는 안내를 줄이고 필요한 정보부터", "경로별 D7 잔존율 · 안내 끄기 비율"),
+        ("A 복귀 브리핑", "무엇이 바뀌었는지 모른 채 경기 시작", "마지막 접속일 이후 바뀐 영웅·시스템만 3분 요약",
+         "접속 직후 1회 · 3단계 카드 · 메뉴에서 다시 보기", "첫 경기 전 변경점 인지", "복귀 D7 (주요) · 브리핑 완료율"),
+        ("기존 플레이 영웅 기반 추천", "하던 영웅이 바뀌었거나 새 영웅을 모른다", "과거 주로 한 역할·영웅 기준으로 비슷한 영웅 1~2명 추천",
+         "브리핑 마지막 단계에 노출 · 연습장 바로가기", "새 영웅을 시도할 출발점", "추천 영웅 플레이율 · 첫 3경기 내 이탈"),
+        ("B 전투 학습 카드", "왜 졌는지, 상대 기술에 어떻게 대응할지 모른다", "경기 후 어려웠던 상대를 골라 핵심 기술·대처법 확인",
+         "유저가 직접 고르는 수동형 MVP · 하루 표시 횟수 조절", "같은 상대에게 반복되는 패배 감소", "카드 사용률 · 재대결 생존 시간"),
+        ("C 첫 10경기 학습 미션", "무엇부터 익힐지 모른다 · 현재 과제는 'N경기 완료' 횟수형", "역할·기술 → 상대 대응 → 팀 플레이 순서의 미션",
+         "1~3·4~6·7~10경기 단계 · 승패 무관 · 외형 보상만", "학습 순서가 생겨 초반 적응", "신규 D7 (주요) · 10경기 완료율"),
+        ("복귀 초기 부담 완화", f"복귀 직후 변경점과 실력 격차가 한꺼번에 (매칭·실력 차이 의견 {int(cc.get('매칭·실력 차이', 0))}건)",
+         "복귀 유저도 C 미션을 선택 참여 · 브리핑·카드·미션 모두 선택형", "강제 노출 없음 · 영웅·밸런스·매칭 변경 없음",
+         "첫 주 부담 완화", "복귀 첫 3경기 이탈 · 미션 끄기 비율"),
+    ]
+    table(["전략", "문제", "개선 방안", "운영 방식", "기대 효과 (검증 전)", "측정 KPI"],
+          [[f"<b>{escape(a)}</b>", *[escape(x) for x in r]] for a, *r in rows], cls="ox-strat6")
+    st.caption("A·B·C는 기존 시안 · '구분 적응 경로'와 '기존 플레이 영웅 기반 추천', '복귀 초기 부담 완화'는 A·C 운영 방식을 구체화한 항목")
+    t = st.tabs(["A 복귀 브리핑", "C 첫 10경기 미션", "B 전투 학습 카드"])
+    with t[0]:
+        _proto_a(heroes, tl, statuses)
+    with t[1]:
+        _proto_c(statuses)
+    with t[2]:
+        _proto_b(heroes, statuses)
+    with st.expander("전략 A~D 상세 · 대상 · 작동 흐름 · 부작용 · 근거 의견"):
+        _strategy_tables(rs, ops)
+    with st.expander("우선순위 근거 · RICE 점수 · 대안(영웅 선택 제한안) 비교"):
+        _priority_detail(rs, plan)
+
+
+# ----------------------------------------------------------------------
+# 탭 04 · 섹션 06 기존 스킨 BM 분석
+def _t4_skin_bm(bz: dict) -> None:
+    ex = bz["existing_bm"]
+    h("영웅마다 스킨 수가 다르고, 묶음 상품은 구성이 고정돼 있다", "real", num="06", name="기존 스킨 BM 분석",
+      lead=escape(bz["capture_note"]) + " · 원화 가격은 캡처에 없어 코인·프리즘 단위로만 적는다")
+    _pair(_fig(bz, "battle_pass"), _fig(bz, "store_main"))
+    html(_facts(["배틀 패스: '프리미엄으로 업그레이드해 즉시 3개의 보상을 잠금 해제' 문구 · 보상마다 잠금 표시와 숫자(14·12·8)",
+                 "상점 추천: 묶음 상품 15개를 한 번에 6,900 코인 (정가 9,500 · 27% 할인) · 구성은 고를 수 없음 · 새로고침 6일 남음",
+                 "상점 탭: 추천 · 할인 중 · 신화 · 시즌 · 재출시 패스 · 이스포츠 · 맞춤 추천"]))
+
+    h("같은 화면에서도 영웅별 스킨 수와 가격대가 다르다", "real")
+    _pair(_fig(bz, "kiriko_skins"), _fig(bz, "mercy_skins"))
+    table(["", "키리코", "메르시"], [
+        ["스킨 수 표기", "<b>1/11</b>", "<b>15/25</b>"],
+        ["목록에 보이는 가격", "1,900 코인 4종 · 1,000 코인 1종 · 300 코인 4종 · 프리즘 1종(신화)", "보이는 항목에 가격 표기 없음"],
+        ["획득 경로 문구", "점쟁이(전설): 전리품 상자로 잠금 해제", "용기수(전설): 가끔 상점에서 획득 가능"],
+    ], cls="ox-cmp")
+    st.caption("출시 시기가 다른 영웅이라 스킨 수 차이에는 출시 기간 영향이 섞여 있다 · 일부 1,900 항목은 다른 코인 아이콘으로 표기")
+
+    h("신화 스킨은 이미 '단계별 해금' 구조다: 50 → 10 → 10 → 10 프리즘", "real")
+    _pair(_fig(bz, "mythic_roadhog"), _fig(bz, "mythic_wuyang"))
+    html(_facts(["로드호그 '과거의 기사'와 우양 '용의 협객' 모두 4단계 · 1레벨 50, 2~4레벨 각 10 = 총 80 프리즘",
+                 "단계마다 추가: 1레벨 기술 시각 효과·마스크/머리카락·색상 → 2레벨 마스크/머리카락 2종 → 3레벨 색상 2종 → 4레벨 스킨 시각 효과",
+                 "'모든 레벨 잠금 해제' 버튼으로 한 번에 구매 가능"]))
+    html('<div class="ox-purpose"><span>BM 판단</span>신화 스킨이 이미 단계 해금 구조라 이전에 검토한 \'성장형 스킨\'은 겹쳐 제외했다. '
+         '대신 <b>상품이 적은 영웅의 수요 확인(YOUR HERO)</b>과 <b>고정형 묶음의 선택권 보완(YOUR CHOICE)</b>을 제안한다.</div>')
+    with st.expander("판매 상품 8종 정리 · 캡처에서 확인한 내용만"):
+        table(["상품", "판매 방식", "가격", "구성·해금 구조", "근거 화면"],
+              [[f"<b>{escape(p['name'])}</b>", escape(p["sale"]), escape(p["price"]), escape(p["unlock"]), escape(p["source"])]
+               for p in ex["products"]], cls="ox-bmt")
+        st.caption(ex["note"])
+
+
+# ----------------------------------------------------------------------
+# 탭 05 · 섹션 07 YOUR HERO · 08 YOUR CHOICE
+def _bm_block(bz: dict, key: str, img: str, num: str) -> None:
+    b = bz[key]
+    h(f"{b['title']} {b['slogan']}", "mock", num=num, name=f"신규 BM 제안 — {b['title'].rstrip('.')}", lead=escape(b["kind"]))
+    html(f'<div class="ox-bm">{_fig(bz, img, b.get("image_note", ""))}</div>')
+    html(f'<div class="ox-purpose"><span>기획 목적</span>{escape(b["purpose"])}</div>')
+
+
+def _t5_new_bm(bz: dict) -> None:
+    hero, ch = bz["your_hero"], bz["your_choice"]
+    _bm_block(bz, "your_hero", "your_hero", "07")
+    html('<div class="ox-cols3">'
+         '<div><b>운영 구조</b><ol>' + "".join(f"<li><em>{escape(s['t'])}</em> {escape(s['d'])}</li>" for s in hero["steps"]) + "</ol></div>"
+         f'<div><b>기대 효과</b>{bullets(hero["effects"])}</div><div><b>측정 KPI</b>{bullets(hero["kpis"])}</div></div>')
+
+    from gamepulse.sim.ow_business import tier_prices
+    _bm_block(bz, "your_choice", "your_choice", "08")
+    prices = tier_prices(ch)
+    table(["구분", "할인율", "예시 가격", "정가 합계 대비"],
+          [[f"<b>{escape(t['name'])}</b>", f"{t['disc']}%" if t["disc"] else "없음", f"<b>{p:,}원</b>",
+            f"{t['n'] * ch['base_price']:,}원 − {t['n'] * ch['base_price'] - p:,}원" if t["disc"] else "—"]
+           for t, p in zip(ch["tiers"], prices)], cls="ox-price")
+    st.caption(f"{ch['price_note']} · 가격 = 기본 {ch['base_price']:,}원 × 스킨 수 × (1 − 할인율)")
+    html('<div class="ox-cols3">'
+         f'<div><b>운영 방식</b>{bullets(ch["ops"])}</div><div><b>기대 효과</b>{bullets(ch["effects"])}</div>'
+         f'<div><b>측정 KPI</b>{bullets(ch["kpis"])}</div></div>')
+
+
+# ----------------------------------------------------------------------
+# 탭 06 · 섹션 09 KPI 및 사업성 시뮬레이션
+SIM_KEYS = "bz_"
+PKG_KEYS = "pk_"
+
+
+def _sim_apply(values: dict, prefix: str = SIM_KEYS) -> None:
+    for k, v in values.items():
+        st.session_state[prefix + k] = v
+
+
+def _t6_business(rs: dict, plan: dict, bz: dict) -> None:
+    seg = plan["seg"]
+    rr, nw = seg["복귀"], seg["신규"]
+    h("복귀율과 매출은 지표를 나눠서 판단한다", "mock", num="09", name="KPI 및 사업성 시뮬레이션")
+    table(["트랙", "지표", "기준", "판단"], [
+        ["<b>복귀율</b> · RE:START A", "복귀 D7 잔존율", f"{rr['base']['D7']:.0f}% → {rr['base']['D7'] + rr['mde']['D7']:.0f}% (목표·가정 +{rr['mde']['D7']:.1f}%p)", "95% 신뢰구간 하한 &gt; 0 이고 목표 이상이면 확대"],
+        ["<b>복귀율</b> · RE:START C", "신규 D7 잔존율", f"{nw['base']['D7']:.0f}% → {nw['base']['D7'] + nw['mde']['D7']:.0f}% (목표·가정 +{nw['mde']['D7']:.1f}%p)", "A 결과 후 실험 2로 판정"],
+        ["<b>매출</b> · YOUR CHOICE", "패키지 구매 전환율 · 평균 결제 금액", "판매 테스트에서 측정 (목표값 미정)", "개별 스킨 잠식을 빼고도 순증일 때 확대"],
+        ["<b>매출</b> · YOUR HERO", "투표 참여율 · 참여 유저 구매 전환율", "투표 파일럿에서 측정 (목표값 미정)", "제작 비용 대비 예상 수익이 남을 때 제작"],
+    ], cls="ox-kpit")
+    _pkg_sim(bz)
+    _biz_sim(bz)
+    with st.expander("A/B 실험 설계 · KPI 정의 10개 · 표본·일정 · 판단 기준"):
+        _kpi_detail(rs, plan)
+    res_box = st.expander("잔존율 시뮬레이션 결과 · D7·D30 · 첫 10경기 퍼널 · DAU (가정)")
+    with st.expander("잔존율 시뮬레이션 설정 (가정값)"):
+        inputs = _sim_inputs(rs)
+    with res_box:
+        _sim_results(rs, plan, inputs)
+
+
+def pkg_result_html(r: dict) -> str:
+    if not r["ok"]:
+        return (f'<div class="ox-verdict loss"><b>구매 비중 합계 {r["share_total"]:g}%</b> → 100%가 되도록 고쳐 주세요'
+                '<small>개별 · 3개 · 5개 패키지 비중의 합이 100%일 때만 계산합니다.</small></div>')
+    pct = "—" if r["diff_pct"] is None else f"{r['diff_pct']:+.1f}%"
+    sign = "neg" if r["diff"] < 0 else "pos"
+    disc = "—" if r["disc_pct"] is None else f"{r['disc_pct']:.1f}%"
+    return (f'<div class="ox-res"><div><span>예상 구매자</span><b>{r["buyers"]:,.0f}명</b><small>노출 × 개선 후 전환율</small></div>'
+            f'<div><span>평균 결제 금액</span><b>{r["avg"]:,.0f}원</b><small>구매 비중 × 패키지 가격</small></div>'
+            f'<div><span>예상 매출</span><b>{won(r["rev1"])}</b><small>기존 {won(r["rev0"])}</small></div>'
+            f'<div class="{sign}"><span>기존 대비 증감</span><b>{won(r["diff"])}</b><small>증감률 {pct}</small></div></div>'
+            f'<p class="ox-note">할인으로 덜 받는 금액 {won(r["discount"])} (정가 기준 매출의 {disc}) · 판매 스킨 {r["skins"]:,.0f}개 · '
+            '기존 매출은 구매자가 개별 스킨 1개를 산다고 가정했다. 이미 여러 개를 개별로 사던 유저가 패키지로 옮기면 1인당 결제액은 오히려 줄 수 있다.</p>')
+
+
+def _pkg_sim(bz: dict) -> None:
+    from gamepulse.sim.ow_business import package_sim
+    ch = bz["your_choice"]
+    s = ch["sim"]
+    for k, v in s["defaults"].items():
+        st.session_state.setdefault(PKG_KEYS + k, v)
+    h("YOUR CHOICE 시뮬레이터: 전환율과 패키지 비중이 매출을 바꾼다", "sim", escape(s["note"]))
+    html('<div class="ox-js-start" data-demo="pkg"></div>')
+    box = st.container()
+    cols = st.columns(3)
+    for j, f in enumerate(s["fields"]):
+        fmt = "%.1f" if f["step"] < 1 else "%d"
+        cast = float if f["step"] < 1 else int
+        cols[j % 3].number_input(f"{f['label']} ({f['unit']})", min_value=cast(f["min"]), max_value=cast(f["max"]),
+                                 step=cast(f["step"]), format=fmt, key=PKG_KEYS + f["key"])
+    st.button("초기화", key="pk_reset", on_click=_sim_apply, args=(dict(s["defaults"]), PKG_KEYS))
+    r = package_sim(ch, {k: st.session_state[PKG_KEYS + k] for k in s["defaults"]})
+    with box:
+        html(pkg_result_html(r))
+    html('<div class="ox-js-end"></div>')
+
+
+def _biz_sim(bz: dict) -> None:
+    from gamepulse.sim.ow_business import GUARD_TEXT, VERDICT_TEXT, fields, preset, simulate
+    sim = bz["simulation"]
+    fs = fields(sim)
+    for k, v in sim["defaults"].items():
+        st.session_state.setdefault(SIM_KEYS + k, v)
+    h("신규 스킨 + RE:START 손익: 구매 전환율이 손익을 가른다", "sim", escape(sim["note"]) + " · 신규 스킨은 YOUR HERO 출시 스킨 기준")
+    html('<div class="ox-js-start" data-demo="biz"></div>')
+    result_box = st.container()
+    cols = st.columns(4)
+    for i, name in enumerate(sim["presets"]):
+        cols[i].button(name, key=f"bz_preset_{i}", on_click=_sim_apply, args=(preset(sim, name),), width="stretch")
+    cols[3].button("초기화", key="bz_reset", on_click=_sim_apply, args=(dict(sim["defaults"]),), width="stretch")
+
+    def num(f, col):
+        fmt = "%.1f" if f["step"] < 1 else "%d"
+        cast = float if f["step"] < 1 else int
+        hi = cast(f["max"])
+        if f["key"] == "d30_uplift":            # D30 개선폭 ≤ D7 개선폭
+            hi = cast(st.session_state[SIM_KEYS + "d7_uplift"])
+            st.session_state[SIM_KEYS + "d30_uplift"] = min(st.session_state[SIM_KEYS + "d30_uplift"], hi)
+        col.number_input(f"{f['label']} ({f['unit']})", min_value=cast(f["min"]), max_value=hi, step=cast(f["step"]),
+                         format=fmt, key=SIM_KEYS + f["key"], help=f["help"])
+    basic = [f for f in sim["fields"] if f.get("basic")]
+    for f, col in zip(basic, st.columns(len(basic))):
+        num(f, col)
+    with st.expander("고급 설정 · 잠식률 · 잔존율 개선폭 · PUR · ARPPU · 수수료 · 개발비 · 기타 운영비"):
+        adv = [f for f in sim["fields"] if not f.get("basic")]
+        for j in range(0, len(adv), 3):
+            for f, col in zip(adv[j:j + 3], st.columns(3)):
+                num(f, col)
+    r = simulate(sim, {k: st.session_state[SIM_KEYS + k] for k in fs})
+    with result_box:
+        html(biz_result_html(r, VERDICT_TEXT, GUARD_TEXT))
+    _biz_charts(sim, r)
+    with st.expander("계산 순서 · 공식 · 현재 값"):
+        table(["단계", "계산", "현재 값"], biz_steps(r))
+        st.markdown("- 기간: 매출·ARPPU·비용 모두 **분기(91일)** 기준\n"
+                    "- 수수료는 유저 결제액(스킨 순증 매출 + 잔존 추가 매출)에만 적용하고, 비용에는 적용하지 않는다\n"
+                    "- 잔존 추가 매출은 스킨 매출과 따로 계산한다 (스킨 구매 여부와 무관한 RE:START 잔존 효과)\n"
+                    "- D30 잔존 유저는 D7 잔존 유저에 포함되므로 D7·D30을 더하지 않는다 · D7까지만 남은 유저는 분기 중 30일만 활성으로 본다\n"
+                    "- 손익분기 구매 전환율은 위 이익 계산식에서 이익 = 0 이 되는 전환율을 직접 푼 값이다")
+    html('<div class="ox-js-end"></div>')
+    with st.expander("가정값 출처 · 기본 · 보수적 · 낙관적"):
+        names = list(sim["presets"])
+        table(["변수", *names, "설명"],
+              [[f"{escape(f['label'])} ({escape(f['unit'])})", *[f"{preset(sim, n)[f['key']]:,}" for n in names], escape(f["help"])]
+               for f in sim["fields"]])
+
+
+# ----------------------------------------------------------------------
+# 탭 07 · 섹션 10 최종 인사이트 및 실행 판단
+def _t7_plan(rs: dict, g: dict, statuses: dict, plan: dict, ops: pd.DataFrame, bz: dict) -> None:
+    sc = plan["sched"]
+    r = plan["seg"]["복귀"]
+    v = ops[ops["verified"]]
+    b = _biz_base(bz)
+    h("복귀율은 A 파일럿부터, 매출은 제작비가 없는 YOUR CHOICE 테스트부터", "mock", num="10",
+      name="최종 인사이트 및 사업PM 관점의 실행 판단")
+    html('<ol class="ox-ins">'
+         f'<li><b>진입장벽은 확인됐고, 이탈과의 연결은 아직이다.</b> 의견 {len(v)}건 중 {_learn(v)}건과 실제 화면이 학습 부담을 보여 주지만 '
+         '이탈 원인인지는 로그와 A/B 테스트로 확인한다.</li>'
+         '<li><b>스킨 상품 구성 차이는 화면으로 확인됐다.</b> 키리코 11종과 메르시 25종, 15개 고정 묶음은 사실이고, '
+         '유저 선호와 어긋나는지는 영웅별 플레이·구매 데이터로 확인한다.</li>'
+         f'<li><b>제작비가 드는 상품은 수요 확인이 먼저다.</b> 가정 기준 신규 스킨 손익분기 전환율은 '
+         + (f"{b['bep']:.1f}%" if b["bep_state"] == "ok" else "달성 불가") +
+         '로 높다. 그래서 YOUR HERO는 투표로 수요를 본 뒤 제작하고, 기존 스킨을 쓰는 YOUR CHOICE를 먼저 시험한다.</li></ol>')
+    table(["트랙", "먼저 할 일", "확대 · 중단 기준"], [
+        ["<b>복귀율</b>", f"A 복귀 브리핑 {sc['decision'] + 2}주 파일럿 (복귀 유저 50:50)", f"복귀 D7 +{r['mde']['D7']:.1f}%p 이상 유의 → C·B 확대 · 미달 시 수정 후 재실험"],
+        ["<b>매출 ①</b>", "YOUR CHOICE 소규모 판매 테스트 (기존 스킨 대상 · 할인율 비교)", "패키지 전환율·평균 결제 금액 상승, 개별 스킨 잠식 제외 후 순증 → 확대"],
+        ["<b>매출 ②</b>", "YOUR HERO 투표 파일럿 (제작 전)", "투표 참여율·영웅별 선호 확인 → 제작 비용 대비 수익이 남는 영웅만 제작"],
+    ], cls="ox-two")
+    h(f"RE:START 파일럿 일정 · 준비 2주 + 운영 {sc['decision']}주")
+    weeks = [("준비", "-2~0주", "이벤트 로그 · 실험 배정 · 기능 스위치 · CS 문구"),
+             ("실험 1", f"{sc['e1_assign'][0]}~{sc['e1_assign'][1]}주", "A 복귀 브리핑 배정 (복귀 유저 50:50)"),
+             ("실험 2", f"{sc['e2_assign'][0]}~{sc['e2_assign'][1]}주", f"C 학습 미션 배정 · {sc['e1_d7']}주차 A의 D7 1차 판정"),
+             ("실험 3", f"{sc['e3'][0]}~{sc['e3'][1]}주", f"B 수동형 사용성 · {sc['e1_d30']}주차 A의 D30 → 확대 확정"),
+             ("결정", f"{sc['decision']}주", "C의 D30 확인 · 확대·수정·중단 최종 결정")]
+    html('<div class="ox-gantt">' + "".join(f'<div><em>{escape(a)}</em><b>{escape(w)}</b><span>{escape(t)}</span></div>'
+                                            for a, w, t in weeks) + "</div>")
+    st.caption("YOUR CHOICE·YOUR HERO 일정은 기획 확정 후 정한다.")
+    with st.expander("RE:START 확대 · 수정 · 중단 기준 (4단계)"):
+        table(["결과", "기준"], [[f"<b>{escape(d['result'])}</b>", escape(d["rule"])] for d in rs["decision_rules"]])
+    with st.expander("대표 전략 A 요약 · 우선순위 · 개발·운영 비용 검산"):
+        _cost_detail(rs, plan, ops)
+    with st.expander("복귀 유저 정의 · 실패 대응 · 일정 민감도"):
+        _failure_detail(rs, plan)
+    with st.expander("MVP 범위 · 현실적인 제약과 대응 · 담당 · 이벤트 로그 · 롤백 기준"):
+        _ops_detail(rs)
+    with st.expander("한계 · 고지"):
+        note(rs["summary"]["limit"])
+        st.caption(f"{rs['cover']['footnote']} · {rs['disclaimer']} · YOUR HERO·YOUR CHOICE와 가격은 자체 기획 시안 · 자료 확인일 {COLLECTED_AT}")
+
+    if os.getenv("GAMEPULSE_SHOW_ARCHIVE") != "1":   # v0.1 예시 분석은 로컬 보관함에서만 (archive/README.md)
+        return
+    with st.expander("보관함 · v0.1 분석 (가상 예시 데이터 · 비공개)"):
+        t = st.tabs(["문제 정의", "불만 유형(가상)", "원인 가설", "개선 전략", "KPI", "심층 분석"])
+        with t[0]:
+            game_page._problem(g)
+        with t[1]:
+            game_page._complaints(g)
+        with t[2]:
+            game_page._hypotheses(g)
+        with t[3]:
+            game_page._strategies(g)
+        with t[4]:
+            game_page._kpis(g)
+        with t[5]:
+            DEEP_DIVES["overwatch"]()

@@ -1885,7 +1885,9 @@ a.pn-btn:hover {{ background: #EAB308; }}
 
 from gamepulse.ui.redesign_css import OW_REDESIGN_CSS  # noqa: E402  (2026-11 개편 · 맨 뒤에 붙여 기존 규칙보다 우선)
 
-CSS = CSS.rsplit("</style>", 1)[0] + OW_REDESIGN_CSS + "</style>\n"
+from gamepulse.ui.theme import theme_css  # noqa: E402  (게임별 테마 색상 · 해당 게임 페이지에만 적용)
+
+CSS = CSS.rsplit("</style>", 1)[0] + OW_REDESIGN_CSS + theme_css() + "</style>\n"
 
 
 def inject_css() -> None:

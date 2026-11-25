@@ -12,12 +12,12 @@ body:has(.gp-ow-page), .stApp:has(.gp-ow-page), .stApp:has(.gp-ow-page) [data-te
 body:has(.gp-ow-page) .sx-exp, .stApp:has(.gp-ow-page) [data-testid="stExpander"] details { background: #FFFFFF !important; border-color: var(--ox-line) !important; }
 
 /* 첫 화면: 장식 없이 질문 + 실제 화면 */
-.owx-hero { background: #FFFFFF !important; border: 0 !important; border-radius: 0 !important; padding: 0.4rem 0 1.2rem !important;
+:root:has(.gp-ow-page) .owx-hero { background: #FFFFFF !important; border: 0 !important; border-radius: 0 !important; padding: 0.4rem 0 1.2rem !important;
   border-bottom: 1px solid var(--ox-line) !important; margin-bottom: 1rem !important; }
-.owx-hero .ow-cover-t { color: var(--ow-ink) !important; font-weight: 800; letter-spacing: 0.08em; font-size: 0.9rem; }
-.owx-q { color: var(--ox-text) !important; font-weight: 800 !important; }
-.owx-s { color: var(--ox-muted) !important; font-size: 1.02rem !important; }
-.owx-img img { box-shadow: none !important; border: 1px solid var(--ox-line); border-radius: 10px !important; }
+:root:has(.gp-ow-page) .owx-hero .ow-cover-t { color: var(--ow-ink) !important; font-weight: 800; letter-spacing: 0.08em; font-size: 0.9rem; }
+:root:has(.gp-ow-page) .owx-q { color: var(--ox-text) !important; font-weight: 800 !important; }
+:root:has(.gp-ow-page) .owx-s { color: var(--ox-muted) !important; font-size: 1.02rem !important; }
+:root:has(.gp-ow-page) .owx-img img { box-shadow: none !important; border: 1px solid var(--ox-line); border-radius: 10px !important; }
 
 /* 탭: 활성 탭만 포인트 컬러 */
 body:has(.gp-ow-page) .ow-tabbar { display: flex !important; flex-wrap: wrap; gap: 0.4rem !important; }
@@ -248,4 +248,47 @@ body:has(.gp-ow-page) .sx-exp[open] > summary { color: var(--ox-text) !important
 OW_REDESIGN_CSS += """
 .ox-slot.skin, .ox-img.skin { aspect-ratio: 4 / 3; max-height: 15rem; }
 .ox-slots .ox-slot { aspect-ratio: 16 / 10; }
+"""
+
+# 3차 (최종): 섹션 번호 · 이미지 확대 · 좌우 비교 · 신규 BM 블록 · 여백 정리
+OW_REDESIGN_CSS += """
+.ox-h { margin: 2.6rem 0 0.8rem !important; }
+.ox-h.n::before { display: none; }
+.ox-secn { font-size: 0.82rem; font-weight: 700; color: var(--ox-muted); margin-bottom: 0.35rem; letter-spacing: 0.01em; }
+.ox-secn b { color: var(--ow-ink); font-weight: 900; margin-right: 0.45rem; font-size: 0.95rem; }
+.ox-cover { display: flex !important; align-items: center; gap: 1.6rem; }
+.owx-logo { width: 112px; height: auto; flex: 0 0 auto; }
+.ox-tracks { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; margin-top: 0.6rem; font-size: 0.95rem; color: var(--ox-text); }
+.ox-tracks b { color: var(--ow-ink); margin-right: 0.4rem; }
+.ox-fig { margin: 0.4rem 0 0.6rem; min-width: 0; }
+.ox-fig img { width: 100%; height: auto; display: block; border-radius: 8px; border: 1px solid var(--ox-line); }
+.ox-fig figcaption { font-size: 0.8rem; color: var(--ox-muted); margin-top: 0.35rem; line-height: 1.45; }
+.ox-fig figcaption b { font-weight: 800; margin-right: 0.4rem; color: #2563EB; }
+.ox-fig.plan figcaption b { color: var(--ow-ink); }
+.ox-zoom > summary { list-style: none; cursor: zoom-in; display: block; }
+.ox-zoom > summary::-webkit-details-marker { display: none; } .ox-zoom > summary::marker { content: ""; }
+.ox-zoom[open] > summary { position: fixed; inset: 0; z-index: 100000; background: rgba(17, 24, 39, 0.92); display: flex;
+  align-items: center; justify-content: center; cursor: zoom-out; padding: 2vh 2vw; }
+.ox-zoom[open] > summary img { width: auto; max-width: 96vw; max-height: 94vh; border: 0; border-radius: 4px; }
+.ox-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.9rem; }
+.ox-facts { margin: 0.3rem 0 0.4rem; padding-left: 1.1rem; }
+.ox-facts li { font-size: 0.94rem; color: var(--ox-text); line-height: 1.6; margin-bottom: 0.15rem; }
+.ox-prob { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.6rem; }
+.ox-prob > div { border-top: 3px solid var(--ow-acc); padding-top: 0.7rem; }
+.ox-prob > div > span { display: block; font-size: 1rem; font-weight: 800; color: var(--ox-text); margin-bottom: 0.3rem; }
+.ox-prob small { display: block; font-size: 0.82rem; color: var(--ox-muted); line-height: 1.5; }
+.ox-bm { max-width: 900px; }
+.ox-cols3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.4rem; margin: 0.6rem 0 0.4rem; }
+.ox-cols3 > div > b { display: block; font-size: 0.9rem; font-weight: 800; color: var(--ow-ink); margin-bottom: 0.3rem; }
+.ox-cols3 ul, .ox-cols3 ol { margin: 0; padding-left: 1.1rem; } .ox-cols3 li { font-size: 0.93rem; color: var(--ox-text); line-height: 1.6; }
+.ox-cols3 em { font-style: normal; font-weight: 800; margin-right: 0.3rem; }
+.ox-ins { margin: 0.2rem 0 1rem; padding-left: 1.3rem; } .ox-ins li { font-size: 0.97rem; color: var(--ox-text); line-height: 1.65; margin-bottom: 0.5rem; }
+.ox-fields.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ox-strat6 td { font-size: 0.88rem; vertical-align: top; } .ox-strat6 td:first-child { white-space: nowrap; }
+@media (max-width: 760px) {
+  .ox-cover { flex-direction: column; align-items: flex-start; gap: 0.8rem; } .owx-logo { width: 72px; }
+  .ox-pair, .ox-prob, .ox-cols3 { grid-template-columns: 1fr; }
+  .ox-fields.three { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ox-strat6 td:first-child { white-space: normal; }
+}
 """

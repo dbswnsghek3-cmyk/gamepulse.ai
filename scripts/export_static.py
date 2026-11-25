@@ -459,7 +459,7 @@ def assistant_answers(kind: str, base: AppTest) -> tuple[str, dict]:
 
 def overwatch_body(kind: str) -> tuple[str, int]:
     body, charts = tabbed_body("overwatch", OW_TABS, "ow_tab", kind, overwatch_extras())
-    # 성장형 스킨 · 사업 효과 시뮬레이터: Streamlit 위젯 구역을 같은 계산식의 JavaScript 데모로 교체
+    # YOUR CHOICE · 신규 스킨 손익 시뮬레이터: Streamlit 위젯 구역을 같은 계산식의 JavaScript 데모로 교체
     from ow_static_demos import demos as ow_demos
     dm = ow_demos(ROOT)
     body, n = re.subn(r'<div class="ox-js-start" data-demo="(\w+)"></div>.*?<div class="ox-js-end"></div>',
@@ -799,6 +799,8 @@ def main() -> int:
     for pid, fname, name, kind in PAGES:
         if pid in ("overwatch", "pubg", "fconline", "dnf"):
             body, n_charts = {"overwatch": overwatch_body, "pubg": pubg_body, "fconline": fconline_body, "dnf": dnf_body}[pid](kind)
+            from gamepulse.ui.theme import recolor_scripts
+            body = recolor_scripts(body, pid)   # JavaScript 데모·차트의 기본 파랑 → 게임 테마 색
             desc = {"overwatch": GAMES[pid].get("theme", name), "pubg": "신규 유저 정착과 휴면 유저 재활성화 전략",
                     "fconline": "구단 가치 하락 · 강화 리스크 · 키보드 vs 패드 경쟁 공정성",
                     "dnf": "시즌제 성장 가치 · 랜덤 보상과 성취감 · 확률 보상 + 누적 성장 보장"}[pid]
