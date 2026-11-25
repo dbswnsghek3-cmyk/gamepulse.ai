@@ -100,9 +100,9 @@ def verdict(conv: float, profit: float, bep: float | None, state: str) -> str:
 
 
 VERDICT_TEXT = {
-    "loss": ("예상 적자", "비용 절감과 소규모 파일럿을 먼저 검토한다"),
+    "loss": ("손익분기 전", "제작 전에 투표·소규모 파일럿으로 수요와 구매 전환율부터 확인한다"),
     "near": ("손익분기 근접", "구매 전환율 검증을 우선한다"),
-    "profit": ("예상 흑자", "단계적 확대를 검토한다"),
+    "profit": ("손익분기 초과", "보호 지표를 확인하며 단계적 확대를 검토한다"),
 }
 GUARD_TEXT = "흑자가 예상되더라도 게임플레이 보호 지표와 기존 상품 매출 잠식 여부를 검증한 뒤 확대한다."
 
@@ -159,3 +159,40 @@ def package_sim(cfg: dict, x0: dict) -> dict:
                diff_pct=(rev1 - rev0) / rev0 * 100 if rev0 > 0 else None,
                disc_pct=disc / (rev1 + disc) * 100 if (rev1 + disc) > 0 else None)
     return out
+
+
+# ----------------------------------------------------------------------
+# 기존 대비 개선 효과 시뮬레이터 (마케팅·BM 전략의 목표 가정 · 분기)
+#   복귀 유저     = 캠페인 노출 휴면 유저 × 복귀율
+#   D7·D30 잔존   = 복귀 유저 × 각 잔존율 (D30 ≤ D7 · D30 잔존 유저는 D7 잔존 유저에 포함)
+#   구매 대상     = 기존 활성 유저 + D7까지 남은 복귀 유저
+#   예상 구매자   = 구매 대상 × 구매 전환율
+#   예상 매출     = 예상 구매자 × 평균 결제 금액
+#   기존 대비     = 개선 − 기존 (같은 노출·활성 유저 기준)
+
+
+def improve_sim(cfg: dict, x0: dict) -> dict:
+    lim = {f["key"]: f for f in cfg["pop"]}
+    for m in cfg["metrics"]:
+        lim[m["k0"]] = lim[m["k1"]] = m
+    x = {}
+    for k, f in lim.items():
+        try:
+            v = float(x0.get(k, cfg["defaults"][k]))
+        except (TypeError, ValueError):
+            v = float(cfg["defaults"][k])
+        if math.isnan(v):
+            v = float(cfg["defaults"][k])
+        x[k] = min(max(v, f["min"]), f["max"])
+    for s in ("0", "1"):
+        x["d30_" + s] = min(x["d30_" + s], x["d7_" + s])
+
+    def side(s: str) -> dict:
+        ret = x["exposed"] * x["ret" + s] / 100
+        d7 = ret * x["d7_" + s] / 100
+        d30 = ret * x["d30_" + s] / 100
+        buyers = (x["active"] + d7) * x["conv" + s] / 100
+        return {"ret": ret, "d7": d7, "d30": d30, "buyers": buyers, "rev": buyers * x["avg" + s]}
+    b, a = side("0"), side("1")
+    diff = a["rev"] - b["rev"]
+    return {"x": x, "base": b, "new": a, "diff": diff, "pct": diff / b["rev"] * 100 if b["rev"] > 0 else None}

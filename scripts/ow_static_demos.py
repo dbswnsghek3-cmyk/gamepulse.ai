@@ -83,14 +83,14 @@ def biz_demo(root: Path) -> str:
 <div class="ox-fields basic">{basic}</div>
 <details class="sx-exp ox-adv"><summary>고급 설정 · 잠식률 · 잔존율 개선폭 · PUR · ARPPU · 수수료 · 개발비 · 기타 운영비 <span class="sx-more">펼쳐보기</span></summary>
 <div class="sx-exp-b"><div class="ox-fields">{adv}</div></div></details>
-{chart("oxBizCurve", 340, "구매 전환율에 따른 분기 이익 · 점선 = 손익분기", "만 원 · 파랑 = 이익, 빨강 = 손실")}
+{chart("oxBizCurve", 340, "구매 전환율에 따른 분기 이익 · 점선 = 손익분기", "만 원 · 진한 색 = 이익, 회색 = 손익분기 전")}
 <div class="ox-chart2">{chart("oxBizScen", 320, "보수적 · 기본 · 낙관적 시나리오 이익", "만 원 · 전환율·잠식률·잔존 개선·PUR·ARPPU만 바꾸고 나머지는 현재 입력")}
 {chart("oxBizWf", 320, "총매출에서 이익까지 차감 구조", "만 원 · 파랑 = 더함, 회색 = 뺌")}</div>
 <details class="sx-exp"><summary>계산 순서 · 공식 · 현재 값 <span class="sx-more">펼쳐보기</span></summary><div class="sx-exp-b" id="oxBizSteps"></div></details>
 </div>
 <script>(function(){{
 var C={_j(cfg)}, F={{}}; C.fields.forEach(function(f){{F[f.key]=f;}});
-var BLUE='#2563EB', GRAY='#94A3B8', RED='#DC2626';
+var BLUE='#2563EB', GRAY='#94A3B8', RED='#9CA3AF';
 var box=document.getElementById('oxBiz'), ins=box.querySelectorAll('input[data-k]');
 function won(x){{var a=Math.abs(x), s=x<0?'−':''; if(a>=1e8) return s+(a/1e8).toLocaleString('en-US',{{minimumFractionDigits:2,maximumFractionDigits:2}})+'억 원'; return s+Math.round(a/1e4).toLocaleString('en-US')+'만 원';}}
 function n0(x){{return Math.round(x).toLocaleString('en-US');}}
@@ -118,7 +118,7 @@ function draw(){{
   var t=C.vt[r.v];
   document.getElementById('oxBizRes').innerHTML='<div class="ox-res"><div><span>예상 구매 유저</span><b>'+n0(r.buyers)+'명</b><small>노출 × 구매 전환율</small></div>'
    +'<div><span>순증 매출 (수수료 차감 후)</span><b>'+won(r.net)+'</b><small>스킨 '+won(r.skin)+' + 잔존 '+won(r.ret)+' (차감 전)</small></div>'
-   +'<div class="'+(r.profit<0?'neg':'pos')+'"><span>예상 사업 이익</span><b>'+won(r.profit)+'</b><small>ROI '+(r.roi===null?'—':(r.roi>=0?'+':'')+Math.round(r.roi)+'%')+' · 총비용 '+won(r.cost)+'</small></div>'
+   +'<div class="'+(r.profit<0?'neg':'pos')+'"><span>분기 손익 (가정)</span><b>'+won(r.profit)+'</b><small>ROI '+(r.roi===null?'—':(r.roi>=0?'+':'')+Math.round(r.roi)+'%')+' · 총비용 '+won(r.cost)+'</small></div>'
    +'<div><span>손익분기 구매 전환율</span><b>'+bep+'</b><small>'+bs+'</small></div></div>'
    +'<div class="ox-verdict '+r.v+'"><b>'+t[0]+'</b> → '+t[1]+'<small>'+C.guard+'</small></div>';
   var steps=[['1 예상 구매 유저','노출 유저 × 구매 전환율',n0(r.buyers)+'명'],['2 신규 스킨 총매출','구매 유저 × 판매 가격',won(r.gross)],
@@ -160,5 +160,68 @@ setv(C.defaults); draw();
 }})();</script>"""
 
 
+def imp_demo(root: Path) -> str:
+    """기존 대비 개선 효과 시뮬레이터 · gamepulse/sim/ow_business.improve_sim 과 같은 식."""
+    bz = json.loads((root / "data" / "overwatch" / "business.json").read_text(encoding="utf-8"))
+    c = bz["improvement"]
+    pop = "".join(f'<label class="ox-f"><span>{H.escape(f["label"])} <small>({H.escape(f["unit"])})</small></span>'
+                  f'<input type="number" data-i="{f["key"]}" min="{f["min"]}" max="{f["max"]}" step="{f["step"]}"></label>' for f in c["pop"])
+    rows = "".join(
+        f'<div class="ox-imp-r"><div><b>{H.escape(m["label"])}</b><small>{H.escape(m["why"])}</small></div>'
+        f'<label class="ox-f"><span>기존 <small>({H.escape(m["unit"])})</small></span><input type="number" data-i="{m["k0"]}" min="{m["min"]}" max="{m["max"]}" step="{m["step"]}"></label>'
+        f'<label class="ox-f"><span>개선 <small>({H.escape(m["unit"])})</small></span><input type="number" data-i="{m["k1"]}" min="{m["min"]}" max="{m["max"]}" step="{m["step"]}"></label></div>'
+        for m in c["metrics"])
+    presets = "".join(f'<button type="button" class="ox-btn" data-ipreset="{H.escape(n)}">{H.escape(n)}</button>' for n in c["presets"])
+    chart = lambda i, t, u: (f'<div class="ox-chart"><div class="ow-chart-h"><div class="ow-chart-t">{t} <span class="ox-k sim">가정 시뮬레이션</span></div>'  # noqa: E731
+                             f'<div class="ow-chart-u">{u}</div></div><div id="{i}" class="sx-chart-c" style="height:320px"></div></div>')
+    return f"""<div class="ox-demo-imp" id="oxImp"><div id="oxImpRes"></div>
+<div class="ox-presets">{presets}<button type="button" class="ox-btn" data-ipreset="__reset">초기화</button></div>
+<div class="ox-fields">{pop}</div>{rows}
+<div class="ox-chart2">{chart("oxImpRate", "지표별 기존 vs 개선", "% · 회색 = 기존, 주황 = 개선 (가정)")}{chart("oxImpRev", "분기 예상 매출: 기존 vs 시나리오", "만 원 · 회색 = 기존, 주황 = 개선 시나리오")}</div></div>
+<script>(function(){{
+var C={_j({"pop": c["pop"], "metrics": c["metrics"], "defaults": c["defaults"], "presets": c["presets"]})};
+var BASE='#9CA3AF', IMP='#F99E1A', box=document.getElementById('oxImp'), ins=box.querySelectorAll('input[data-i]'), L={{}};
+C.pop.forEach(function(f){{L[f.key]=f;}}); C.metrics.forEach(function(m){{L[m.k0]=m; L[m.k1]=m;}});
+function won(x){{var a=Math.abs(x), s=x<0?'−':''; if(a>=1e8) return s+(a/1e8).toLocaleString('en-US',{{minimumFractionDigits:2,maximumFractionDigits:2}})+'억 원'; return s+Math.round(a/1e4).toLocaleString('en-US')+'만 원';}}
+function n0(x){{return Math.round(x).toLocaleString('en-US');}}
+function sim(x0){{
+  var x={{}}; Object.keys(L).forEach(function(k){{var v=parseFloat(x0[k]); if(!isFinite(v)) v=C.defaults[k]; x[k]=Math.min(Math.max(v,L[k].min),L[k].max);}});
+  ['0','1'].forEach(function(s){{x['d30_'+s]=Math.min(x['d30_'+s],x['d7_'+s]);}});
+  function side(s){{var ret=x.exposed*x['ret'+s]/100, d7=ret*x['d7_'+s]/100, d30=ret*x['d30_'+s]/100, b=(x.active+d7)*x['conv'+s]/100;
+    return {{ret:ret,d7:d7,d30:d30,buyers:b,rev:b*x['avg'+s]}};}}
+  var b=side('0'), a=side('1'), diff=a.rev-b.rev; return {{x:x,base:b,'new':a,diff:diff,pct:b.rev>0?diff/b.rev*100:null}};
+}}
+function cur(){{var x={{}}; ins.forEach(function(i){{x[i.dataset.i]=i.value;}}); return x;}}
+function setv(x){{ins.forEach(function(i){{i.value=x[i.dataset.i];}});}}
+function lay(yt){{return {{margin:{{l:60,r:16,t:30,b:40}},font:{{size:12}},barmode:'group',yaxis:{{title:yt,tickformat:',',rangemode:'tozero',gridcolor:'#EEF2F7'}},
+  legend:{{orientation:'h',y:1.12,x:0}},plot_bgcolor:'#fff',paper_bgcolor:'#fff'}};}}
+var P={{displayModeBar:false,responsive:true}};
+function draw(){{
+  var r=sim(cur()), x=r.x, b=r.base, a=r['new'];
+  var bb=(a.buyers-b.buyers)*x.avg0, ba=a.buyers*(x.avg1-x.avg0);
+  document.getElementById('oxImpRes').innerHTML='<div class="ox-res"><div><span>예상 구매자</span><b>'+n0(a.buyers)+'명</b><small>기존 '+n0(b.buyers)+'명</small></div>'
+   +'<div><span>평균 결제 금액</span><b>'+n0(x.avg1)+'원</b><small>기존 '+n0(x.avg0)+'원</small></div>'
+   +'<div><span>예상 매출 (분기)</span><b>'+won(a.rev)+'</b><small>기존 '+won(b.rev)+'</small></div>'
+   +'<div class="acc"><span>기존 대비</span><b>'+won(r.diff)+'</b><small>증감률 '+(r.pct===null?'—':(r.pct>=0?'+':'')+r.pct.toFixed(1)+'%')+'</small></div></div>'
+   +'<p class="ox-note">증감 분해 · 구매자 변화 '+won(bb)+' + 평균 결제 금액 변화 '+won(ba)+' · 복귀 유저 '+n0(b.ret)+' → '+n0(a.ret)+'명 · D7 잔존 '+n0(b.d7)+' → '+n0(a.d7)+'명 · D30 잔존 '+n0(b.d30)+' → '+n0(a.d30)+'명</p>';
+  if(!window.Plotly) return;
+  var cats=['복귀율','D7 잔존율','D30 잔존율','구매 전환율'], v0=[x.ret0,x.d7_0,x.d30_0,x.conv0], v1=[x.ret1,x.d7_1,x.d30_1,x.conv1];
+  var L1=lay('%'); L1.yaxis.range=[0,(Math.max.apply(null,v0.concat(v1))||1)*1.25];
+  Plotly.react('oxImpRate',[{{type:'bar',x:cats,y:v0,name:'기존',marker:{{color:BASE}},text:v0.map(function(v){{return v+'%';}}),textposition:'outside',cliponaxis:false}},
+    {{type:'bar',x:cats,y:v1,name:'개선 (가정)',marker:{{color:IMP}},text:v1.map(function(v){{return v+'%';}}),textposition:'outside',cliponaxis:false}}],L1,P);
+  var names=Object.keys(C.presets), revs=[b.rev].concat(names.map(function(n){{var p=Object.assign({{}},C.defaults,C.presets[n]), y=Object.assign({{}},x);
+    Object.keys(p).forEach(function(k){{if(/1$/.test(k)) y[k]=p[k];}}); return sim(y)['new'].rev;}}));
+  var L2=lay('만 원'); L2.showlegend=false; L2.yaxis.range=[0,(Math.max.apply(null,revs)/1e4||1)*1.2];
+  Plotly.react('oxImpRev',[{{type:'bar',x:['기존'].concat(names),y:revs.map(function(v){{return v/1e4;}}),marker:{{color:[BASE].concat(names.map(function(){{return IMP;}}))}},
+    text:revs.map(won),textposition:'outside',cliponaxis:false}}],L2,P);
+}}
+ins.forEach(function(i){{i.addEventListener('input',draw); i.addEventListener('change',function(){{setv(sim(cur()).x); draw();}});}});
+box.querySelectorAll('[data-ipreset]').forEach(function(btn){{btn.addEventListener('click',function(){{var n=btn.dataset.ipreset;
+  setv(n==='__reset'?C.defaults:Object.assign({{}},C.defaults,C.presets[n])); draw();}});}});
+window.oxImpSim=sim;   /* 검증용 */
+setv(C.defaults); draw();
+}})();</script>"""
+
+
 def demos(root: Path) -> dict[str, str]:
-    return {"pkg": pkg_demo(root), "biz": biz_demo(root)}
+    return {"imp": imp_demo(root), "pkg": pkg_demo(root), "biz": biz_demo(root)}

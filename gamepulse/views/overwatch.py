@@ -863,9 +863,7 @@ def _cause_detail(p: dict, v: pd.DataFrame, cnt: pd.Series) -> None:
 
 def _screens_detail(heroes: dict, statuses: dict) -> None:
     """03 데모에 쓰지 않는 화면(실제 경기 영웅 선택·스킬 설명) + 영웅 목록 · 화면별 관찰 사실."""
-    shot("match_select", statuses, size="wide", lead="제한 시간 안에 영웅 선택")
-    shot("skill_detail", statuses, size="wide", lead="영웅 1명 = 설명 10개")
-    st.caption("파란 상자·번호는 설명용 표시이며 화면은 수정하지 않았습니다.")
+    st.caption("주황 상자·번호는 설명용 표시이며 화면은 수정하지 않았습니다.")
     rows = [(sid, SHOT_NOTES[sid]) for sid in ["hero_select", "match_select", "returning_menu", "skill_detail", "mission_screen", "combat_scene"]]
     html("".join(f'<div class="ow-facts"><b>{escape(n.get("label", sid))}</b>' + bullets(n.get("facts", [])) + "</div>" for sid, n in rows))
     n_all = len(heroes["heroes"])
@@ -1199,7 +1197,7 @@ def biz_result_html(r: dict, vt: dict, guard: str) -> str:
     sign = "neg" if r["profit"] < 0 else "pos"
     return (f'<div class="ox-res"><div><span>예상 구매 유저</span><b>{r["buyers"]:,.0f}명</b><small>노출 × 구매 전환율</small></div>'
             f'<div><span>순증 매출 (수수료 차감 후)</span><b>{won(r["net"])}</b><small>스킨 {won(r["skin_net"])} + 잔존 {won(r["ret_rev"])} (차감 전)</small></div>'
-            f'<div class="{sign}"><span>예상 사업 이익</span><b>{won(r["profit"])}</b><small>ROI {roi} · 총비용 {won(r["cost"])}</small></div>'
+            f'<div class="{sign}"><span>분기 손익 (가정)</span><b>{won(r["profit"])}</b><small>ROI {roi} · 총비용 {won(r["cost"])}</small></div>'
             f'<div><span>손익분기 구매 전환율</span><b>{bep}</b><small>{bep_sub}</small></div></div>'
             f'<div class="ox-verdict {r["verdict"]}"><b>{t}</b> → {d}<small>{guard}</small></div>')
 
@@ -1223,7 +1221,7 @@ def biz_steps(r: dict) -> list[list[str]]:
     ]
 
 
-C_LOSS = "#DC2626"
+C_LOSS = "#9CA3AF"   # 손실 구간은 경고색 대신 중립 회색 (이익 구간 = 테마색)
 
 
 def _biz_charts(sim: dict, r: dict) -> None:
@@ -1243,7 +1241,7 @@ def _biz_charts(sim: dict, r: dict) -> None:
     fig.update_xaxes(title="구매 전환율 (%)", ticksuffix="%")
     fig.update_yaxes(title="분기 이익 (만 원)", tickformat=",")
     ox_chart_card(fig, key="bzcurve", kind="sim", title="구매 전환율에 따른 분기 이익 · 점선 = 손익분기",
-               unit="만 원 · 파랑 = 이익, 빨강 = 손실", kpis=[], analysis="", decision="", basis="", height=340,
+               unit="만 원 · 진한 색 = 이익, 회색 = 손익분기 전", kpis=[], analysis="", decision="", basis="", height=340,
                cols=("구매 전환율 (%)", "분기 이익 (만 원)"), series="구분")
     names = list(sim["presets"])
     keys = sorted({k for n in names for k in sim["presets"][n]})
@@ -1369,7 +1367,7 @@ def render() -> None:
     ox_badge_legend()
     html(f'<div class="ow-pane-mark" data-tab="{SECTIONS[i][0]}"></div>')  # 정적 보고서가 탭 경계를 찾는 표식
     _FIGS.clear()
-    [lambda: _t1_overview(rs, ops, plan, bz, heroes),
+    [lambda: _t1_overview(rs, ops, plan, bz, heroes, statuses),
      lambda: _t2_screens_voc(rs, kp, steam, pc, ops, heroes, statuses, bz),
      lambda: _t3_restart(rs, ops, heroes, tl, statuses, plan),
      lambda: _t4_skin_bm(bz),
@@ -1392,7 +1390,7 @@ def _cover(bz: dict, heroes: dict) -> None:
 
 # ----------------------------------------------------------------------
 # 탭 01 · 섹션 01 서비스 및 분석 개요 · 02 핵심 문제 정의
-def _t1_overview(rs: dict, ops: pd.DataFrame, plan: dict, bz: dict, heroes: dict) -> None:
+def _t1_overview(rs: dict, ops: pd.DataFrame, plan: dict, bz: dict, heroes: dict, statuses: dict) -> None:
     v = ops[ops["verified"]]
     n_new = sum(1 for x in heroes["heroes"] if x.get("new_2026"))
     h("두 문제를 따로 본다: 복귀율은 진입장벽, 매출은 스킨 상품 구성", "", num="01", name="서비스 및 분석 개요",
@@ -1407,6 +1405,10 @@ def _t1_overview(rs: dict, ops: pd.DataFrame, plan: dict, bz: dict, heroes: dict
     st.caption("두 전략은 목표 지표가 달라 따로 실험하고 따로 판단한다.")
 
     h(f"배울 것은 계속 늘고, 스킨 상품은 영웅·구성에 따라 고를 폭이 다르다", "", num="02", name="핵심 문제 정의")
+    stt = statuses.get("hero_select")
+    roles = (stt.slot.get("role_counts") or {}) if stt else {}
+    shot("hero_select", statuses, size="hero", facts=False, title="최신 영웅 선택 화면 · 한 화면에 54명",
+         lead="초상화에 이름이 없고, 고른 영웅만 이름 표시", mark_desc={k: f"{v}명" for k, v in roles.items()})
     html('<div class="ox-prob">'
          '<div><span>① 신규·복귀 유저 진입장벽</span>' + _facts([
              f"공식 영웅 <b>54명</b> · 2026년 신규 <b>{n_new}명</b>",
@@ -1429,12 +1431,13 @@ def _t1_overview(rs: dict, ops: pd.DataFrame, plan: dict, bz: dict, heroes: dict
 # 탭 02 · 섹션 03 실제 게임 화면 기반 분석 · 04 유저 의견 및 VOC 분석
 def _t2_screens_voc(rs: dict, kp: dict, steam: pd.DataFrame, pc: pd.DataFrame, ops: pd.DataFrame, heroes: dict,
                     statuses: dict, bz: dict) -> None:
-    h("영웅 54명이 한 화면에, 이름과 설명은 고른 영웅만 보인다", "real", num="03", name="실제 게임 화면 기반 분석")
-    html(_fig(bz, "hero_roster"))
-    html(_facts(["돌격 15 · 공격 23 · 지원 16 = 54명 (공식 영웅 페이지 수와 같음)",
-                 "초상화에는 이름이 없고, 고른 영웅(오리사)만 이름·역할 특성·소개가 보인다",
-                 "영웅마다 레벨 표시(오리사 1레벨)가 따로 있다"]))
-    with st.expander(f"다른 실제 화면 · 영웅 선택(실전)·스킬 설명 · 공식 영웅 {len(heroes['heroes'])}명 목록"):
+    h("실전에서는 시간 제한 안에 고르고, 영웅 1명에 설명이 10개다", "real", num="03", name="실제 게임 화면 기반 분석")
+    ha = shot_html("match_select", statuses, max_w=1200, title="실전 영웅 선택 · 남은 시간 0:01", lead="제한 시간 안에, 설명은 한 줄")
+    hb = shot_html("skill_detail", statuses, max_w=1200, title="영웅 1명 = 설명 10개", lead="무기·궁극기·기술 3·지속 능력·특전 4")
+    if ha and hb:
+        html(f'<div class="ow-grid2">{ha}{hb}</div>')
+    html(_roster_shot(bz))
+    with st.expander(f"화면별 관찰 사실 · 공식 영웅 {len(heroes['heroes'])}명 목록"):
         _screens_detail(heroes, statuses)
 
     v = ops[ops["verified"]]
@@ -1473,27 +1476,16 @@ def _t2_screens_voc(rs: dict, kp: dict, steam: pd.DataFrame, pc: pd.DataFrame, o
 def _t3_restart(rs: dict, ops: pd.DataFrame, heroes: dict, tl: pd.DataFrame, statuses: dict, plan: dict) -> None:
     v = ops[ops["verified"]]
     cc = code_counts(v)
-    h("신규와 복귀를 나눠, 지금 필요한 정보만 먼저 보여 준다", "mock", num="05", name="신규·복귀 유저 개선 전략 — PROJECT RE:START",
-      lead="영웅·밸런스·매칭은 바꾸지 않는다 · 모든 안내는 끌 수 있다 · 기대 효과는 검증 전")
-    rows = [
-        ("신규·복귀 구분 적응 경로", "신규와 복귀 유저가 같은 첫 화면에서 시작 (복귀 메인 화면에 변경점 안내 없음)",
-         "접속 이력으로 신규·복귀를 나눠 첫 안내를 다르게", "90일 이상 미접속 = 복귀 → A · 신규 → C · 둘 다 끄기 가능",
-         "필요 없는 안내를 줄이고 필요한 정보부터", "경로별 D7 잔존율 · 안내 끄기 비율"),
-        ("A 복귀 브리핑", "무엇이 바뀌었는지 모른 채 경기 시작", "마지막 접속일 이후 바뀐 영웅·시스템만 3분 요약",
-         "접속 직후 1회 · 3단계 카드 · 메뉴에서 다시 보기", "첫 경기 전 변경점 인지", "복귀 D7 (주요) · 브리핑 완료율"),
-        ("기존 플레이 영웅 기반 추천", "하던 영웅이 바뀌었거나 새 영웅을 모른다", "과거 주로 한 역할·영웅 기준으로 비슷한 영웅 1~2명 추천",
-         "브리핑 마지막 단계에 노출 · 연습장 바로가기", "새 영웅을 시도할 출발점", "추천 영웅 플레이율 · 첫 3경기 내 이탈"),
-        ("B 전투 학습 카드", "왜 졌는지, 상대 기술에 어떻게 대응할지 모른다", "경기 후 어려웠던 상대를 골라 핵심 기술·대처법 확인",
-         "유저가 직접 고르는 수동형 MVP · 하루 표시 횟수 조절", "같은 상대에게 반복되는 패배 감소", "카드 사용률 · 재대결 생존 시간"),
-        ("C 첫 10경기 학습 미션", "무엇부터 익힐지 모른다 · 현재 과제는 'N경기 완료' 횟수형", "역할·기술 → 상대 대응 → 팀 플레이 순서의 미션",
-         "1~3·4~6·7~10경기 단계 · 승패 무관 · 외형 보상만", "학습 순서가 생겨 초반 적응", "신규 D7 (주요) · 10경기 완료율"),
-        ("복귀 초기 부담 완화", f"복귀 직후 변경점과 실력 격차가 한꺼번에 (매칭·실력 차이 의견 {int(cc.get('매칭·실력 차이', 0))}건)",
-         "복귀 유저도 C 미션을 선택 참여 · 브리핑·카드·미션 모두 선택형", "강제 노출 없음 · 영웅·밸런스·매칭 변경 없음",
-         "첫 주 부담 완화", "복귀 첫 3경기 이탈 · 미션 끄기 비율"),
-    ]
-    table(["전략", "문제", "개선 방안", "운영 방식", "기대 효과 (검증 전)", "측정 KPI"],
-          [[f"<b>{escape(a)}</b>", *[escape(x) for x in r]] for a, *r in rows], cls="ox-strat6")
-    st.caption("A·B·C는 기존 시안 · '구분 적응 경로'와 '기존 플레이 영웅 기반 추천', '복귀 초기 부담 완화'는 A·C 운영 방식을 구체화한 항목")
+    h("신규와 복귀를 나눠, 필요한 것만 먼저 보여 준다", "mock", num="05", name="신규·복귀 유저 개선 전략 — PROJECT RE:START",
+      lead="영웅·밸런스·매칭은 그대로 · 모든 안내는 끌 수 있다")
+    html('<div class="ox-route"><div><span>접속</span><b>신규·복귀 구분</b></div><i>→</i>'
+         '<div class="r"><span>복귀 유저</span><b>A 복귀 브리핑</b><small>놓친 변경점 3분 + 추천 영웅</small></div>'
+         '<div class="n"><span>신규 유저</span><b>C 첫 10경기 미션</b><small>배우는 순서대로</small></div><i>→</i>'
+         '<div><span>경기 후</span><b>B 전투 학습 카드</b><small>어려웠던 상대 대응법</small></div></div>')
+    html('<div class="ox-strats">'
+         '<div><em>A</em><b>복귀 브리핑</b><p>무엇이 바뀌었는지 모른 채 시작 → 마지막 접속 이후 바뀐 것만 3분 요약</p><small>KPI 복귀 D7 잔존율</small></div>'
+         '<div><em>C</em><b>첫 10경기 미션</b><p>무엇부터 익힐지 모름 → 역할·기술 → 상대 대응 → 팀 플레이 순서</p><small>KPI 신규 D7 잔존율</small></div>'
+         '<div><em>B</em><b>전투 학습 카드</b><p>왜 졌는지 모름 → 경기 후 상대 기술·대처법 확인</p><small>KPI 카드 사용률</small></div></div>')
     t = st.tabs(["A 복귀 브리핑", "C 첫 10경기 미션", "B 전투 학습 카드"])
     with t[0]:
         _proto_a(heroes, tl, statuses)
@@ -1501,6 +1493,26 @@ def _t3_restart(rs: dict, ops: pd.DataFrame, heroes: dict, tl: pd.DataFrame, sta
         _proto_c(statuses)
     with t[2]:
         _proto_b(heroes, statuses)
+    with st.expander("전략 6개 상세 · 문제 → 개선 방안 → 운영 방식 → 기대 효과 → 측정 KPI"):
+        rows = [
+            ("신규·복귀 구분 적응 경로", "신규와 복귀 유저가 같은 첫 화면에서 시작 (복귀 메인 화면에 변경점 안내 없음)",
+             "접속 이력으로 신규·복귀를 나눠 첫 안내를 다르게", "90일 이상 미접속 = 복귀 → A · 신규 → C · 둘 다 끄기 가능",
+             "필요 없는 안내를 줄이고 필요한 정보부터", "경로별 D7 잔존율 · 안내 끄기 비율"),
+            ("A 복귀 브리핑", "무엇이 바뀌었는지 모른 채 경기 시작", "마지막 접속일 이후 바뀐 영웅·시스템만 3분 요약",
+             "접속 직후 1회 · 3단계 카드 · 메뉴에서 다시 보기", "첫 경기 전 변경점 인지", "복귀 D7 (주요) · 브리핑 완료율"),
+            ("기존 플레이 영웅 기반 추천", "하던 영웅이 바뀌었거나 새 영웅을 모른다", "과거 주로 한 역할·영웅 기준으로 비슷한 영웅 1~2명 추천",
+             "브리핑 마지막 단계에 노출 · 연습장 바로가기", "새 영웅을 시도할 출발점", "추천 영웅 플레이율 · 첫 3경기 내 이탈"),
+            ("B 전투 학습 카드", "왜 졌는지, 상대 기술에 어떻게 대응할지 모른다", "경기 후 어려웠던 상대를 골라 핵심 기술·대처법 확인",
+             "유저가 직접 고르는 수동형 MVP · 하루 표시 횟수 조절", "같은 상대에게 반복되는 패배 감소", "카드 사용률 · 재대결 생존 시간"),
+            ("C 첫 10경기 학습 미션", "무엇부터 익힐지 모른다 · 현재 과제는 'N경기 완료' 횟수형", "역할·기술 → 상대 대응 → 팀 플레이 순서의 미션",
+             "1~3·4~6·7~10경기 단계 · 승패 무관 · 외형 보상만", "학습 순서가 생겨 초반 적응", "신규 D7 (주요) · 10경기 완료율"),
+            ("복귀 초기 부담 완화", f"복귀 직후 변경점과 실력 격차가 한꺼번에 (매칭·실력 차이 의견 {int(cc.get('매칭·실력 차이', 0))}건)",
+             "복귀 유저도 C 미션을 선택 참여 · 브리핑·카드·미션 모두 선택형", "강제 노출 없음 · 영웅·밸런스·매칭 변경 없음",
+             "첫 주 부담 완화", "복귀 첫 3경기 이탈 · 미션 끄기 비율"),
+        ]
+        table(["전략", "문제", "개선 방안", "운영 방식", "기대 효과 (검증 전)", "측정 KPI"],
+              [[f"<b>{escape(a)}</b>", *[escape(x) for x in r]] for a, *r in rows], cls="ox-strat6")
+        st.caption("'구분 적응 경로' · '기존 플레이 영웅 기반 추천' · '복귀 초기 부담 완화'는 A·C 운영 방식을 구체화한 항목 · 기대 효과는 검증 전")
     with st.expander("전략 A~D 상세 · 대상 · 작동 흐름 · 부작용 · 근거 의견"):
         _strategy_tables(rs, ops)
     with st.expander("우선순위 근거 · RICE 점수 · 대안(영웅 선택 제한안) 비교"):
@@ -1584,15 +1596,31 @@ def _sim_apply(values: dict, prefix: str = SIM_KEYS) -> None:
 def _t6_business(rs: dict, plan: dict, bz: dict) -> None:
     seg = plan["seg"]
     rr, nw = seg["복귀"], seg["신규"]
-    h("복귀율과 매출은 지표를 나눠서 판단한다", "mock", num="09", name="KPI 및 사업성 시뮬레이션")
+    mo = bz["marketing_ops"]
+    h("마케팅·운영 전략 6개로 복귀율 → 잔존 → 구매 전환 → 객단가를 차례로 올린다", "mock", num="09",
+      name="KPI 및 사업성 시뮬레이션", lead=escape(mo["note"]))
+    table(["전략", "실행 방식", "타깃 유저", "개선 목표", "측정 KPI"],
+          [[f"<b>{escape(m['name'])}</b>", escape(m["how"]), escape(m["target"]), f"<b>{escape(m['goal'])}</b>", escape(m["kpi"])]
+           for m in mo["items"]], cls="ox-mops")
+    _imp_sim(bz)
+    _pkg_sim(bz)
+    h("판단 KPI · 복귀율과 매출은 따로 본다", "mock")
     table(["트랙", "지표", "기준", "판단"], [
         ["<b>복귀율</b> · RE:START A", "복귀 D7 잔존율", f"{rr['base']['D7']:.0f}% → {rr['base']['D7'] + rr['mde']['D7']:.0f}% (목표·가정 +{rr['mde']['D7']:.1f}%p)", "95% 신뢰구간 하한 &gt; 0 이고 목표 이상이면 확대"],
         ["<b>복귀율</b> · RE:START C", "신규 D7 잔존율", f"{nw['base']['D7']:.0f}% → {nw['base']['D7'] + nw['mde']['D7']:.0f}% (목표·가정 +{nw['mde']['D7']:.1f}%p)", "A 결과 후 실험 2로 판정"],
         ["<b>매출</b> · YOUR CHOICE", "패키지 구매 전환율 · 평균 결제 금액", "판매 테스트에서 측정 (목표값 미정)", "개별 스킨 잠식을 빼고도 순증일 때 확대"],
         ["<b>매출</b> · YOUR HERO", "투표 참여율 · 참여 유저 구매 전환율", "투표 파일럿에서 측정 (목표값 미정)", "제작 비용 대비 예상 수익이 남을 때 제작"],
     ], cls="ox-kpit")
-    _pkg_sim(bz)
-    _biz_sim(bz)
+    b = _biz_base(bz)
+    need = f"{b['bep']:.1f}%" if b["bep_state"] == "ok" else "100%를 넘는 수준"
+    h("고급 사업성 분석 · 신규 스킨을 직접 만들 때의 조건", "sim",
+      "손익분기·개발비·마케팅비·수수료·잠식률·ROI는 확인된 내부 비용이 아니라 입력 가정이다")
+    html('<div class="ox-purpose"><span>수익성 확보 조건</span>'
+         f'기본 가정(개발 17인월·마케팅비 포함)으로는 신규 스킨 구매 전환율 {need}가 손익분기선이다. '
+         '그래서 ① 제작 전 YOUR HERO 투표로 수요가 큰 영웅만 만들고 ② 제작비가 없는 YOUR CHOICE로 먼저 매출을 확인하며 '
+         '③ 맞춤 노출·복귀 캠페인으로 노출 유저와 전환율을 키운다. 조건을 바꿔 보려면 아래를 펼친다.</div>')
+    with st.expander("고급 사업성 분석 열기 · 손익분기 · 개발비 · 마케팅비 · 수수료 · 잠식률 · ROI (모두 가정)"):
+        _biz_sim(bz)
     with st.expander("A/B 실험 설계 · KPI 정의 10개 · 표본·일정 · 판단 기준"):
         _kpi_detail(rs, plan)
     res_box = st.expander("잔존율 시뮬레이션 결과 · D7·D30 · 첫 10경기 퍼널 · DAU (가정)")
@@ -1600,6 +1628,81 @@ def _t6_business(rs: dict, plan: dict, bz: dict) -> None:
         inputs = _sim_inputs(rs)
     with res_box:
         _sim_results(rs, plan, inputs)
+
+
+IMP_KEYS = "im_"
+C_BASE, C_IMP = "#9CA3AF", "#F99E1A"   # 기존 = 회색 · 개선 = 오버워치 테마색 (범례와 같은 색)
+
+
+def _imp_preset(c: dict, name: str) -> dict:
+    return {**c["defaults"], **c["presets"][name]}
+
+
+def imp_result_html(r: dict) -> str:
+    b, a = r["base"], r["new"]
+    x = r["x"]
+    pct = "—" if r["pct"] is None else f"{r['pct']:+.1f}%"
+    by_buyers = (a["buyers"] - b["buyers"]) * x["avg0"]
+    by_avg = a["buyers"] * (x["avg1"] - x["avg0"])
+    return (f'<div class="ox-res"><div><span>예상 구매자</span><b>{a["buyers"]:,.0f}명</b><small>기존 {b["buyers"]:,.0f}명</small></div>'
+            f'<div><span>평균 결제 금액</span><b>{x["avg1"]:,.0f}원</b><small>기존 {x["avg0"]:,.0f}원</small></div>'
+            f'<div><span>예상 매출 (분기)</span><b>{won(a["rev"])}</b><small>기존 {won(b["rev"])}</small></div>'
+            f'<div class="acc"><span>기존 대비</span><b>{won(r["diff"])}</b><small>증감률 {pct}</small></div></div>'
+            f'<p class="ox-note">증감 분해 · 구매자 변화 {won(by_buyers)} + 평균 결제 금액 변화 {won(by_avg)} · '
+            f'복귀 유저 {b["ret"]:,.0f} → {a["ret"]:,.0f}명 · D7 잔존 {b["d7"]:,.0f} → {a["d7"]:,.0f}명 · D30 잔존 {b["d30"]:,.0f} → {a["d30"]:,.0f}명</p>')
+
+
+def _imp_sim(bz: dict) -> None:
+    from gamepulse.sim.ow_business import improve_sim
+    c = bz["improvement"]
+    for k, v in c["defaults"].items():
+        st.session_state.setdefault(IMP_KEYS + k, v)
+    h("기존 대비 개선 효과: 같은 유저에서 구매자와 객단가가 함께 오른다", "sim", escape(c["note"]))
+    html('<div class="ox-js-start" data-demo="imp"></div>')
+    box = st.container()
+    cols = st.columns(4)
+    for i, name in enumerate(c["presets"]):
+        cols[i].button(name, key=f"im_preset_{i}", on_click=_sim_apply, args=(_imp_preset(c, name), IMP_KEYS), width="stretch")
+    cols[3].button("초기화", key="im_reset", on_click=_sim_apply, args=(dict(c["defaults"]), IMP_KEYS), width="stretch")
+    for f, col in zip(c["pop"], st.columns(2)):
+        col.number_input(f"{f['label']} ({f['unit']})", min_value=int(f["min"]), max_value=int(f["max"]), step=int(f["step"]),
+                         key=IMP_KEYS + f["key"])
+    for m in c["metrics"]:
+        c1, c2, c3 = st.columns([1.3, 1, 1])
+        c1.markdown(f"**{m['label']}**  \n{m['why']}")
+        cast, fmt = (float, "%.1f") if m["step"] < 1 else (int, "%d")
+        for col, k, lab in [(c2, m["k0"], "기존"), (c3, m["k1"], "개선")]:
+            hi = cast(m["max"])
+            if k.startswith("d30_"):                     # D30 ≤ D7 (D30 잔존 유저는 D7 잔존 유저에 포함)
+                hi = cast(st.session_state[IMP_KEYS + "d7_" + k[-1]])
+                st.session_state[IMP_KEYS + k] = min(st.session_state[IMP_KEYS + k], hi)
+            col.number_input(f"{lab} ({m['unit']})", min_value=cast(m["min"]), max_value=hi, step=cast(m["step"]), format=fmt,
+                             key=IMP_KEYS + k)
+    r = improve_sim(c, {k: st.session_state[IMP_KEYS + k] for k in c["defaults"]})
+    with box:
+        html(imp_result_html(r))
+    x = r["x"]
+    cats = ["복귀율", "D7 잔존율", "D30 잔존율", "구매 전환율"]
+    v0 = [x["ret0"], x["d7_0"], x["d30_0"], x["conv0"]]
+    v1 = [x["ret1"], x["d7_1"], x["d30_1"], x["conv1"]]
+    c1, c2 = st.columns(2, gap="medium")
+    with c1:
+        fig = go.Figure([go.Bar(x=cats, y=v0, name="기존", marker_color=C_BASE, text=[f"{v:g}%" for v in v0], textposition="outside", cliponaxis=False),
+                         go.Bar(x=cats, y=v1, name="개선 (가정)", marker_color=C_IMP, text=[f"{v:g}%" for v in v1], textposition="outside", cliponaxis=False)])
+        fig.update_layout(barmode="group")
+        fig.update_yaxes(title="%", rangemode="tozero", range=[0, (max(v0 + v1) or 1) * 1.25])
+        ox_chart_card(fig, key="imprate", kind="sim", title="지표별 기존 vs 개선", unit="% · 회색 = 기존, 주황 = 개선 (가정)",
+                      kpis=[], analysis="", decision="", basis="", height=320, cols=("지표", "%"), series="구분")
+    with c2:
+        names = list(c["presets"])
+        revs = [r["base"]["rev"]] + [improve_sim(c, {**x, **{k: v for k, v in _imp_preset(c, n).items() if k.endswith("1")}})["new"]["rev"]
+                                     for n in names]
+        fig = go.Figure(go.Bar(x=["기존"] + names, y=[v / 1e4 for v in revs], marker_color=[C_BASE] + [C_IMP] * len(names),
+                               text=[won(v) for v in revs], textposition="outside", cliponaxis=False))
+        fig.update_yaxes(title="만 원", tickformat=",", rangemode="tozero", range=[0, (max(revs) / 1e4 or 1) * 1.2])
+        ox_chart_card(fig, key="imprev", kind="sim", title="분기 예상 매출: 기존 vs 시나리오", unit="만 원 · 회색 = 기존, 주황 = 개선 시나리오",
+                      kpis=[], analysis="", decision="", basis="", height=320, legend=False, cols=("시나리오", "매출 (만 원)"))
+    html('<div class="ox-js-end"></div>')
 
 
 def pkg_result_html(r: dict) -> str:
@@ -1645,7 +1748,7 @@ def _biz_sim(bz: dict) -> None:
     fs = fields(sim)
     for k, v in sim["defaults"].items():
         st.session_state.setdefault(SIM_KEYS + k, v)
-    h("신규 스킨 + RE:START 손익: 구매 전환율이 손익을 가른다", "sim", escape(sim["note"]) + " · 신규 스킨은 YOUR HERO 출시 스킨 기준")
+    st.caption(sim["note"] + " · YOUR HERO 출시 스킨 기준")
     html('<div class="ox-js-start" data-demo="biz"></div>')
     result_box = st.container()
     cols = st.columns(4)
@@ -1665,7 +1768,8 @@ def _biz_sim(bz: dict) -> None:
     basic = [f for f in sim["fields"] if f.get("basic")]
     for f, col in zip(basic, st.columns(len(basic))):
         num(f, col)
-    with st.expander("고급 설정 · 잠식률 · 잔존율 개선폭 · PUR · ARPPU · 수수료 · 개발비 · 기타 운영비"):
+    st.markdown("**세부 가정 · 잠식률 · 잔존율 개선폭 · PUR · ARPPU · 수수료 · 개발비 · 기타 운영비**")
+    if True:
         adv = [f for f in sim["fields"] if not f.get("basic")]
         for j in range(0, len(adv), 3):
             for f, col in zip(adv[j:j + 3], st.columns(3)):
@@ -1674,7 +1778,8 @@ def _biz_sim(bz: dict) -> None:
     with result_box:
         html(biz_result_html(r, VERDICT_TEXT, GUARD_TEXT))
     _biz_charts(sim, r)
-    with st.expander("계산 순서 · 공식 · 현재 값"):
+    st.markdown("**계산 순서 · 공식 · 현재 값**")
+    if True:
         table(["단계", "계산", "현재 값"], biz_steps(r))
         st.markdown("- 기간: 매출·ARPPU·비용 모두 **분기(91일)** 기준\n"
                     "- 수수료는 유저 결제액(스킨 순증 매출 + 잔존 추가 매출)에만 적용하고, 비용에는 적용하지 않는다\n"
@@ -1682,7 +1787,8 @@ def _biz_sim(bz: dict) -> None:
                     "- D30 잔존 유저는 D7 잔존 유저에 포함되므로 D7·D30을 더하지 않는다 · D7까지만 남은 유저는 분기 중 30일만 활성으로 본다\n"
                     "- 손익분기 구매 전환율은 위 이익 계산식에서 이익 = 0 이 되는 전환율을 직접 푼 값이다")
     html('<div class="ox-js-end"></div>')
-    with st.expander("가정값 출처 · 기본 · 보수적 · 낙관적"):
+    st.markdown("**가정값 · 기본 · 보수적 · 낙관적**")
+    if True:
         names = list(sim["presets"])
         table(["변수", *names, "설명"],
               [[f"{escape(f['label'])} ({escape(f['unit'])})", *[f"{preset(sim, n)[f['key']]:,}" for n in names], escape(f["help"])]
@@ -1748,3 +1854,25 @@ def _t7_plan(rs: dict, g: dict, statuses: dict, plan: dict, ops: pd.DataFrame, b
             game_page._kpis(g)
         with t[5]:
             DEEP_DIVES["overwatch"]()
+
+
+ROSTER_MARKS = [("역할 특성", "투사 · 설명 2줄", (55, 380, 540, 495), "below"),
+                ("영웅 레벨", "1레벨", (1725, 365, 1862, 418), "right"),
+                ("돌격", "15명", (88, 788, 576, 914), ""), ("공격", "23명", (596, 788, 1324, 914), ""),
+                ("지원", "16명", (1346, 788, 1834, 914), "right")]
+
+
+def _roster_shot(bz: dict) -> str:
+    """사용자가 준 영웅 화면에 기존 그림과 같은 번호 상자 · 클릭하면 크게 (확대 화면에서는 상자 숨김)."""
+    s_ = bz["shots"]["hero_roster"]
+    p = ROOT_DIR / s_["file"]
+    if not p.is_file():
+        return ""
+    boxes = "".join(
+        f'<div class="ow-mark {cls}" style="left:{_pct(x0, SHOT_W)};top:{_pct(y0, SHOT_H)};width:{_pct(x1 - x0, SHOT_W)};'
+        f'height:{_pct(y1 - y0, SHOT_H)}"><span><i>{i}</i>{escape(lab)} <b>{escape(d)}</b></span></div>'
+        for i, (lab, d, (x0, y0, x1, y1), cls) in enumerate(ROSTER_MARKS, 1))
+    return (f'<figure class="ow-shot hero ox-roster"><div class="ow-shot-bar"><span class="ow-shot-tag">실제 게임 화면</span>'
+            f'영웅 화면 · 고른 영웅(오리사)만 역할·레벨·소개 표시</div><details class="ox-zoom"><summary title="클릭하면 크게 보기">'
+            f'<div class="ow-shot-img"><img src="data:image/jpeg;base64,{_jpg_b64(str(p), p.stat().st_mtime)}" alt="{escape(s_["label"])}" loading="lazy">'
+            f'{boxes}</div></summary></details><figcaption>역할마다 영웅이 15~23명 · 작성자 캡처 · 2026 시즌 5</figcaption></figure>')

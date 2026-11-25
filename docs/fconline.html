@@ -2149,6 +2149,37 @@ body:has(.gp-ow-page) .sx-exp[open] > summary { color: var(--ox-text) !important
   .ox-fields.three { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ox-strat6 td:first-child { white-space: normal; }
 }
+
+.ox-route { display: grid; grid-template-columns: minmax(0, 0.8fr) auto minmax(0, 1.2fr) auto minmax(0, 1fr); grid-template-rows: auto auto;
+  gap: 0.4rem 0.6rem; align-items: center; margin: 0.4rem 0 1.4rem; }
+.ox-route > div { border: 1px solid var(--ox-line); border-radius: 10px; padding: 0.7rem 0.85rem; display: flex; flex-direction: column; gap: 0.1rem; background: #FFFFFF; }
+.ox-route > div:first-child { grid-row: 1 / 3; } .ox-route > i:nth-of-type(1) { grid-row: 1 / 3; } .ox-route > i:nth-of-type(2) { grid-row: 1 / 3; grid-column: 4; }
+.ox-route > div.r { grid-column: 3; grid-row: 1; border-color: var(--ow-acc); } .ox-route > div.n { grid-column: 3; grid-row: 2; border-color: var(--ow-acc); }
+.ox-route > div:last-child { grid-column: 5; grid-row: 1 / 3; }
+.ox-route span { font-size: 0.76rem; font-weight: 800; color: var(--ox-muted); } .ox-route b { font-size: 1.02rem; color: var(--ox-text); }
+.ox-route small { font-size: 0.82rem; color: var(--ox-muted); } .ox-route > i { font-style: normal; font-weight: 900; color: var(--ow-acc); font-size: 1.2rem; }
+.ox-roster .ox-zoom > summary { cursor: zoom-in; }
+.ox-zoom[open] .ow-mark { display: none; }
+.ox-zoom[open] .ow-shot-img { background: transparent; line-height: normal; }
+.ox-roster figcaption { padding: 0.5rem 0.8rem; font-size: 0.85rem; color: #E2E8F0; }
+@media (max-width: 760px) {
+  .ox-route { grid-template-columns: 1fr; grid-template-rows: none; }
+  .ox-route > div, .ox-route > div.r, .ox-route > div.n, .ox-route > div:first-child, .ox-route > div:last-child { grid-column: auto; grid-row: auto; }
+  .ox-route > i, .ox-route > i:nth-of-type(1), .ox-route > i:nth-of-type(2) { grid-column: auto; grid-row: auto; transform: rotate(90deg); justify-self: center; }
+}
+
+.ox-res .neg b { color: var(--ox-text) !important; }
+.ox-verdict, .ox-verdict.loss { border-left-color: #9CA3AF; }
+.ox-verdict.near, .ox-verdict.profit { border-left-color: var(--ow-acc); }
+
+.ox-imp-r { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr); gap: 0.6rem 1rem; align-items: end;
+  padding: 0.6rem 0; border-top: 1px solid var(--ox-line); }
+.ox-imp-r > div b { display: block; font-size: 0.92rem; color: var(--ox-text); } .ox-imp-r > div small { font-size: 0.78rem; color: var(--ox-muted); }
+.ox-res .acc b { color: var(--ow-ink) !important; }
+.ox-mops td { font-size: 0.9rem; vertical-align: top; } .ox-mops td:first-child { white-space: nowrap; }
+@media (max-width: 760px) { .ox-imp-r { grid-template-columns: 1fr 1fr; } .ox-imp-r > div:first-child { grid-column: 1 / -1; } .ox-mops td:first-child { white-space: normal; } }
+
+.ox-res .pos b { color: var(--ow-ink) !important; }
 :root:has(.gp-theme[data-game="overwatch"]) { --g-acc: #F99E1A; --g-ink: #A35F00; --g-soft: #FEF3E2; --g-on: #1F2937; }
 :root:has(.gp-theme[data-game="fconline"]) { --g-acc: #16A34A; --g-ink: #15803D; --g-soft: #DCFCE7; --g-on: #FFFFFF; }
 :root:has(.gp-theme[data-game="pubg"]) { --g-acc: #142D50; --g-ink: #142D50; --g-soft: #E6ECF5; --g-on: #FFFFFF; }
@@ -2266,7 +2297,7 @@ button.sx-btn:hover, a.sx-btn:hover { border-color: #0B1F3A; background: #F4F7FC
   .sx-row { flex-direction: column; } .sx-col { flex: 1 1 auto !important; width: 100%; }
   .sx-tab-h { font-size: 1.2rem; }
 }
-</style></head><body><header class="sx-top"><div class="sx-top-in"><div class="gp-brand"><a href="index.html">Game<span>Pulse</span> AI</a></div><nav><a class="" href="index.html">보고서 첫 화면</a><a class="" href="home.html">사이트 홈 · 개요</a><a class="" href="overwatch.html">오버워치 · PROJECT RE:START</a><a class="on" href="fconline.html">FC 온라인 · 축구 게임인가, 주식 게임인가?</a><a class="" href="pubg.html">PUBG · NEW START</a><a class="" href="dnf.html">던전앤파이터 · 클리어했는데 왜 성장한 느낌이 없을까?</a><a class="" href="assistant.html">사업PM 어시스턴트</a></nav></div></header><main class="sx-main"><div class="sx-note"><b>정적 보고서</b> · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> 스냅샷 (2026-11-25 13:06 KST) · 01~06 탭으로 섹션 전환 · 버튼·슬라이더는 기본값 · 차트 수치는 "차트 데이터 표"에</div><style>
+</style></head><body><header class="sx-top"><div class="sx-top-in"><div class="gp-brand"><a href="index.html">Game<span>Pulse</span> AI</a></div><nav><a class="" href="index.html">보고서 첫 화면</a><a class="" href="home.html">사이트 홈 · 개요</a><a class="" href="overwatch.html">오버워치 · PROJECT RE:START</a><a class="on" href="fconline.html">FC 온라인 · 축구 게임인가, 주식 게임인가?</a><a class="" href="pubg.html">PUBG · NEW START</a><a class="" href="dnf.html">던전앤파이터 · 클리어했는데 왜 성장한 느낌이 없을까?</a><a class="" href="assistant.html">사업PM 어시스턴트</a></nav></div></header><main class="sx-main"><div class="sx-note"><b>정적 보고서</b> · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> 스냅샷 (2026-11-25 13:23 KST) · 01~06 탭으로 섹션 전환 · 버튼·슬라이더는 기본값 · 차트 수치는 "차트 데이터 표"에</div><style>
 /* ---- PUBG 정적 페이지 전용 (Streamlit 화면과 맞춤) ---- */
 /* Streamlit 본문 글꼴: 앱에 포함된 "Source Sans" 가변 글꼴(SIL OFL) 그대로 + 한글은 시스템 sans-serif → 글자 폭·줄바꿈 일치 */
 @font-face{font-family:"Source Sans";font-weight:100 900;font-style:normal;font-display:swap;src:url(assets/fonts/SourceSansVF-Upright.woff2) format("woff2")}
@@ -2410,4 +2441,4 @@ function mount(){document.querySelectorAll('.fc-live').forEach(function(el){var 
   b.setAttribute('aria-pressed','true');ex=b.dataset.k;$('c5k').value=EXP[ex][1];$('c5pd').value=EXP[ex][2];C();});});
  A();C();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
-})();</script></main><footer class="sx-foot">GamePulse AI 정적 보고서 · 생성 2026-11-25 13:06 KST · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> · <a href="https://github.com/dbswnsghek3-cmyk/gamepulse.ai">GitHub 저장소</a> · 언급된 게임 및 상표는 각 권리자에게 있으며, 본 보고서는 해당 게임사와 관련이 없는 개인 분석물입니다.</footer></body></html>
+})();</script></main><footer class="sx-foot">GamePulse AI 정적 보고서 · 생성 2026-11-25 13:23 KST · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> · <a href="https://github.com/dbswnsghek3-cmyk/gamepulse.ai">GitHub 저장소</a> · 언급된 게임 및 상표는 각 권리자에게 있으며, 본 보고서는 해당 게임사와 관련이 없는 개인 분석물입니다.</footer></body></html>

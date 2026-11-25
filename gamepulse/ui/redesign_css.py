@@ -292,3 +292,45 @@ OW_REDESIGN_CSS += """
   .ox-strat6 td:first-child { white-space: normal; }
 }
 """
+
+# 4차: RE:START 흐름도 · 번호 상자 화면 확대
+OW_REDESIGN_CSS += """
+.ox-route { display: grid; grid-template-columns: minmax(0, 0.8fr) auto minmax(0, 1.2fr) auto minmax(0, 1fr); grid-template-rows: auto auto;
+  gap: 0.4rem 0.6rem; align-items: center; margin: 0.4rem 0 1.4rem; }
+.ox-route > div { border: 1px solid var(--ox-line); border-radius: 10px; padding: 0.7rem 0.85rem; display: flex; flex-direction: column; gap: 0.1rem; background: #FFFFFF; }
+.ox-route > div:first-child { grid-row: 1 / 3; } .ox-route > i:nth-of-type(1) { grid-row: 1 / 3; } .ox-route > i:nth-of-type(2) { grid-row: 1 / 3; grid-column: 4; }
+.ox-route > div.r { grid-column: 3; grid-row: 1; border-color: var(--ow-acc); } .ox-route > div.n { grid-column: 3; grid-row: 2; border-color: var(--ow-acc); }
+.ox-route > div:last-child { grid-column: 5; grid-row: 1 / 3; }
+.ox-route span { font-size: 0.76rem; font-weight: 800; color: var(--ox-muted); } .ox-route b { font-size: 1.02rem; color: var(--ox-text); }
+.ox-route small { font-size: 0.82rem; color: var(--ox-muted); } .ox-route > i { font-style: normal; font-weight: 900; color: var(--ow-acc); font-size: 1.2rem; }
+.ox-roster .ox-zoom > summary { cursor: zoom-in; }
+.ox-zoom[open] .ow-mark { display: none; }
+.ox-zoom[open] .ow-shot-img { background: transparent; line-height: normal; }
+.ox-roster figcaption { padding: 0.5rem 0.8rem; font-size: 0.85rem; color: #E2E8F0; }
+@media (max-width: 760px) {
+  .ox-route { grid-template-columns: 1fr; grid-template-rows: none; }
+  .ox-route > div, .ox-route > div.r, .ox-route > div.n, .ox-route > div:first-child, .ox-route > div:last-child { grid-column: auto; grid-row: auto; }
+  .ox-route > i, .ox-route > i:nth-of-type(1), .ox-route > i:nth-of-type(2) { grid-column: auto; grid-row: auto; transform: rotate(90deg); justify-self: center; }
+}
+"""
+
+# 5차: 손익 표시는 경고색 없이 (음수도 본문색)
+OW_REDESIGN_CSS += """
+.ox-res .neg b { color: var(--ox-text) !important; }
+.ox-verdict, .ox-verdict.loss { border-left-color: #9CA3AF; }
+.ox-verdict.near, .ox-verdict.profit { border-left-color: var(--ow-acc); }
+"""
+
+# 6차: 개선 효과 시뮬레이터 · 마케팅 전략 표
+OW_REDESIGN_CSS += """
+.ox-imp-r { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr); gap: 0.6rem 1rem; align-items: end;
+  padding: 0.6rem 0; border-top: 1px solid var(--ox-line); }
+.ox-imp-r > div b { display: block; font-size: 0.92rem; color: var(--ox-text); } .ox-imp-r > div small { font-size: 0.78rem; color: var(--ox-muted); }
+.ox-res .acc b { color: var(--ow-ink) !important; }
+.ox-mops td { font-size: 0.9rem; vertical-align: top; } .ox-mops td:first-child { white-space: nowrap; }
+@media (max-width: 760px) { .ox-imp-r { grid-template-columns: 1fr 1fr; } .ox-imp-r > div:first-child { grid-column: 1 / -1; } .ox-mops td:first-child { white-space: normal; } }
+"""
+
+OW_REDESIGN_CSS += """
+.ox-res .pos b { color: var(--ow-ink) !important; }
+"""
