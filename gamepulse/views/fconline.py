@@ -57,9 +57,9 @@ def fig(name: str, label: str, cap: str = CAP) -> str:
             f'<figcaption><b>{kind}</b>{escape(label)} · {escape(cap)}</figcaption></figure>')
 
 
-def slot(name: str, label: str) -> str:
+def slot(name: str, label: str, cap: str = CAP) -> str:
     """받은 캡처는 실제 화면으로, 아직 없으면 '이미지 준비 중' 자리."""
-    return fig(name, label) or (f'<div class="fx-slot"><b>이미지 준비 중</b><span>{escape(label)}</span>'
+    return fig(name, label, cap) or (f'<div class="fx-slot"><b>이미지 준비 중</b><span>{escape(label)}</span>'
                                 f'<small>assets/fconline/{escape(name)}</small></div>')
 
 
@@ -169,10 +169,10 @@ def t1(d: dict) -> None:
 def t2(d: dict) -> None:
     bm, mk = d["bm"], d["marketing"]
     h("상품 하나가 아니라 '멤버십 → 페이백 → 한정 상품 → 성장'이 맞물려 반복 구매를 만든다", "real", num="02", name="기존 BM 강점",
-      lead="새 BM을 억지로 더하지 않는다 · 확인된 것만 적고 받지 못한 캡처는 '이미지 준비 중'")
+      lead="새 BM을 억지로 더하지 않는다 · 공식 배너와 작성자 캡처(2026-11-23·26)로 확인된 것만 적는다")
     cards = []
     for c in d["bm_cards"]:
-        im = slot(c["img"], c["name"])
+        im = slot(c["img"], c["name"], c.get("cap", CAP))
         tag = '<i class="ok">공식·캡처 확인</i>' if c["status"] == "real" else '<i class="wait">캡처 확인 예정</i>'
         cards.append(f'<div class="fx-bm">{im}<div class="fx-bm-t"><b>{escape(c["name"])}</b>{tag}</div>'
                      f'<p><span>구매 심리</span>{escape(c["psy"])}</p><p><span>사업적 효과</span>{escape(c["effect"])}</p></div>')
@@ -183,6 +183,9 @@ def t2(d: dict) -> None:
     html('<div class="fx-cycle">' + "".join(f'<div style="left:{x:.1f}%;top:{y:.1f}%"><em>{k + 1}</em>{escape(s)}</div>'
                                             for k, (s, (x, y)) in enumerate(zip(d["bm_cycle"], pos)))
          + '<span class="fx-cycle-c">다음 달<br>다시</span></div>')
+    C26 = "작성자 캡처 · 2026-11-26 · 계정 정보 제외"
+    html('<div class="gb-flow-t">실제 화면으로 본 순환 · 구매 → 코인·페이백 → 다음 구매</div>'
+         '<div class="ox-pair">' + "".join(fig(f, t, C26) for f, t in d["bm_cycle_shots"]) + "</div>")
     html(f'<div class="ox-purpose fx-risk"><span>함께 볼 위험</span>{escape(bm["risk"])} · 구단 가치 급락이 겹치면 결제 중단으로 번질 수 있다 (04 탭)</div>')
     with st.expander("BM 상세 · 확인한 내용과 근거 링크"):
         table(["BM", "확인한 내용", "근거"],
@@ -429,12 +432,16 @@ def t5(d: dict) -> None:
         st.session_state["fc_rival_plus"] += 30
         st.rerun()
     js_end()
+    html('<div class="gb-flow-t">지금 공식경기에도 구단 엠블럼과 소속 팀컬러가 나온다 → MY CLUB WAR는 이 구단 정체성을 시즌 리그로 묶는다 '
+         '<span class="ox-k real">실제 자료</span></div>'
+         '<div class="ox-pair">' + "".join(fig(f, t, "작성자 캡처 · 2026-11-26 · 닉네임 블러") for f, t in mc["match_shots"]) + "</div>")
 
     un = mc["union"]
     h("이미 있는 '팀컬러 연합 레이스'와 무엇이 다른가 — 공식 자료로 확인", "real",
       lead="기여도 적립·순위 보상은 이미 있는 방식 → 새 기능이라 하지 않고 활용 · 출처 " + " · ".join(src(u, t) for t, u in un["src"]))
     html(f'<div class="fx-union">{fig(un["img"], "팀컬러 연합 레이스 (2026.10.29~11.25)")}<ul class="ox-facts">'
          + "".join(f"<li><b>{escape(a)}</b> · {escape(b)}</li>" for a, b in un["facts"]) + "</ul></div>")
+    html('<div class="ox-pair">' + "".join(fig(f, t, un["shots_cap"]) for f, t in un["shots"]) + "</div>")
     html('<div class="fx-diff3"><div class="hd"><span></span><b>팀컬러 연합 레이스 (기존)</b><b>MY CLUB WAR</b></div>'
          + "".join(f'<div><span>{escape(a)}</span><p>{escape(b)}</p><p class="new">{escape(c)}</p></div>' for a, b, c in mc["diff3"]) + "</div>")
 
@@ -445,7 +452,7 @@ def t5(d: dict) -> None:
     html(me_html(me, mc["missions"]))
 
     h("인기 구단이 사람 수만으로 이기지 않게 · 경쟁 점수 시뮬레이터", "sim",
-      lead="사람 수(누적)와 1인당 활동(평균)을 함께 본다 · 결과 먼저, 계산식과 가정값은 아래 펼쳐보기")
+      lead="사람 수(누적)와 1인당 활동(평균)을 함께 본다 · 참고: 기존 팀컬러 연합 레이스는 1인당 경기 수 방식 (캡처 확인) · 결과 먼저, 계산식과 가정값은 아래 펼쳐보기")
     fs = d["fandom_sim"]
     js("fcfandom")
     st.session_state.setdefault("fc_fw", fs["w_total"])
@@ -506,7 +513,8 @@ def t6(d: dict) -> None:
       lead=f"{c['date']} 공식 데이터센터 · 공식경기 1ON1 · 랭킹 1~10,000위 기준 · 전체 유저 비율이나 승률이 아님")
     html(brief4(d, "FAIR PLAY"))
     html(f'<div class="fx-io"><div><i class="kb"></i><b>{c["kb"]}%</b><span>키보드</span></div><div><i class="pad"></i><b>{c["pad"]}%</b><span>패드</span></div></div>')
-    html(f'<div class="ox-pair">{slot(fp["slots"][0][0], fp["slots"][0][1])}{slot(fp["slots"][1][0], fp["slots"][1][1])}</div>')
+    kc = "게임 설정 > 조작키 안내 · 같은 '공격' 탭 · 작성자 캡처 · 2026-11-26"
+    html(f'<div class="ox-pair">{slot(fp["slots"][0][0], fp["slots"][0][1], kc)}{slot(fp["slots"][1][0], fp["slots"][1][1], kc)}</div>')
     s = fp["voc_sides"]
     html('<div class="fx-3">'
          f'<div><span>키보드 유저</span>{bullets(s["keyboard"])}</div><div><span>패드 유저</span>{bullets(s["pad"])}</div>'
