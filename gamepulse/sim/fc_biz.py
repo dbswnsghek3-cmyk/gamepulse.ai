@@ -77,3 +77,17 @@ def fandom(rows: list, w_total: float = 30) -> list[dict]:
         for i_, r in enumerate(sorted(out, key=lambda r: -r[key]), 1):
             r["rank_" + key] = i_
     return out
+
+
+def prize(cfg: dict, x0: dict) -> dict:
+    """MY CLUB WORLD TOUR 경품 예산 (가상 · 실제 견적 아님) — 직관 패키지 + 유니폼 · 기존 캠페인 비용에 더했을 때 CAC."""
+    x = _clamp(cfg["fields"], cfg["defaults"], x0)
+    pk, ppl = x["pk"], x["ppl"]
+    parts = [("항공권", pk * ppl * x["flight"]), ("호텔", pk * x["nights"] * x["hotel"]), ("경기 티켓", pk * ppl * x["ticket"]),
+             ("기타 경비", pk * ppl * x["other"]), ("경기장 투어", pk * x["tour"]), ("유니폼", x["jersey_n"] * x["jersey"])]
+    per_pk = ppl * (x["flight"] + x["ticket"] + x["other"]) + x["nights"] * x["hotel"] + x["tour"]
+    total = sum(v for _, v in parts)
+    goods = parts[-1][1]
+    su, base = cfg["signups"], cfg["base_cost"]
+    return {"x": x, "parts": parts, "per_pk": per_pk, "pk_total": total - goods, "goods": goods, "total": total,
+            "people": pk * ppl, "cac0": base / su if su else None, "cac1": (base + total) / su if su else None}

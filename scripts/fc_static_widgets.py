@@ -97,7 +97,7 @@ def rebuild(d: dict) -> str:
 def rival(d: dict) -> str:
     from gamepulse.views.fconline import _rival_html, mock
     o = [(r["name"], mock("MY CLUB WAR · 라이벌 매치 · 점수·기간은 가상",
-                          '<div class="fx-stadium"><div class="fx-war-h">MY CLUB WAR<small>시즌 1 · 라이벌 위크</small></div>'
+                          '<div class="fx-stadium"><div class="fx-war-h">MY CLUB WAR<small>정규 리그 3라운드 · 라이벌 위크</small></div>'
                           + _rival_html(r) + "</div>", "night")) for r in d["mcw"]["rivals"]]
     return (_switch("fxRival", o) + '<button type="button" class="ox-btn pri" id="fxJoin">라이벌 매치 참여 (콘셉트 · +30점)</button>'
             "<script>(function(){var n=0;document.getElementById('fxJoin').addEventListener('click',function(){n+=30;"
@@ -184,7 +184,29 @@ def funnel(d: dict) -> str:
             "window.fxFunnel=sim;setv(C.d);draw();})();</script>")
 
 
+def prize(d: dict) -> str:
+    """MY CLUB WORLD TOUR 경품 예산 (fc_biz.prize 와 같은 식 · views.fconline.prize_html 과 같은 마크업)."""
+    cfg = d["mcw"]["prize_sim"]
+    meta = _j({"su": cfg["signups"], "base": cfg["base_cost"]})
+    return (f'<div class="ox-w" id="fxPrize"><div id="fxPrizeRes"></div>{_inputs("fz", cfg).replace("가정값 바꾸기 <span", "가정값 바꾸기 · 당첨 수 · 항공 · 호텔 · 티켓 · 경비 · 유니폼 <span")}</div>'
+            f"<script>(function(){{{_won_js()}{_wire('fxPrize', cfg)}var M={meta};"
+            "function sim(x0){var x=clamp(x0),pk=x.pk,pp=x.ppl;var parts=[['항공권',pk*pp*x.flight],['호텔',pk*x.nights*x.hotel],['경기 티켓',pk*pp*x.ticket],"
+            "['기타 경비',pk*pp*x.other],['경기장 투어',pk*x.tour],['유니폼',x.jersey_n*x.jersey]];var tot=0;parts.forEach(function(p){tot+=p[1];});"
+            "var goods=parts[5][1];return {x:x,parts:parts,per_pk:pp*(x.flight+x.ticket+x.other)+x.nights*x.hotel+x.tour,pk_total:tot-goods,goods:goods,total:tot,people:pk*pp,"
+            "cac0:M.su?M.base/M.su:null,cac1:M.su?(M.base+tot)/M.su:null};}"
+            "function draw(){var r=sim(cur()),t=r.total||1;var bars=r.parts.filter(function(p){return p[1]>0;}).map(function(p){return '<i style=\"flex:'+(Math.max(p[1],0)/t*100).toFixed(2)+' 1 0\" title=\"'+p[0]+'\"></i>';}).join('');"
+            "var leg=r.parts.map(function(p){return '<span>'+p[0]+' '+won(p[1])+'</span>';}).join('');"
+            "var cac=r.cac1===null?'—':n0(r.cac0)+'원 → '+n0(r.cac1)+'원';"
+            "document.getElementById('fxPrizeRes').innerHTML='<div class=\"ox-res\"><div><span>직관 패키지 1팀</span><b>'+won(r.per_pk)+'</b><small>'+n0(r.x.ppl)+'인 · 항공·호텔·티켓·경비</small></div>'"
+            "+'<div><span>직관 패키지 합계</span><b>'+won(r.pk_total)+'</b><small>'+n0(r.x.pk)+'팀 · '+n0(r.people)+'명</small></div>'"
+            "+'<div><span>유니폼</span><b>'+won(r.goods)+'</b><small>'+n0(r.x.jersey_n)+'벌</small></div>'"
+            "+'<div class=\"acc\"><span>총 경품 예산 (가상)</span><b>'+won(r.total)+'</b><small>실제 견적 아님</small></div></div>'"
+            "+'<div class=\"fx-pbar\">'+bars+'</div><div class=\"fx-pleg\">'+leg+'</div>'"
+            "+'<p class=\"ox-note\">07 탭 기본 캠페인 비용 5,000만 원 · 가입 1만 명 가정에 경품을 더하면 CAC '+cac+' (가정 · 경품은 07 탭 비용 8개 항목에 포함되지 않음)</p>';}"
+            "window.fxPrize=sim;setv(C.d);draw();})();</script>")
+
+
 def widgets(root: Path) -> dict[str, str]:
     d = json.loads((root / "data" / "fconline" / "fc2.json").read_text(encoding="utf-8"))
     return {"fcvoc": voc(d), "fcpower": power(d), "fccare": care(d), "fcrebuild": rebuild(d), "fcrival": rival(d),
-            "fcfandom": fandom(d), "fckeep": keep(d), "fcfunnel": funnel(d)}
+            "fcfandom": fandom(d), "fckeep": keep(d), "fcfunnel": funnel(d), "fcprize": prize(d)}
