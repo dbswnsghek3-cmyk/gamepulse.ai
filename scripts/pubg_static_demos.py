@@ -224,5 +224,5 @@ function init(){seg('lvK-seg',function(i){K.i=i;Kr();});seg('lvK-res',function(h
  document.querySelectorAll('details').forEach(function(d){d.addEventListener('toggle',function(){if(d.open)rs();});});}
 if(document.querySelector('.pg-static.js'))init();else document.addEventListener('pg-mounted',init);
 })();</script>"""
-    return {"A1 NEXT MATCH COACH": a1, "A2 FIRST 10 MATCHES": a2, "B2 복귀 첫 플레이 · D30": b1,
-            "C BM 내부 분석": c_top + c_exp + js}
+    return {"★ 다음 경기 코치": a1, "첫 10경기 로드맵": a2, "복귀 첫날 · D30": b1,
+            "BM 내부 분석": c_top + c_exp + js}

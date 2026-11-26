@@ -133,7 +133,8 @@ def plan(cfg: dict) -> dict:
     m10_mde = a["participation"] / 100 * a["uplift_m10_viewer"]
     # B1: 휴면 계정을 대조군(광고 없음) + 광고 그룹(arms−1개)으로 무작위 배정 → 각 광고 vs 대조군 복귀 로그인율(배정 기준) 비교
     arms = r.get("arms", 2)
-    n_r = sample_size_two_proportions(r["base_return"] / 100, (r["base_return"] + r["mde"]) / 100, alpha, power)  # 그룹당
+    # 광고 (arms−1)개를 각각 대조군과 비교 → Bonferroni 보정 α ÷ (arms−1) 로 그룹당 표본 계산 (화면 설명과 일치)
+    n_r = sample_size_two_proportions(r["base_return"] / 100, (r["base_return"] + r["mde"]) / 100, alpha / max(arms - 1, 1), power)  # 그룹당
     wk_r = math.ceil(arms * n_r / r["weekly"])
     win = math.ceil(r["window_days"] / 7)
     r0 = r["start_week"]

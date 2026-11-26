@@ -168,7 +168,7 @@ def _pubg() -> list[Entry]:
                       "확대: 홀드아웃 대비 유의한 순증 + 재정착 1인당 비용 ≤ 내부 LTV 기준 · 중단: 모든 소재가 차이 없음 또는 신고율 악화"],
                      ["순증 D30 재정착 유저당 비용", "복귀 로그인 전환율", "복귀 첫 경기 완료율", "D7·D30"], "05",
                      "1억 억 예산 광고비 바로 전액 집행 손익분기 LTV 파일럿 5,600 이유"))
-    out.append(Entry("pubg", "priority", "우선 실행: A1 NEXT MATCH COACH", "신규 유저가 첫 실전 직후 떠나는 지점에 바로 닿는 개선부터",
+    out.append(Entry("pubg", "priority", "우선 실행: 다음 경기 코치 (NEXT MATCH COACH)", "신규 유저가 첫 실전 직후 떠나는 지점에 바로 닿는 개선부터",
                      [f"{k}: {d['mvp_reason'].get(k, '')}" for k in ("A1", "B1")],
                      [f"{p['key']} {p['name'].split(' · ')[0]}: {p['decision']}" for p in d["proposals"]][:4],
                      [k[0] for k in d["kpis"]["A"][:3]], "06", "우선 먼저 순서 1순위 MVP"))
