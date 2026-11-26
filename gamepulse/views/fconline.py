@@ -20,7 +20,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from gamepulse.sim import fc_biz as B
-from gamepulse.ui.brief import brief_html, flow_html
+from gamepulse.ui.brief import brief_html, chips_html, flow_html
 from gamepulse.ui.components import html
 from gamepulse.views.overwatch import _jpg_b64, bullets, h, ox_badge_legend, ox_chart_card, stats, table
 from gamepulse.views.overwatch import won as owon
@@ -46,20 +46,22 @@ def load() -> dict:
 OFF_CAP = "FC 온라인 공식 홈페이지 배너 · 2026-11-26 수집 · ⓒ NEXON · EA"
 
 
-def fig(name: str, label: str, cap: str = CAP) -> str:
+def fig(name: str, label: str, cap: str = CAP, short: bool = False) -> str:
     p = ASSETS / name
     if not p.is_file():
         return ""
     off = name.startswith("off_")
     kind, cap = ("공식 이미지", OFF_CAP) if off else ("실제 게임 화면", cap)
+    if short:   # 카드 안: 종류만 · 전체 출처는 'BM 상세' 표
+        kind, cap = ("공식 배너" if off else "실제 캡처"), ("ⓒ NEXON · EA" if off else "작성자 캡처")
     return (f'<figure class="ox-fig real{" off" if off else ""}"><details class="ox-zoom"><summary title="클릭하면 크게 보기">'
             f'<img src="data:image/jpeg;base64,{_jpg_b64(str(p), p.stat().st_mtime)}" alt="{escape(label)}" loading="lazy"></summary></details>'
             f'<figcaption><b>{kind}</b>{escape(label)} · {escape(cap)}</figcaption></figure>')
 
 
-def slot(name: str, label: str, cap: str = CAP) -> str:
+def slot(name: str, label: str, cap: str = CAP, short: bool = False) -> str:
     """받은 캡처는 실제 화면으로, 아직 없으면 '이미지 준비 중' 자리."""
-    return fig(name, label, cap) or (f'<div class="fx-slot"><b>이미지 준비 중</b><span>{escape(label)}</span>'
+    return fig(name, label, cap, short) or (f'<div class="fx-slot"><b>이미지 준비 중</b><span>{escape(label)}</span>'
                                 f'<small>assets/fconline/{escape(name)}</small></div>')
 
 
@@ -72,7 +74,7 @@ EFFECT = {"CLUB CARE": "급락 유저 <b>D30 잔존 · 기존 결제 유지</b> 
 def brief4(d: dict, key: str, tag: str = "기획 시안") -> str:
     """01 탭 '문제 → 근거 → 해결 → 효과' 표의 같은 행을 기획 첫머리 4칸으로."""
     row = next(r for r in d["summary4"] if r[0] == key)
-    return brief_html(escape(row[1]), escape(row[2]), escape(row[3]), EFFECT[key] + f"<br><small>판단 KPI · {escape(row[4])}</small>",
+    return brief_html(escape(row[1]), escape(row[2]), escape(row[3]), EFFECT[key],
                       name=key, tag=tag)
 
 
@@ -140,7 +142,7 @@ def render() -> None:
 def t1(d: dict) -> None:
     m = d["market"]
     h("국내 PC방 상위권 축구 게임 · 실제 축구 일정과 이용이 함께 움직인다", "real", num="01", name="게임 개요 · 시장 경쟁력",
-      lead="넥슨 서비스 · EA SPORTS 라이선스 · 조사 기준일 2026-11-25 · PC방 점유율은 축구 게임 장르 점유율이 아니다")
+      lead="조사 기준일 2026-11-25 · PC방 점유율 ≠ 축구 장르 점유율")
     html('<div class="fx-nums big">' + "".join(f'<div><b>{escape(v)}</b><span>{escape(l)}</span><small>{src(u, s)}</small></div>'
                                                for v, l, s, u in m["key"]) + "</div>")
     x = [a for a, _ in m["usage"]]
@@ -151,7 +153,8 @@ def t1(d: dict) -> None:
                   unit="만 시간 · 더로그 한 기관 자료만 · 세로축 0부터", kpis=[], analysis="축구 이벤트와 함께 늘어난 것은 관찰이며 인과로 단정하지 않는다",
                   decision="", basis="", height=300, legend=False, cols=("주차", "사용시간 (만 시간)"))
     h("강점 세 가지가 MY CLUB WAR의 근거가 된다", "interp")
-    html('<div class="fx-3 str">' + "".join(f'<div><span>{escape(a)}</span><p>{escape(b)}</p></div>' for a, b in m["strengths3"]) + "</div>")
+    with st.expander("강점 세 가지 상세 · 경쟁력 · 실제 선수·구단 IP · 반복 구매 구조"):
+        html('<div class="fx-3 str">' + "".join(f'<div><span>{escape(a)}</span><p>{escape(b)}</p></div>' for a, b in m["strengths3"]) + "</div>")
     with st.expander("PC방 순위 4개 시점 · 경쟁작 차이 · 자료 원문 (조사기관이 달라 하나의 추세로 잇지 않음)"):
         table(["시점", "순위", "점유율", "출처", "참고"],
               [[escape(p["when"]), escape(p["rank"]), escape(p["share"]), src(p["url"], p["src"]), escape(p["note"])] for p in m["points"]])
@@ -169,15 +172,15 @@ def t1(d: dict) -> None:
 def t2(d: dict) -> None:
     bm, mk = d["bm"], d["marketing"]
     h("상품 하나가 아니라 '멤버십 → 페이백 → 한정 상품 → 성장'이 맞물려 반복 구매를 만든다", "real", num="02", name="기존 BM 강점",
-      lead="새 BM을 억지로 더하지 않는다 · 공식 배너와 작성자 캡처(2026-11-23·26)로 확인된 것만 적는다")
+      lead="공식 배너·작성자 캡처로 확인된 것만")
     cards = []
     for c in d["bm_cards"]:
-        im = slot(c["img"], c["name"], c.get("cap", CAP))
+        im = slot(c["img"], "", c.get("cap", CAP), short=True)
         tag = '<i class="ok">공식·캡처 확인</i>' if c["status"] == "real" else '<i class="wait">캡처 확인 예정</i>'
         cards.append(f'<div class="fx-bm">{im}<div class="fx-bm-t"><b>{escape(c["name"])}</b>{tag}</div>'
                      f'<p><span>구매 심리</span>{escape(c["psy"])}</p><p><span>사업적 효과</span>{escape(c["effect"])}</p></div>')
     html('<div class="fx-bms">' + "".join(cards) + "</div>")
-    h("반복 구매 순환 구조", "interp", lead="구매하지 않으면 혜택을 놓친다고 느끼기 쉬운 구조 · 동시에 결제 피로와 이탈 위험도 함께 커진다")
+    h("반복 구매 순환 구조", "interp", lead="안 사면 손해라는 압박과 결제 피로를 함께 본다")
     n = len(d["bm_cycle"])
     pos = [(50 + 39 * math.sin(2 * math.pi * k / n), 50 - 39 * math.cos(2 * math.pi * k / n)) for k in range(n)]
     html('<div class="fx-cycle">' + "".join(f'<div style="left:{x:.1f}%;top:{y:.1f}%"><em>{k + 1}</em>{escape(s)}</div>'
@@ -188,6 +191,8 @@ def t2(d: dict) -> None:
          '<div class="ox-pair">' + "".join(fig(f, t, C26) for f, t in d["bm_cycle_shots"]) + "</div>")
     html(f'<div class="ox-purpose fx-risk"><span>함께 볼 위험</span>{escape(bm["risk"])} · 구단 가치 급락이 겹치면 결제 중단으로 번질 수 있다 (04 탭)</div>')
     with st.expander("BM 상세 · 확인한 내용과 근거 링크"):
+        html('<ul class="ox-facts">' + "".join(f'<li><b>{escape(c["name"])} 이미지</b> · {escape(c.get("cap") or (OFF_CAP if c["img"].startswith("off_") else CAP))}</li>'
+                                               for c in d["bm_cards"]) + "</ul>")
         table(["BM", "확인한 내용", "근거"],
               [[f"<b>{escape(c['name'])}</b>", escape(c["fact"]) if c["fact"] else '<span class="ox-pend">캡처 확인 예정</span>',
                 src(c["url"], c["src"]) if c["src"] else "—"] for c in d["bm_cards"]], cls="ox-mops")
@@ -196,7 +201,8 @@ def t2(d: dict) -> None:
     h("축구 팬의 관심은 이미 크다 · 과제는 그 관심을 '지속 참여'로 잇는 것", "real", num="02", name="기존 축구 마케팅")
     stats([("약 10만 명", "2025 아이콘매치 이틀 관중", "real"), ("340만 명", "생중계 누적 시청", "real"), ("+47.6%", "월드컵 기간 주간 사용시간", "real")])
     st.caption(f"{ic['title']} · {ic['when']} · 출처 {ic['src']} · 더로그(경향게임스 2026-07-13)")
-    html(f'<div class="ox-purpose"><span>→ MY CLUB WAR 근거</span>대형 행사는 이틀, 월드컵은 몇 주 · 실제 구단 팬덤을 8주 시즌 리그로 묶으면 관심이 게임 안 활동으로 이어질 수 있다 (가설)</div>')
+    with st.expander("→ MY CLUB WAR로 이어지는 근거"):
+        html(f'<div class="ox-purpose"><span>→ MY CLUB WAR 근거</span>대형 행사는 이틀, 월드컵은 몇 주 · 실제 구단 팬덤을 8주 시즌 리그로 묶으면 관심이 게임 안 활동으로 이어질 수 있다 (가설)</div>')
 
 
 # ----------------------------------------------------------------------
@@ -207,7 +213,7 @@ def t3(d: dict) -> None:
     cats = Counter(v["cat"] for v in V)
     tones = Counter(v["tone"] for v in V)
     h(f"VOC {len(V)}건: 불만은 구단 가치·강화에, 만족은 신규 클래스·이적시장·이벤트에 모인다", "real", num="03", name="실제 유저 VOC",
-      lead=escape(d["voc_note"]))
+      lead="원문 확인 50건 (인벤 40 · 에펨코리아 5 · 유튜브 댓글 5) · 전체 유저 대표 아님")
     stats([(f"{len(V)}건", "검증한 VOC (원문 링크)", "real"), (f"{tones.get('부정', 0)} · {tones.get('중립', 0)} · {tones.get('긍정', 0)}", "부정 · 중립 · 긍정", "real"),
            (f"{cats.get('키보드·패드 조작', 0) * 100 // len(V)}%", "조작 관련 비중 (반복 댓글 정리 후)", "real")])
     order = [c for c, _ in cats.most_common()]
@@ -219,7 +225,8 @@ def t3(d: dict) -> None:
     f.update_xaxes(title="건")
     ox_chart_card(f, key="fcvoc", kind="real", title="주제별 VOC · 빨강 = 부정, 회색 = 중립, 초록 = 긍정",
                   unit="건 · 한 글은 주 분류 1개", kpis=[], analysis="", decision="", basis="", height=300, cols=("주제", "건"), series="방향")
-    html('<ol class="ox-ins">' + "".join(f"<li>{escape(x)}</li>" for x in d["voc_insights"]) + "</ol>")
+    with st.expander("VOC에서 읽은 인사이트 5가지"):
+        html('<ol class="ox-ins">' + "".join(f"<li>{escape(x)}</li>" for x in d["voc_insights"]) + "</ol>")
     h("대표 VOC 6건 · 어느 기획으로 이어지는가", "real", lead="부정·중립·긍정을 함께 · 나머지는 아래 전체 목록에서 필터로 확인")
     reps = [d["voc_rep"][i] for i in (0, 2, 4, 5, 6, 7)]
     html('<div class="fx-vocs six">' + "".join(
@@ -239,6 +246,7 @@ def t3(d: dict) -> None:
               [[v["id"], f'{escape(v["src"])}<br><small>{escape(v["date"])}</small>', src(v["url"], v["title"]), escape(v["summary"]),
                 escape(v["cat"]), escape(v["tone"]), escape(v["link"])] for v in rows], cls="ox-mops fx-voc")
         js_end()
+        st.caption(d["voc_note"])
         st.caption("보조 자료 (50건 미포함): " + " · ".join(t for _, t, _ in d["voc_extra"]) + " · " + d["voc_plan"])
 
 
@@ -285,7 +293,7 @@ def _rebuild_mock(rb: dict, opt: str) -> str:
 
 def t4(d: dict) -> None:
     h("문제는 시세가 아니라 '투자한 시간과 돈의 가치가 사라졌다'는 박탈감이다", "hypo", num="04", name="구단 가치 하락과 유저 이탈",
-      lead="쉬었다 돌아오면 선수단 가치와 경쟁력이 크게 떨어져 있을 수 있다 · " + escape(d["chain_note"]))
+      lead=escape(d["chain_note"]))
     ch = d["chain"]
     html('<div class="fx-chain2">' + "".join(
         f'<div class="{"care" if 1 <= k <= 3 else ("reb" if k >= 4 else "")}"><em>{k + 1}</em>{escape(s)}</div>' for k, s in enumerate(ch))
@@ -329,14 +337,15 @@ def t4(d: dict) -> None:
 
     ca = d["care"]
     h(f"{ca['name']} · {ca['slogan']}", "mock", num="04", name="개선 기획 A — PREVENTION · 구단 가치 관리",
-      lead="선수 1명이 아니라 내 선수단 전체 · 휴면 기간까지 · 운영진 시장 관리와 연결 (가격을 강제로 유지하지 않는다)")
+      lead="내 선수단 전체 · 휴면 기간 포함 · 가격을 강제로 유지하지 않는다")
     html(brief4(d, "CLUB CARE"))
     js("fccare")
     per = st.radio("기간", list(ca["mock"]["periods"]), horizontal=True, key="fc_care_p", index=1)
     html(_care_mock(ca, per))
     js_end()
-    table(["", "기존 기능 (이적시장·트렌드 센터)", "CLUB CARE"], [[f"<b>{escape(a)}</b>", escape(b), escape(c)] for a, b, c in ca["vs"]], cls="ox-mops")
-    st.caption(ca["vs_note"])
+    with st.expander("기존 기능 vs CLUB CARE"):
+        table(["", "기존 기능 (이적시장·트렌드 센터)", "CLUB CARE"], [[f"<b>{escape(a)}</b>", escape(b), escape(c)] for a, b, c in ca["vs"]], cls="ox-mops")
+        st.caption(ca["vs_note"])
     with st.expander("기능 8개 · 운영진 경제 관리 6개 · 원칙 · KPI"):
         html(f'<ul class="ox-facts"><li><b>기능</b> · {dots(ca["features8"])}</li><li><b>운영 시장 관리</b> · {dots(ca["ops"])}</li>'
              f'<li><b>원칙</b> · {dots(ca["rules"])}</li><li><b>KPI</b> · {dots(ca["kpi"])}</li></ul>')
@@ -352,9 +361,10 @@ def t4(d: dict) -> None:
     html('<div class="fx-steps">' + "".join(f'<div><em>STEP {k}</em><b>{escape(a)}</b><small>{escape(b)}</small></div>'
                                             for k, (a, b) in enumerate(rb["steps"], 1)) + "</div>")
     ex = rb["exist"]
-    html(f'<div class="fx-exist">{fig(rb["exist_img"], "신규/복귀 이벤트 엪온 빌드업")}<div><b>이미 있는 기능과 겹치는 부분</b>'
-         + "".join(f'<p><span>{escape(a)}</span>{escape(b)} · {src(u, "공식 ↗")}</p>' for a, b, u in ex)
-         + f'<p class="fx-exist-n">→ {escape(rb["exist_note"])}</p></div></div>')
+    with st.expander("이미 있는 기능과 겹치는 부분"):
+        html(f'<div class="fx-exist">{fig(rb["exist_img"], "신규/복귀 이벤트 엪온 빌드업")}<div><b>이미 있는 기능과 겹치는 부분</b>'
+             + "".join(f'<p><span>{escape(a)}</span>{escape(b)} · {src(u, "공식 ↗")}</p>' for a, b, u in ex)
+             + f'<p class="fx-exist-n">→ {escape(rb["exist_note"])}</p></div></div>')
     with st.expander("대상 · 악용·경제 방지 · KPI"):
         html(f'<ul class="ox-facts"><li><b>대상 (기획 기준 · 내부 데이터로 확정)</b> · {dots(rb["target"])}</li>'
              f'<li><b>악용·경제 방지</b> · {dots(rb["guard"])} · 수수료 할인 사용 횟수 제한</li><li><b>KPI</b> · {dots(rb["kpi"])}</li></ul>')
@@ -435,18 +445,18 @@ def clubs_html(mc: dict) -> str:
     cells = "".join(f'<div><i style="--c:{EMB[k % len(EMB)]}">{escape(n[0])}</i><b>{escape(n)}</b>'
                     f'{f"<small>{escape(rv[n])}</small>" if n in rv else ""}</div>' for k, n in enumerate(mc["clubs16"]))
     return (f'<div class="fx-16"><div class="fx-16-h">참가 16개 구단 <span class="fx-tag">가상 예시</span></div><div class="fx-16-g">{cells}</div>'
-            f'<p>{escape(mc["clubs_note"])} · {escape(mc["europa"])}</p></div>')
+            f'<p>UEFA 2026/27 챔피언스리그 리그 페이즈 참가 구단 중 선택 · 16강 확정 전 가상 예시 · 엠블럼 이미지는 권리 미확보로 이니셜 표시</p></div>')
 
 
 def room_html(sq: dict) -> str:
     """감독실: 전술 보드(포지션만) + 포메이션·전술·표준화 조건 · 가상 기획 UI."""
-    toks = "".join(f'<span style="left:{x}%;top:{y}%"><b>{escape(p)}</b><small>현역 선수</small></span>' for p, x, y in sq["pos"])
+    toks = "".join(f'<span style="left:{x}%;top:{y}%"><b>{escape(p)}</b><small>{escape(n)}</small></span>' for p, x, y, n in sq["pos"])
     forms = "".join(f'<i class="{"on" if f == sq["formation"] else ""}">{escape(f)}</i>' for f in sq["forms"])
     tac = "".join(f"<div><span>{escape(a)}</span><b>{escape(b)}</b></div>" for a, b in sq["tactics"])
     std = "".join(f"<li>{escape(s)}</li>" for s in sq["std"])
     return mock("MY CLUB WAR · 감독실 · 현역 선수 전술 배치 · 가상 기획 UI", (
         f'<div class="fx-room"><div class="fx-room-p"><div class="fx-room-pitch">{toks}</div></div>'
-        f'<div class="fx-room-r"><div class="fx-room-club"><span>MY CLUB</span><b>{escape(sq["club"])}</b><small>감독 등록 완료 · 선발 11 / 교체 7</small></div>'
+        f'<div class="fx-room-r"><div class="fx-room-club"><span>MY CLUB</span><b>{escape(sq["club"])}</b><small>감독 등록 완료 · 선발 11 / 교체 7 · 교체: {escape(", ".join(sq["bench"]))}</small></div>'
         f'<div class="fx-room-f"><span>포메이션</span><div>{forms}</div></div><div class="fx-room-t">{tac}</div>'
         f'<div class="fx-room-s"><span>이벤트 전용 스쿼드 · 모두 같은 조건</span><ul>{std}</ul></div>'
         '<div class="fx-room-go">전술 저장 → 경기 시작 · 내가 직접 뛴다</div></div></div>'), "night")
@@ -468,7 +478,7 @@ def tour_html(t: dict) -> str:
     items = "".join(f'<div><i>{a}</i><b>{escape(b)}</b><small>{escape(c)}</small></div>' for a, b, c in t["items"])
     tiers = "".join(f'<div><span>{escape(a)}</span><b>{escape(b)}</b><small>{escape(c)}</small></div>' for a, b, c in t["tiers"])
     return (f'<div class="fx-tour"><div class="fx-tour-h"><span>{escape(t["name"])}</span><b>우승하고, 진짜 홈경기로.</b></div>'
-            f'<div class="fx-tour-i">{items}</div></div><div class="fx-tier">{tiers}</div><p class="fx-pod-n">{escape(t["note"])}</p>')
+            f'<div class="fx-tour-i">{items}</div></div><div class="fx-tier">{tiers}</div><p class="fx-pod-n">가상 보상안 · 추첨은 일정 기여도를 채운 유저 대상</p>')
 
 
 def prize_html(r: dict) -> str:
@@ -497,24 +507,28 @@ def funnel7_html(mc: dict, cfg: dict) -> str:
         v = f"{n[key]:,.0f}명" if key else "측정 예정"
         rows.append(f'<div style="--w:{100 - k * 11}%"><em>{k + 1}</em><b>{escape(lab)}</b><span>{v}</span></div>')
     kpi = "".join(f'<div><b>{escape(a)}</b><small>{escape(b)}</small></div>' for a, b in mc["kpi5"])
-    return (f'<div class="fx-f7">{"".join(rows)}</div><p class="fx-pod-n">수치는 07 탭 퍼널 시뮬레이션 기본 가정값 (도달 100만 · 방문 5% · 가입 20% · D30 15% · 결제 5%) · '
-            f'감독 등록·첫 경기 전환율은 캠페인에서 처음 측정 · <span class="ox-k sim">가정 시뮬레이션</span></p><div class="fx-kpi5">{kpi}</div>')
+    return (f'<div class="fx-f7">{"".join(rows)}</div><p class="fx-pod-n">07 탭 퍼널 기본 가정값 · 감독 등록·첫 경기는 캠페인에서 처음 측정 · '
+            f'<span class="ox-k sim">가정 시뮬레이션</span></p><div class="fx-kpi5">{kpi}</div>')
 
 
 def t5(d: dict) -> None:
     mc = d["mcw"]
     h("MY CLUB WAR · 답답해서 내가 뛴다.", "mock", num="05", name="대표 마케팅 기획 — 유럽 구단 팬덤 감독형 챔피언십",
-      lead=escape(mc["copy"]["concept"]) + " · " + escape(mc["license"]))
+      lead="라이선스·제휴 확정 전 가상 기획")
     html(hero_html(mc))
     html(brief4(d, "MY CLUB WAR", "대표 기획 · 기획 시안"))
     html(clubs_html(mc))
+    with st.expander("구단 선정 기준 · 엠블럼 권한"):
+        html(f'<ul class="ox-facts"><li>{escape(mc["clubs_note"])} · 출처 {src(mc["clubs_src"][1], mc["clubs_src"][0])}</li>'
+             f'<li>{escape(mc["emblem_note"])} · {src(mc["emblem_src"][1], mc["emblem_src"][0])}</li><li>{escape(mc["europa"])}</li></ul>')
     html(flow_html([(f"{escape(a)} · {escape(b)}", escape(c)) for a, b, c in mc["season_flow"]],
                    title="8주 시즌 · 감독 등록 → 정규 리그 → 8강 → 4강 → 결승", hl=4))
     html(f'<div class="ox-purpose"><span>탈락 구단</span>{escape(mc["season_out"])}</div>')
 
-    h("감독실 · 내가 짜고, 내가 뛴다", "mock", lead="실제 현역 소속 선수 기반 이벤트 전용 스쿼드 · 강화·급여를 같은 조건으로 묶어 과금액에 따른 격차를 줄인다")
+    h("감독실 · 내가 짜고, 내가 뛴다", "mock", lead="UEFA 등록 선수 · 강화·급여 같은 조건 → 과금 격차 최소화")
     html(room_html(mc["squad"]))
-    st.caption(mc["squad"]["note"])
+    with st.expander("선수 명단 출처"):
+        html(f'<p class="fx-pod-n">{escape(mc["squad"]["note"])} · {src(mc["squad"]["src"][1], mc["squad"]["src"][0])}</p>')
     names = [r["name"] for r in mc["rivals"]]
     js("fcrival")
     pick = st.radio("라이벌 매치", names, horizontal=True, key="fc_rival")
@@ -534,35 +548,40 @@ def t5(d: dict) -> None:
     me = mc["me"]
     html(league_html(mc["league"], me["club"], "MY CLUB WAR · 정규 리그", "4라운드 종료 · 상위 8개 구단 8강 · 가상", cut=8))
     html(bracket_html(mc["bracket"]))
-    h("구단별 개인 기여도 · 이기는 것만이 아니라 참여로도 기여한다", "mock", lead=escape(mc["mission_rules"]))
+    h("구단별 개인 기여도 · 참여로도 기여한다", "mock", lead="결제 무관 · 개인 일일 상한")
     html(me_html(me, mc["missions"]))
 
-    h("MY CLUB WORLD TOUR · 우승 구단 홈경기 직관", "mock", lead="우승 구단 MVP 1명 + 기여도 기준 충족자 추첨 4명 = 2인 직관 패키지 5팀 · 상위 기여자 30명 유니폼 · 우승 구단 참여자 전원 기념 트로피·엠블럼")
+    h("MY CLUB WORLD TOUR · 우승 구단 홈경기 직관", "mock", lead="가상 보상안 · 실제 협업 확정 아님")
     html(tour_html(mc["tour"]))
-    h("경품 예산 시뮬레이터 · 기본 약 3,050만 원 (가상)", "sim", lead=escape(mc["prize_sim"]["note"]))
+    h("경품 예산 시뮬레이터 · 기본 약 3,050만 원 (가상)", "sim", lead="가상 예산 · 실제 견적 아님 · 제세공과금·보험·비자 별도")
     ps = mc["prize_sim"]
     js("fcprize")
     box = st.container()
-    pr = B.prize(ps, _sim_inputs("fz_", ps, "가정값 바꾸기 · 당첨 수 · 항공 · 호텔 · 티켓 · 경비 · 유니폼"))
+    pr = B.prize(ps, _sim_inputs("fz_", ps, "가정값 바꾸기"))
     with box:
         html(prize_html(pr))
     js_end()
 
-    h("외부 축구 팬을 데려오는 마케팅 · 광고 노출부터 구매 전환까지", "mock", lead="CAC · 신규 가입률 · 복귀율 · D30 잔존율 · 캠페인 ROI로 검증 · 이벤트 참여 인원만으로 판단하지 않는다")
-    html('<div class="fx-mk4">' + "".join(f'<div><b>{escape(a)}</b><p>{escape(b)}</p></div>' for a, b in mc["marketing4"]) + "</div>")
+    h("외부 축구 팬을 데려오는 마케팅 · 광고 노출부터 구매 전환까지", "mock", lead="참여 인원이 아니라 CAC · D30 · ROI로 판단")
+    html(chips_html("마케팅 4종", [a for a, _ in mc["marketing4"]], "kpi"))
+    with st.expander("마케팅 4종 실행 방식"):
+        html('<div class="fx-mk4">' + "".join(f'<div><b>{escape(a)}</b><p>{escape(b)}</p></div>' for a, b in mc["marketing4"]) + "</div>")
     html(funnel7_html(mc, d["sims"]["funnel"]))
 
     un = mc["union"]
     h("이미 있는 '팀컬러 연합 레이스'와 무엇이 다른가 — 공식 자료로 확인", "real",
-      lead="기여도 적립·순위 보상·1인당 점수는 이미 있는 방식 → 새 기능이라 하지 않고 활용 · 출처 " + " · ".join(src(u, t) for t, u in un["src"]))
+      lead="기여도·순위 보상·1인당 점수는 기존 방식 → 활용 · 출처 " + " · ".join(src(u, t) for t, u in un["src"]))
     html(f'<div class="fx-union">{fig(un["img"], "팀컬러 연합 레이스 (2026.10.29~11.25)")}<ul class="ox-facts">'
-         + "".join(f"<li><b>{escape(a)}</b> · {escape(b)}</li>" for a, b in un["facts"]) + "</ul></div>")
-    html('<div class="ox-pair">' + "".join(fig(f, t, un["shots_cap"]) for f, t in un["shots"]) + "</div>")
-    html('<div class="fx-diff3"><div class="hd"><span></span><b>팀컬러 연합 레이스 (기존)</b><b>MY CLUB WAR</b></div>'
+         + "".join(f"<li><b>{escape(a)}</b> · {escape(b)}</li>" for a, b in un["facts"] if a in ("경쟁 단위", "연합 점수")) + "</ul></div>")
+    with st.expander("연합 레이스 상세 · 실제 화면"):
+        html('<ul class="ox-facts">' + "".join(f"<li><b>{escape(a)}</b> · {escape(b)}</li>" for a, b in un["facts"] if a not in ("경쟁 단위", "연합 점수")) + "</ul>")
+        html('<div class="ox-pair">' + "".join(fig(f, t, un["shots_cap"]) for f, t in un["shots"]) + "</div>")
+    with st.expander("팀컬러 연합 레이스 vs MY CLUB WAR · 핵심 3개 항목"):
+        html('<div class="fx-diff3"><div class="hd"><span></span><b>팀컬러 연합 레이스 (기존)</b><b>MY CLUB WAR</b></div>'
          + "".join(f'<div><span>{escape(a)}</span><p>{escape(b)}</p><p class="new">{escape(c)}</p></div>' for a, b, c in mc["diff3"]) + "</div>")
 
     h("인기 구단이 사람 수만으로 이기지 않게 · 경쟁 점수 시뮬레이터", "sim",
-      lead="사람 수(누적)와 1인당 활동(평균)을 함께 본다 · 참고: 기존 팀컬러 연합 레이스는 1인당 경기 수 방식 + 전주 5위 +5% 보너스 (캡처 확인) · 결과 먼저, 계산식과 가정값은 아래 펼쳐보기")
+      lead="누적(사람 수)과 평균(1인당 활동)을 함께 · 기존 연합 레이스는 1인당 방식 + 전주 5위 +5%")
     fs = d["fandom_sim"]
     js("fcfandom")
     st.session_state.setdefault("fc_fw", fs["w_total"])
@@ -589,10 +608,13 @@ def t5(d: dict) -> None:
     with board:
         html(podium_html(res, w))
     js_end()
-    html('<div class="fx-pol">' + "".join(f'<div><span>{escape(a)}</span><p>{escape(b)}</p></div>' for a, b in mc["policies"]) + "</div>")
+    with st.expander("악용 방지 정책 4개"):
+        html('<div class="fx-pol">' + "".join(f'<div><span>{escape(a)}</span><p>{escape(b)}</p></div>' for a, b in mc["policies"]) + "</div>")
 
-    h("운영 리스크 · 협업이 확정된 것이 아니다", "hypo", lead="아래 조건이 확보되지 않으면 가상 구단명·게임 내 보상만으로 축소 운영")
-    html('<div class="fx-risk6">' + "".join(f'<div><b>{escape(a)}</b><p>{escape(b)}</p></div>' for a, b in mc["risks"]) + "</div>")
+    h("운영 리스크 · 협업이 확정된 것이 아니다", "hypo", lead="미확보 시 가상 구단명·게임 내 보상으로 축소")
+    html(chips_html("운영 리스크 6", [a for a, _ in mc["risks"]]))
+    with st.expander("운영 리스크 6개 · 대응 방안"):
+        html('<div class="fx-risk6">' + "".join(f'<div><b>{escape(a)}</b><p>{escape(b)}</p></div>' for a, b in mc["risks"]) + "</div>")
     with st.expander("시즌 구성 · 명예의 전당 · 보상 원칙 · 유로파리그 확장"):
         html('<div class="fx-steps">' + "".join(f'<div><em>{escape(a)}</em><small>{escape(b)}</small></div>' for a, b in mc["season"]) + "</div>")
         html(f'<ul class="ox-facts"><li><b>명예의 전당</b> · {dots(mc["hall"])}</li><li><b>보상</b> · {dots(mc["rewards"])} · {escape(mc["reward_rule"])}</li>'
@@ -613,17 +635,18 @@ def t6(d: dict) -> None:
     fp = d["fair"]
     c = fp["controller"]
     h("'패드가 무조건 유리하다'고 단정하지 않는다 — 데이터로 먼저 검증", "hypo", num="06", name="FAIR PLAY PROJECT",
-      lead=f"{c['date']} 공식 데이터센터 · 공식경기 1ON1 · 랭킹 1~10,000위 기준 · 전체 유저 비율이나 승률이 아님")
+      lead=f"{c['date']} 공식 데이터센터 · 랭킹 1~10,000위 · 이용 비중이며 승률 아님")
     html(brief4(d, "FAIR PLAY"))
     html(f'<div class="fx-io"><div><i class="kb"></i><b>{c["kb"]}%</b><span>키보드</span></div><div><i class="pad"></i><b>{c["pad"]}%</b><span>패드</span></div></div>')
     kc = "게임 설정 > 조작키 안내 · 같은 '공격' 탭 · 작성자 캡처 · 2026-11-26"
     html(f'<div class="ox-pair">{slot(fp["slots"][0][0], fp["slots"][0][1], kc)}{slot(fp["slots"][1][0], fp["slots"][1][1], kc)}</div>')
     s = fp["voc_sides"]
-    html('<div class="fx-3">'
-         f'<div><span>키보드 유저</span>{bullets(s["keyboard"])}</div><div><span>패드 유저</span>{bullets(s["pad"])}</div>'
-         f'<div><span>중립 의견</span><p>{escape(s["third"])}</p></div></div>')
-    html('<div class="fx-chips">' + "".join(f"<span>{escape(x)}</span>" for x in fp["cats"]) + "</div>")
-    st.caption(fp["other"])
+    with st.expander("키보드·패드 유저 의견"):
+        html('<div class="fx-3">'
+             f'<div><span>키보드 유저</span>{bullets(s["keyboard"])}</div><div><span>패드 유저</span>{bullets(s["pad"])}</div>'
+             f'<div><span>중립 의견</span><p>{escape(s["third"])}</p></div></div>')
+        html('<div class="fx-chips">' + "".join(f"<span>{escape(x)}</span>" for x in fp["cats"]) + "</div>")
+        st.caption(fp["other"])
     h("검증 → 개선 → 선택 매칭 테스트 · 격차가 확인될 때만 다음 단계", "mock")
     html(flow_html([(escape(a.split(" ", 1)[-1]), escape(b)) for a, b in fp["steps"]], hl=0))
     of = fp["official"]
@@ -662,7 +685,7 @@ def keep_html(r: dict) -> str:
             f'<div><span>추가 유지 유저</span><b>{r["kept"]:,.0f}명</b><small>월 매출 보전 {owon(r["monthly"])}</small></div>'
             f'<div class="{"neg" if r["total"] < 0 else "acc"}"><span>{r["x"]["months"]:g}개월 누적 매출 보전</span><b>{owon(r["total"])}</b>'
             '<small>순이익 아님 · 운영비 미차감</small></div></div>'
-            '<p class="ox-note">계산: 추가 유지 = 결제 유저 × (기존 이탈률 − 개선 후 이탈률) · 월 보전 = 추가 유지 × 월평균 결제 · 누적 = 월 보전 × 기간 · 이탈률이 오히려 오르면 음수로 표시</p>')
+            '')
 
 
 def funnel_html(fr: dict) -> str:
@@ -677,21 +700,24 @@ def funnel_html(fr: dict) -> str:
             f'<div><span>D30 잔존 1명 LTV (매출 기준)</span><b>{w(fr["ltv"])}</b><small>결제율 × 월 결제액 × {fr["x"]["months"]:g}개월</small></div>'
             f'<div><span>LTV 합계 ÷ 비용</span><b>{ratio}</b><small>기대 매출 {owon(fr["revenue"])}</small></div>'
             f'<div class="{sign}"><span>반영 비용 차감 후</span><b>{owon(fr["profit"])}</b><small>손익분기 결제율 {bep} · 순이익 아님</small></div></div>'
-            '<p class="ox-note">신규 유저 마케팅은 첫 몇 달 안에 비용을 회수하기 어렵다 → 판단 기준은 허용 가능한 CPA와 D30 잔존 · 라이선스·개발비는 미확정이라 기본 0원</p>')
+            '')
 
 
 def t7(d: dict) -> None:
     S = d["sims"]
     h("기존 결제 유저 500명을 지키면 3개월 매출 7,500만 원이 보전된다 (가상)", "sim", num="07", name="사업성 시뮬레이션",
-      lead=escape(S["keep"]["note"]))
+      lead="가상 시뮬레이션 · 매출 보전이며 순이익 아님 · 계산 가정은 아래 펼쳐보기")
     js("fckeep")
     box = st.container()
     r = B.keep(S["keep"], _sim_inputs("fk_", S["keep"]))
     with box:
         html(keep_html(r))
     js_end()
+    with st.expander("계산 가정 전문 · 유지 시뮬레이션"):
+        st.caption(S["keep"]["note"])
+        st.caption('계산: 추가 유지 = 결제 유저 × (기존 이탈률 − 개선 후 이탈률) · 월 보전 = 추가 유지 × 월평균 결제 · 누적 = 월 보전 × 기간 · 이탈률이 오히려 오르면 음수로 표시')
 
-    h("MY CLUB WAR: 도달 100만 → 가입 1만 → D30 1,500명 · 비용 8개 항목으로 본 사업성", "sim", lead=escape(S["funnel"]["note"]))
+    h("MY CLUB WAR: 도달 100만 → 가입 1만 → D30 1,500명 · 비용 8개 항목으로 본 사업성", "sim", lead="가상 시뮬레이션 · LTV는 매출 기준 · 라이선스·개발비 미확정 · 계산 가정은 아래 펼쳐보기")
     js("fcfunnel")
     box = st.container()
     fr = B.funnel(S["funnel"], _sim_inputs("ff_", S["funnel"], "가정값 바꾸기 · 퍼널 5개 · 결제 3개 · 비용 8개 항목"))
@@ -710,14 +736,20 @@ def t7(d: dict) -> None:
                   unit="만 원 · 초록 = 기대 매출, 회색 = 비용 · 방문·가입·잔존율만 바꿈", kpis=[], analysis="", decision="", basis="",
                   height=320, cols=("시나리오", "만 원"), series="항목")
     js_end()
+    with st.expander("계산 가정 전문 · 퍼널 시뮬레이션"):
+        st.caption(S["funnel"]["note"])
+        st.caption('신규 유저 마케팅은 첫 몇 달 안에 비용을 회수하기 어렵다 → 판단 기준은 허용 가능한 CPA와 D30 잔존 · 라이선스·개발비는 미확정이라 기본 0원')
 
-    h("전략별 KPI · 측정 대상 · 기간 · 계산 방식 · 성공 기준", "mock")
-    table(["전략", "핵심 KPI", "측정 대상", "기간", "계산 방식", "성공 판단"], [[f"<b>{escape(a)}</b>", *[escape(x) for x in r_]] for a, *r_ in d["kpis"]],
-          cls="ox-mops")
+    with st.expander("전략별 KPI 표"):
+        table(["전략", "핵심 KPI", "측정 대상", "기간", "계산 방식", "성공 판단"], [[f"<b>{escape(a)}</b>", *[escape(x) for x in r_]] for a, *r_ in d["kpis"]],
+              cls="ox-mops")
     pr = d["priority"]
     h("실행 우선순위 · CARE로 빠르게 검증하고 MY CLUB WAR로 키운다", "interp", lead=escape(pr["note"]))
-    table(["전략", *pr["criteria"]], [[f"<b>{escape(a)}</b>", *[escape(x) for x in r_]] for a, *r_ in pr["rows"]], cls="ox-mops")
+    with st.expander("실행 우선순위 평가표"):
+        table(["전략", *pr["criteria"]], [[f"<b>{escape(a)}</b>", *[escape(x) for x in r_]] for a, *r_ in pr["rows"]], cls="ox-mops")
     h("로드맵 · 다음 단계로 가는 조건과 멈추는 조건", "mock", lead="기획 단계 로드맵 · 실제 개발 일정 아님")
-    html('<div class="fx-road">' + "".join(f'<div><em>{escape(a)}</em><b>{escape(b)}</b><p><span>확대</span>{escape(c)}</p><p><span>중단·축소</span>{escape(e)}</p></div>'
-                                           for a, b, c, e in d["roadmap"]) + "</div>")
+    html('<div class="fx-road">' + "".join(f'<div><em>{escape(a)}</em><b>{escape(b)}</b></div>' for a, b, c, e in d["roadmap"]) + "</div>")
+    with st.expander("단계별 확대·중단 조건"):
+        html('<div class="fx-road">' + "".join(f'<div><em>{escape(a)}</em><b>{escape(b)}</b><p><span>확대</span>{escape(c)}</p><p><span>중단·축소</span>{escape(e)}</p></div>'
+                                               for a, b, c, e in d["roadmap"]) + "</div>")
     html(f'<div class="ox-purpose"><span>최종 결론</span>{escape(d["conclusion"])}<br><b>{escape(d["final_msg"])}</b></div>')

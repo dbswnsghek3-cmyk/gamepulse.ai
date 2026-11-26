@@ -158,7 +158,7 @@ def keep(d: dict) -> str:
             "function draw(){var r=sim(cur());document.getElementById('fxKeepRes').innerHTML='<div class=\"ox-res\"><div><span>기존 이탈 예상</span><b>'+n0(r.lost0)+'명</b><small>이탈률 '+r.x.churn0+'%</small></div>'"
             "+'<div><span>개선 후 이탈 예상</span><b>'+n0(r.lost1)+'명</b><small>이탈률 '+r.x.churn1+'%</small></div>'"
             "+'<div><span>추가 유지 유저</span><b>'+n0(r.kept)+'명</b><small>월 매출 보전 '+won(r.monthly)+'</small></div>'"
-            "+'<div class=\"'+(r.total<0?'neg':'acc')+'\"><span>'+r.x.months+'개월 누적 매출 보전</span><b>'+won(r.total)+'</b><small>순이익 아님 · 운영비 미차감</small></div></div><p class=\"ox-note\">계산: 추가 유지 = 결제 유저 × (기존 이탈률 − 개선 후 이탈률) · 월 보전 = 추가 유지 × 월평균 결제 · 누적 = 월 보전 × 기간 · 이탈률이 오히려 오르면 음수로 표시</p>';}"
+            "+'<div class=\"'+(r.total<0?'neg':'acc')+'\"><span>'+r.x.months+'개월 누적 매출 보전</span><b>'+won(r.total)+'</b><small>순이익 아님 · 운영비 미차감</small></div></div>';}"
             "window.fxKeep=sim;setv(C.d);draw();})();</script>")
 
 
@@ -176,7 +176,7 @@ def funnel(d: dict) -> str:
             "+'<div><span>D30 잔존 1명 LTV (매출 기준)</span><b>'+w(r.ltv)+'</b><small>결제율 × 월 결제액 × '+r.x.months+'개월</small></div>'"
             "+'<div><span>LTV 합계 ÷ 비용</span><b>'+(r.ratio===null?'—':Math.round(r.ratio*100)+'%')+'</b><small>기대 매출 '+won(r.revenue)+'</small></div>'"
             "+'<div class=\"'+(r.profit<0?'neg':'acc')+'\"><span>반영 비용 차감 후</span><b>'+won(r.profit)+'</b><small>손익분기 결제율 '+(r.bep_pur===null?'—':r.bep_pur.toFixed(1)+'%')+' · 순이익 아님</small></div></div>'"
-            "+'<p class=\"ox-note\">신규 유저 마케팅은 첫 몇 달 안에 비용을 회수하기 어렵다 → 판단 기준은 허용 가능한 CPA와 D30 잔존 · 라이선스·개발비는 미확정이라 기본 0원</p>';"
+            "+'';"
             "if(!window.Plotly)return;var names=Object.keys(C.p),sc=names.map(function(n){var p=Object.assign({},C.d,C.p[n]),y=Object.assign({},r.x);['visit','signup','d7','d30'].forEach(function(k){y[k]=p[k];});return sim(y);});"
             "Plotly.react('fxFunC',[{type:'bar',x:names,y:sc.map(function(s){return s.revenue/1e4;}),name:'기대 매출 (D30 잔존 × LTV)',marker:{color:'#16A34A'},text:sc.map(function(s){return won(s.revenue);}),textposition:'outside',cliponaxis:false},"
             "{type:'bar',x:names,y:sc.map(function(s){return s.cost/1e4;}),name:'총 캠페인 비용',marker:{color:'#9CA3AF'},text:sc.map(function(s){return won(s.cost);}),textposition:'outside',cliponaxis:false}],"

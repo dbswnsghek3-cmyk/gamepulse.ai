@@ -59,7 +59,7 @@ KST = dt.timezone(dt.timedelta(hours=9))
 PAGES = [("overwatch", "overwatch.html", "오버워치 · PROJECT RE:START", "real"),
          ("fconline", "fconline.html", "FC 온라인 · 축구 게임인가, 주식 게임인가?", "real"),
          ("pubg", "pubg.html", "PUBG · NEW START", "real"),
-         ("dnf", "dnf.html", "던전앤파이터 · 클리어했는데 왜 성장한 느낌이 없을까?", "real")]
+         ("dnf", "dnf.html", "던전앤파이터 · 노력은 남고, 성취는 이어져야 한다", "real")]
 PAGES += [("home", "home.html", "사이트 홈 · 개요", "sample")]
 PAGES += [(g, f"{g}.html", GAMES[g]["name"], "sample") for g in GAME_ORDER if g not in ("overwatch", "pubg", "fconline", "dnf")]
 PAGES += [("assistant", "assistant.html", "사업PM 어시스턴트", "plan")]   # 데이터 랩은 메뉴에서 제외 (코드만 보존)
@@ -533,12 +533,16 @@ def fconline_body(kind: str) -> tuple[str, int]:
 
 
 def dnf_body(kind: str) -> tuple[str, int]:
-    """던전앤파이터: 01~06을 모두 펼쳐 두고(JS 없이도 읽힘) 시뮬레이터는 JS 조작판으로 교체."""
-    from dnf_static_demos import demos as df_demos
-    from pubg_static_demos import PAGE_CSS, PAGE_JS
-    body, charts = tabbed_body("dnf", DF_TABS, "df_tab", kind, {}, all_visible=True)
-    note = '<div class="sx-note">이 페이지는 JavaScript 없이도 01~06 내용을 모두 담고 있습니다. 05 탭 시뮬레이터는 이 페이지에서 직접 조작할 수 있습니다.</div>'
-    return PAGE_CSS + '<div class="pg-static">' + note + body + "</div>" + PAGE_JS + df_demos(), charts
+    """던전앤파이터 (2026-11-27 개편 · 7탭): FC 온라인과 같은 탭 전환 · 시뮬레이터·VOC 필터 구역은 같은 계산식의 JavaScript 로 교체."""
+    from dnf_static_widgets import widgets as df_widgets
+    from ow_static_widgets import SUBTAB_JS
+    body, charts = tabbed_body("dnf", DF_TABS, "df_tab", kind, {})
+    dm = df_widgets(ROOT)
+    body, n = re.subn(r'<div class="ox-js-start" data-demo="(\w+)"></div>.*?<div class="ox-js-end"></div>',
+                      lambda m: dm[m.group(1)], body, flags=re.S)
+    if n != len(dm):
+        raise RuntimeError(f"던파 JS 위젯 교체 {n}/{len(dm)}개 · 표식 확인 필요")
+    return body + SUBTAB_JS, charts
 
 
 def tabbed_body(pid: str, labels: list[str], tab_key: str, kind: str, extras: dict,
@@ -557,7 +561,7 @@ def tabbed_body(pid: str, labels: list[str], tab_key: str, kind: str, extras: di
         if not mark:
             raise RuntimeError(f"탭 {label}: 탭 경계 표식을 찾지 못함")
         pane = rest.split("</div>", 1)[1]
-        if pid in ("overwatch", "fconline"):   # 개편: 탭마다 반복되던 어시스턴트 안내·하단 고지는 페이지 끝에 한 번만
+        if pid in ("overwatch", "fconline", "dnf"):   # 개편: 탭마다 반복되던 어시스턴트 안내·하단 고지는 페이지 끝에 한 번만
             pane, cut, tail_ = pane.partition('<div class="gp-xlinks"')
             if cut and tail is None:
                 tail = cut + tail_
@@ -723,16 +727,16 @@ def index_html(gen: str) -> str:
              '<a class="sx-card feature" href="pubg.html"><div class="k">두 번째 프로젝트 · 실제 자료 기반</div>'
              '<h3>PUBG · NEW START</h3><p><b>첫 치킨을 맛보기도 전에 떠나는 유저들. 그리고 돌아오지 않는 전우들.</b> — 신규 유저 정착(A 50%) · '
              '휴면 유저 복귀(B 40%) · BM 신뢰·수익성(C 10%). 공식 자료와 Steam 리뷰(신규 45건 · 복귀 21건, 별도 표본)를 근거로 '
-             'A1 경기별 코칭 데모, B1 복귀 광고 캠페인 «PUBG: 다시 낙하할 시간»과 클릭 가능한 랜딩페이지, A/B 테스트 설계를 만들었습니다.</p></a>']
+             '다음 경기 코치(NEXT MATCH COACH) 데모, 복귀 캠페인 «야, 배그 한 판 할래?» 광고 3종과 클릭 가능한 랜딩페이지, A/B 테스트 설계를 만들었습니다.</p></a>']
     cards.append('<a class="sx-card feature" href="fconline.html"><div class="k">세 번째 프로젝트 · 실제 자료 기반</div>'
-                 '<h3>FC 온라인 · 축구 게임인가, 주식 게임인가?</h3><p><b>구단 가치 급락과 강화 실패로 인한 이탈 위험, 그리고 조작 환경의 공정성 문제</b> — '
-                 'A 구단 가치 급락 완충 프로그램 · B 강화 실패 후 재기 프로그램 · C 분리 없는 조작 공정성 개선. 공식 강화 확률·이적시장 안정화 공지, 작성자 캡처, 인벤 게시글을 근거로 '
-                 'BP 직접 보상 없는 재참여 미션·비거래성 소규모 보상과 악용 방지, 통합 매칭 유지 + 조작 최적화·성과 분석·훈련을 제안했습니다.</p></a>')
+                 '<h3>FC 온라인 · 축구 게임인가, 주식 게임인가?</h3><p><b>구단 가치 하락에 따른 이탈은 막고, 축구 팬덤으로 새 고객을 데려온다</b> — '
+                 'CLUB CARE · CLUB REBUILD (이탈 방지) · MY CLUB WAR «답답해서 내가 뛴다» (UCL 리그 페이즈 구단 기반 16개 구단 감독형 챔피언십 · 우승 구단 홈경기 직관) · '
+                 'FAIR PLAY (키보드·패드 경쟁 환경). 공식 배너·작성자 캡처·UEFA 등록 명단·VOC 50건을 근거로 했습니다.</p></a>')
     dn = json.loads((ROOT / "data" / "dnf" / "dnf.json").read_text(encoding="utf-8"))
     cards.append('<a class="sx-card feature" href="dnf.html"><div class="k">네 번째 프로젝트 · 실제 자료 기반</div>'
-                 f'<h3>던전앤파이터 · 시즌의 가치 회복</h3><p><b>{H.escape(dn["intro"]["question"])}</b> — '
-                 '2026 미카엘라 하드 레이드의 전투·클리어 보상 실제 화면(유튜브 영상 캡처 2장), 공식 업데이트·특별 경매 공지, 2026 공식 게시판 유저 글을 근거로 '
-                 f'기존 보장 시스템과 겹치지 않는 «지정 장비 진척 게이지»를 제안하고 확률 보상 시뮬레이터를 만들었습니다. 판단: {H.escape(dn["decision"])}</p></a>')
+                 f'<h3>던전앤파이터 · 노력은 남고, 성취는 이어져야 한다</h3><p><b>어려운 콘텐츠를 깨도 운에 갈리는 보상 · 시즌 전환 불안 · 운영 신뢰 · 수리비 부담</b> — '
+                 '공식 공지·가이드, 10/27 D-Note Live 보도, 공개 VOC 130건(유튜브·공식 게시판·인벤·디시), 현역 이용자 인터뷰를 근거로 '
+                 'PROJECT ACHIEVEMENT · SEASON LEGACY · DNF RE:TRUST · ARAD CARE와 보상·골드 경제 시뮬레이터를 만들었습니다.</p></a>')
     for pid, f, name, _ in PAGES[4:]:
         one = GAMES[pid].get("one_liner", "") if pid in GAMES else {
             "home": "프로젝트 소개 · 4개 게임 핵심 문제 · 사업PM 어시스턴트 바로가기",
@@ -810,7 +814,7 @@ def main() -> int:
             body = recolor_scripts(body, pid)   # JavaScript 데모·차트의 기본 파랑 → 게임 테마 색
             desc = {"overwatch": GAMES[pid].get("theme", name), "pubg": "신규 유저 정착과 휴면 유저 재활성화 전략",
                     "fconline": "구단 가치 하락에 따른 이탈 방지 · 축구 팬덤 마케팅 · 키보드·패드 경쟁 환경",
-                    "dnf": "시즌제 성장 가치 · 랜덤 보상과 성취감 · 확률 보상 + 누적 성장 보장"}[pid]
+                    "dnf": "노력은 남고, 성취는 이어져야 한다 · 성취감 · 시즌 기대 · 운영 신뢰 · 수리비 BM"}[pid]
             doc = save_images(page_html(name, desc, fname, body, [], n_charts > 0, gen))
             (DOCS / fname).write_text(doc, encoding="utf-8")
             written.append(DOCS / fname)

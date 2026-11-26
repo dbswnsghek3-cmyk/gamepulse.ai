@@ -2531,14 +2531,14 @@ body:has(.gp-fc-page) .ox-fields.four { grid-template-columns: repeat(4, minmax(
 }
 
 /* 세 페이지 한정 글자 크기: 본문 16px 내외 · 보조 글씨 13.5px 이상 (던전앤파이터·홈 제외) */
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) .ox-h p { font-size: 1rem; }
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) :is(.sx-cap, [data-testid="stCaptionContainer"]) { font-size: 0.875rem; line-height: 1.6; }
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) :is(.ox-fig figcaption, .ox-note, .ox-legend) { font-size: 0.84rem; }
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) :is(.gp-table td, .gp-table th) { font-size: 0.94rem; }
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) .sx-exp > summary { font-size: 0.94rem; }
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) :is(.ox-cols3 li, .ox-purpose, .ox-road li, .ox-road p) { font-size: 0.97rem; line-height: 1.6; }
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) :is(.ox-strats small, .ox-prob small, .ox-mcards small, .ox-res small, .ox-road small) { font-size: 0.84rem; }
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) .ox-strats p { font-size: 0.97rem; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .ox-h p { font-size: 1rem; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) :is(.sx-cap, [data-testid="stCaptionContainer"]) { font-size: 0.875rem; line-height: 1.6; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) :is(.ox-fig figcaption, .ox-note, .ox-legend) { font-size: 0.84rem; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) :is(.gp-table td, .gp-table th) { font-size: 0.94rem; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .sx-exp > summary { font-size: 0.94rem; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) :is(.ox-cols3 li, .ox-purpose, .ox-road li, .ox-road p) { font-size: 0.97rem; line-height: 1.6; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) :is(.ox-strats small, .ox-prob small, .ox-mcards small, .ox-res small, .ox-road small) { font-size: 0.84rem; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .ox-strats p { font-size: 0.97rem; }
 :root:has(.gp-theme[data-game="fconline"]) :is(.fx-bm p, .fx-road p) { font-size: 0.9rem; line-height: 1.5; }
 :root:has(.gp-theme[data-game="fconline"]) :is(.fx-steps small, .fx-4 span, .fx-dirs span) { font-size: 0.9rem; }
 :root:has(.gp-theme[data-game="fconline"]) :is(.fx-nums small, .fx-mcw-strip small) { font-size: 0.84rem; }
@@ -2620,11 +2620,11 @@ body:has(.gp-fc-page) .ox-fields.four { grid-template-columns: repeat(4, minmax(
 @media (max-width: 760px) { .pz-msg b { font-size: 1.5rem; } }
 
 @media (max-width: 760px) {
-  :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) .ow-table tr td:not(:first-child) {
+  :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .ow-table tr td:not(:first-child) {
     display: flow-root; padding: 0.42rem 0.7rem 0.42rem 6.6rem; }
-  :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) .ow-table tr td:not(:first-child)::before {
+  :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .ow-table tr td:not(:first-child)::before {
     float: left; width: 5.6rem; margin: 0.05rem 0 0 -5.9rem; line-height: 1.35; word-break: keep-all; }
-  :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) .ow-table tr td:first-child { padding: 0.5rem 0.75rem; }
+  :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .ow-table tr td:first-child { padding: 0.5rem 0.75rem; }
 }
 
 .fx-hero2 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1.2rem; align-items: center; margin: 0.4rem 0 1.2rem; padding: 1.4rem 1.5rem;
@@ -2706,7 +2706,7 @@ body:has(.gp-fc-page) .ox-fields.four { grid-template-columns: repeat(4, minmax(
   .fx-hero2 { grid-template-columns: 1fr; padding: 1.1rem; } .fx-hero2-l b { font-size: 1.9rem; }
   .fx-hero2-r { grid-template-columns: 1fr; } .fx-hero2-r > i { text-align: center; }
   .fx-16-g { grid-template-columns: repeat(4, minmax(0, 1fr)); } .fx-16-g b { font-size: 0.72rem; }
-  .fx-room { grid-template-columns: 1fr; } .fx-room-pitch { max-height: 360px; } .fx-room-pitch span small { display: none; }
+  .fx-room { grid-template-columns: 1fr; } .fx-room-pitch { max-height: 360px; } .fx-room-pitch span small { font-size: 0.52rem; padding: 0 0.15rem; } .fx-room-pitch span b { width: 2rem; height: 2rem; font-size: 0.64rem; }
   .fx-bk { grid-template-columns: 1fr; } .fx-bk-t span { font-size: 2.2rem; }
   .fx-tour-i { grid-template-columns: repeat(2, minmax(0, 1fr)); } .fx-tier, .fx-mk4, .fx-pol, .fx-risk6 { grid-template-columns: 1fr; }
   .fx-kpi5 { grid-template-columns: 1fr 1fr; } .fx-f7 > div { width: 100% !important; }
@@ -2714,6 +2714,87 @@ body:has(.gp-fc-page) .ox-fields.four { grid-template-columns: repeat(4, minmax(
 
 .fx-lg-r.cut { border-bottom: 2px dashed #FACC15; padding-bottom: 0.55rem; margin-bottom: 0.15rem; }
 .fx-lg-r.cut::after { content: "8강 진출선"; grid-column: 1 / -1; font-size: 0.7rem; font-weight: 800; color: #FACC15; text-align: right; margin-top: 0.15rem; }
+
+:root:has(.gp-dnf-page) { --ow-acc: #C62828; --ow-ink: #B71C1C; }
+body:has(.gp-dnf-page) .ow-tabbar button[aria-selected="true"] { background: #B71C1C !important; border-color: #B71C1C !important; color: #FFFFFF !important; }
+body:has(.gp-dnf-page) .ow-tabbar button[aria-selected="true"] b { color: #FFFFFF !important; }
+body:has(.gp-dnf-page) .ox-btn.pri, body:has(.gp-dnf-page) .ox-pill.on { color: #FFFFFF; }
+.st-key-df_tab label[data-testid="stRadioOption"]:has(input:checked) { background: #B71C1C !important; border-color: #B71C1C !important; }
+.df2-hero { display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; padding: 1.4rem 1.5rem; border-radius: 18px; margin: 0.4rem 0 0.8rem;
+  background: radial-gradient(120% 140% at 0% 0%, #7F1D1D 0%, #2A0A0A 60%, #120404 100%); color: #FFFFFF; }
+.df2-hero-t span { font-size: 0.8rem; font-weight: 800; color: #FCA5A5; letter-spacing: 0.06em; }
+.df2-hero-t b { display: block; font-size: 2.3rem; font-weight: 900; letter-spacing: -0.03em; line-height: 1.2; margin: 0.3rem 0 0.5rem; word-break: keep-all; }
+.df2-hero-t p { margin: 0 0 0.4rem; font-size: 1.02rem; color: #FEE2E2; word-break: keep-all; } .df2-hero-t small { font-size: 0.82rem; color: #FCA5A5; }
+.df2-hero .df-logo { width: 180px; max-width: 30%; height: auto; flex: 0 0 auto; }
+.df2-w { display: flex; gap: 4px; margin: 0.3rem 0 0.2rem; border-radius: 10px; overflow: hidden; }
+.df2-w > div { background: #B71C1C; color: #FFFFFF; padding: 0.5rem 0.7rem; min-width: 0; display: flex; flex-direction: column; }
+.df2-w > div:nth-child(2) { background: #DC2626; } .df2-w > div:nth-child(3) { background: #7F1D1D; } .df2-w > div:nth-child(4) { background: #475569; }
+.df2-w b { font-size: 0.86rem; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .df2-w span { font-size: 0.74rem; color: #FEE2E2; }
+.df2-w.big { margin: 1rem 0 0.3rem; } .df2-w.big > div { padding: 0.8rem; } .df2-w.big b { font-size: 1rem; }
+.df2-wn { font-size: 0.8rem; color: #64748B; margin: 0.2rem 0 0.8rem; }
+.df2-fig { margin: 0.4rem 0 1rem; } .df2-fig img { width: 100%; border-radius: 12px; border: 1px solid #E5E7EB; }
+.df2-fig.sm img { max-width: 760px; } .df2-fig figcaption { font-size: 0.84rem; color: #64748B; margin-top: 0.3rem; } .df2-fig figcaption b { color: #B71C1C; margin-right: 0.4rem; }
+.df2-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; margin: 0.4rem 0 1rem; }
+.df2-facts > div { border-top: 4px solid #C62828; background: #F8FAFC; border-radius: 0 0 10px 10px; padding: 0.7rem 0.85rem; min-width: 0; }
+.df2-facts span { font-size: 0.78rem; font-weight: 800; color: #B71C1C; } .df2-facts b { display: block; font-size: 0.98rem; line-height: 1.45; margin: 0.2rem 0 0.35rem; color: #0F172A; word-break: keep-all; }
+.df2-facts small { font-size: 0.8rem; color: #64748B; line-height: 1.45; }
+.df2-tl { display: grid; gap: 0.5rem; margin: 0.4rem 0 0.8rem; }
+.df2-tl > div { display: grid; grid-template-columns: 13rem minmax(0, 1fr) auto; gap: 0.8rem; align-items: baseline; padding: 0.55rem 0.2rem; border-bottom: 1px solid #E5E7EB; }
+.df2-tl em { font-style: normal; font-weight: 800; color: #B71C1C; font-size: 0.86rem; } .df2-tl p { margin: 0; font-size: 0.95rem; line-height: 1.5; } .df2-tl small { font-size: 0.8rem; }
+.df2-ch { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.6rem; margin: 0.3rem 0 0.8rem; }
+.df2-ch > div { background: #FEF2F2; border-radius: 10px; padding: 0.7rem 0.8rem; } .df2-ch > div.x { background: #F1F5F9; }
+.df2-ch b { display: block; font-size: 1.7rem; font-weight: 900; color: #B71C1C; line-height: 1.1; } .df2-ch .x b { color: #94A3B8; } .df2-ch span { font-size: 0.84rem; color: #334155; }
+.df2-ach, .df2-care { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 1rem; color: #FEE2E2; }
+.df2-ach-l span, .df2-ach-m > span, .df2-care span { font-size: 0.76rem; font-weight: 800; color: #FCA5A5; }
+.df2-ach-l > b { display: block; font-size: 1.4rem; font-weight: 900; color: #FFFFFF; margin: 0.2rem 0 0.6rem; }
+.df2-ach-r { background: rgba(255,255,255,0.06); border-radius: 10px; padding: 0.6rem 0.7rem; } .df2-ach-r em { font-style: normal; font-size: 0.74rem; color: #FCA5A5; }
+.df2-ach-r p { margin: 0.2rem 0 0; font-size: 0.92rem; color: #FFFFFF; } .df2-ach-r small { color: #FCA5A5; }
+.df2-cells { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 3px; margin: 0.4rem 0; }
+.df2-cells i { height: 18px; border-radius: 3px; background: rgba(255,255,255,0.12); } .df2-cells i.on { background: linear-gradient(180deg, #FDE047, #F59E0B); }
+.df2-ach-m > b { font-size: 1.5rem; font-weight: 900; color: #FDE047; margin-right: 0.5rem; } .df2-ach-m > small { font-size: 0.82rem; color: #FEE2E2; }
+.df2-rec { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem; margin-top: 0.6rem; }
+.df2-rec > div { background: rgba(255,255,255,0.06); border-radius: 8px; padding: 0.4rem 0.5rem; } .df2-rec em { font-style: normal; font-size: 0.72rem; color: #FCA5A5; display: block; }
+.df2-rec b { color: #FFFFFF; font-size: 1.05rem; }
+.df2-leg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; color: #FEE2E2; }
+.df2-leg > div { background: rgba(255,255,255,0.06); border-radius: 12px; padding: 0.8rem; min-width: 0; } .df2-leg > div.n { background: rgba(253,224,71,0.15); border: 1px solid rgba(253,224,71,0.4); }
+.df2-leg span { font-size: 0.76rem; font-weight: 800; color: #FCA5A5; } .df2-leg b { display: block; font-size: 1.15rem; color: #FFFFFF; margin: 0.25rem 0; word-break: keep-all; }
+.df2-leg p { margin: 0.25rem 0; font-size: 0.9rem; color: #FFFFFF; } .df2-leg small { font-size: 0.8rem; color: #FECACA; }
+.df2-rt-s { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.7rem; }
+.df2-rt-s i { font-style: normal; font-size: 0.78rem; font-weight: 800; color: #FEE2E2; background: rgba(255,255,255,0.08); border-radius: 999px; padding: 0.15rem 0.6rem; }
+.df2-rt-b { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; }
+.df2-rt-b > div { border-radius: 10px; padding: 0.7rem 0.8rem; background: rgba(255,255,255,0.05); border-left: 4px solid #64748B; color: #F8FAFC; min-width: 0; }
+.df2-rt-b > div.real { border-left-color: #60A5FA; } .df2-rt-b span { font-size: 0.76rem; font-weight: 800; color: #FCA5A5; }
+.df2-rt-b b { display: block; font-size: 0.98rem; margin: 0.2rem 0; } .df2-rt-b em { font-style: normal; display: inline-block; font-size: 0.78rem; font-weight: 900; color: #0F172A; background: #FDE047; border-radius: 4px; padding: 0 0.4rem; }
+.df2-rt-b > div.mock em { background: #CBD5E1; } .df2-rt-b small { display: block; font-size: 0.78rem; color: #CBD5E1; margin-top: 0.3rem; line-height: 1.4; }
+.df2-care-l b { display: block; font-size: 1.6rem; font-weight: 900; color: #FFFFFF; } .df2-care-l > small { color: #FDE047; font-weight: 800; }
+.df2-care-l .ox-bar { display: block; height: 8px; background: rgba(255,255,255,0.15); border-radius: 4px; margin: 0.5rem 0; } .df2-care-l .ox-bar i { display: block; height: 100%; background: #FDE047; border-radius: 4px; }
+.df2-care-l p { font-size: 0.86rem; color: #FEE2E2; margin: 0; }
+.df2-care-r { display: flex; flex-direction: column; gap: 0.3rem; } .df2-care-r > div { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 0.6rem; align-items: center;
+  background: rgba(255,255,255,0.05); border-radius: 8px; padding: 0.35rem 0.6rem; } .df2-care-r em { font-style: normal; color: #FFFFFF; font-size: 0.88rem; }
+.df2-care-r b { color: #FDE047; } .df2-care-r small { font-size: 0.74rem; color: #FECACA; }
+.df2-dd { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 0.6rem 0 0.8rem; }
+.df2-dd > div { border-radius: 12px; padding: 0.8rem 0.9rem; background: #F0FDF4; border: 1px solid #BBF7D0; } .df2-dd > div.x { background: #FEF2F2; border-color: #FECACA; }
+.df2-dd span { font-weight: 900; font-size: 0.9rem; color: #15803D; } .df2-dd .x span { color: #B91C1C; }
+.df2-dd p { margin: 0.25rem 0 0; font-size: 0.92rem; } .df2-dd p::before { content: "✓ "; color: #16A34A; font-weight: 900; } .df2-dd .x p::before { content: "✕ "; color: #DC2626; }
+.df2-bars { margin: 0.6rem 0 0.4rem; display: grid; gap: 0.35rem; } .df2-bars > div { display: grid; grid-template-columns: 8rem minmax(0, 1fr) 4.5rem; gap: 0.6rem; align-items: center; }
+.df2-bars span { font-size: 0.86rem; color: #334155; } .df2-bars i { display: block; height: 14px; border-radius: 7px; background: #9CA3AF; min-width: 2px; }
+.df2-bars .n i { background: #C62828; } .df2-bars b { font-size: 0.9rem; } .df2-bars small { font-size: 0.78rem; color: #64748B; }
+.df2-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0.6rem 0; font-size: 0.9rem; }
+.df2-flow span { background: #F1F5F9; border-radius: 8px; padding: 0.3rem 0.6rem; } .df2-flow i { font-style: normal; font-weight: 900; color: #64748B; } .df2-flow b { color: #B71C1C; font-size: 1rem; }
+.df2-kpi { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; margin: 0.4rem 0 1rem; }
+.df2-kpi > div { border-top: 4px solid #C62828; background: #F8FAFC; border-radius: 0 0 10px 10px; padding: 0.7rem; display: flex; flex-wrap: wrap; gap: 0.3rem; align-content: flex-start; }
+.df2-kpi span { width: 100%; font-weight: 900; color: #B71C1C; font-size: 0.92rem; } .df2-kpi i { font-style: normal; font-size: 0.84rem; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 999px; padding: 0.1rem 0.55rem; }
+@media (max-width: 760px) {
+  .df2-hero { flex-direction: column; align-items: flex-start; } .df2-hero-t b { font-size: 1.7rem; } .df2-hero .df-logo { max-width: 50%; }
+  .df2-w { flex-direction: column; } .df2-w > div { flex: 1 1 auto !important; }
+  .df2-facts, .df2-ach, .df2-care, .df2-leg, .df2-rt-b, .df2-dd, .df2-kpi { grid-template-columns: 1fr; }
+  .df2-ch { grid-template-columns: repeat(2, minmax(0, 1fr)); } .df2-tl > div { grid-template-columns: 1fr; gap: 0.2rem; }
+  .df2-bars > div { grid-template-columns: 6rem minmax(0, 1fr) 3.8rem; } .df2-cells i { height: 14px; }
+}
+
+@media (max-width: 760px) {
+  :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .ow-table tr td { white-space: normal !important; overflow-wrap: anywhere; word-break: keep-all; }
+}
 :root:has(.gp-theme[data-game="overwatch"]) { --g-acc: #F99E1A; --g-ink: #A35F00; --g-soft: #FEF3E2; --g-on: #1F2937; }
 :root:has(.gp-theme[data-game="fconline"]) { --g-acc: #16A34A; --g-ink: #15803D; --g-soft: #DCFCE7; --g-on: #FFFFFF; }
 :root:has(.gp-theme[data-game="pubg"]) { --g-acc: #142D50; --g-ink: #142D50; --g-soft: #E6ECF5; --g-on: #FFFFFF; }
@@ -2831,4 +2912,4 @@ button.sx-btn:hover, a.sx-btn:hover { border-color: #0B1F3A; background: #F4F7FC
   .sx-row { flex-direction: column; } .sx-col { flex: 1 1 auto !important; width: 100%; }
   .sx-tab-h { font-size: 1.2rem; }
 }
-</style></head><body><header class="sx-top"><div class="sx-top-in"><div class="gp-brand"><a href="index.html">Game<span>Pulse</span> AI</a></div><nav><a class="" href="index.html">보고서 첫 화면</a><a class="on" href="home.html">사이트 홈 · 개요</a><a class="" href="overwatch.html">오버워치 · PROJECT RE:START</a><a class="" href="fconline.html">FC 온라인 · 축구 게임인가, 주식 게임인가?</a><a class="" href="pubg.html">PUBG · NEW START</a><a class="" href="dnf.html">던전앤파이터 · 클리어했는데 왜 성장한 느낌이 없을까?</a><a class="" href="assistant.html">사업PM 어시스턴트</a></nav></div></header><main class="sx-main"><div class="sx-note"><b>정적 보고서</b> · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> 스냅샷 (2026-11-27 07:47 KST) · 버튼·슬라이더는 기본값 · 차트 수치는 "차트 데이터 표"에</div><div class="sx-legend"><b>배지 뜻</b><span class="gp-badge k-real">실제 자료</span> 공개 출처·직접 캡처로 확인<span class="gp-badge k-interp">분석자 해석</span> 자료를 바탕으로 한 판단<span class="gp-badge k-hypo">검증 전 가설</span> 아직 입증되지 않음<span class="gp-badge k-mock">기획 시안</span> 게임에 없는 제안·계획<span class="gp-badge k-sim">가정 시뮬레이션</span> 가정값으로 계산 (실적 아님)<span class="gp-badge k-sample">예시 데이터</span> 시연용 가상 데이터</div><div class="gp-hero"><div class="gp-eyebrow">Game Business PM Portfolio</div><h1>GamePulse AI</h1><p>실제 유저 의견과 공식 자료로 게임의 사업 문제를 정의하고, 실행 가능한 개선안 · KPI · 실험으로 연결한 사업PM 포트폴리오</p><div class="gp-quote">“불만을 &#x27;가설&#x27;로, 가설을 &#x27;실험 가능한 전략&#x27;과 &#x27;KPI&#x27;로.”</div></div><div class="gp-section"><h3>4개 게임 · 핵심 문제와 대표 전략 </h3><p>게임마다 문제 → 근거 → 원인 → 개선안 → KPI → 실행 판단 (01~06 탭)</p></div><div class="sx-row"><div class="sx-col" style="flex:0.5000 1 0"><div class="hm-game"><div class="hm-img overwatch"><img src="assets/img/7262ab9ba2f933c9.jpg" alt="오버워치 대표 이미지"><span>실제 게임 화면 · 작성자 캡처</span></div><div class="hm-body"><div class="hm-k">오버워치 · PROJECT RE:START</div><h4>신규·복귀 유저의 학습 부담 · 영웅별 스킨 상품 차이와 고정형 묶음의 선택권 한계</h4><p><b>대표 전략</b> 복귀율: PROJECT RE:START (복귀 브리핑 → 첫 10경기 미션 → 전투 학습 카드) · 매출: YOUR HERO · YOUR CHOICE</p><p class="kpi"><b>핵심 KPI</b> 복귀 D7 잔존율 · 패키지 구매 전환율 · 평균 결제 금액 <em>(목표·가정)</em></p></div></div><a class="sx-btn" href="overwatch.html">오버워치 분석 보기 →</a></div><div class="sx-col" style="flex:0.5000 1 0"><div class="hm-game"><div class="hm-img fconline"><img src="assets/img/b3f1abb3603317c6.jpg" alt="FC 온라인 대표 이미지"><span>실제 게임 메인 화면 · 작성자 캡처</span></div><div class="hm-body"><div class="hm-k">FC 온라인 · 축구 게임인가, 주식 게임인가?</div><h4>구단 가치 하락에 따른 이탈은 막고, 국내 축구 팬덤으로 새 고객을 데려온다</h4><p><b>대표 전략</b> CLUB CARE · CLUB REBUILD (이탈 방지) · MY CLUB WAR (팬덤 마케팅) · FAIR PLAY (조작 환경)</p><p class="kpi"><b>핵심 KPI</b> 급락 유저 D30 · 결제 유지율 · 신규 가입 CPA <em>(목표·가정)</em></p></div></div><a class="sx-btn" href="fconline.html">FC 온라인 분석 보기 →</a></div></div><div class="sx-row"><div class="sx-col" style="flex:0.5000 1 0"><div class="hm-game"><div class="hm-img logo pubg"><img src="assets/img/89f01c50df5ceb9c.png" alt="PUBG 대표 이미지"><span>로고 © KRAFTON</span></div><div class="hm-body"><div class="hm-k">PUBG · NEW START</div><h4>첫 치킨을 맛보기도 전에 떠나는 유저들. 그리고 돌아오지 않는 전우들.</h4><p><b>대표 전략</b> A1 경기별 코칭으로 신규 정착 + B1 복귀 광고 «다시 낙하할 시간»은 디지털 파일럿부터</p><p class="kpi"><b>핵심 KPI</b> 신규 D7 · 순증 D30 재정착 유저당 비용 <em>(목표·가정)</em></p></div></div><a class="sx-btn" href="pubg.html">PUBG 분석 보기 →</a></div><div class="sx-col" style="flex:0.5000 1 0"><div class="hm-game"><div class="hm-img logo dnf"><img src="assets/img/1fa9a48bc33df8b4.png" alt="던전앤파이터 대표 이미지"><span>로고 © NEOPLE</span></div><div class="hm-body"><div class="hm-k">던전앤파이터 · 시즌의 가치 회복</div><h4>고난도 던전을 클리어해도 보상이 운에 갈려 성장이 쌓이지 않는다</h4><p><b>대표 전략</b> B 지정 장비 진척 게이지: 목표를 정하고 기대 미만 클리어도 진척으로 쌓이게 (확률·경매 유지) · 소규모 파일럿</p><p class="kpi"><b>핵심 KPI</b> 주간 고난도 재도전율 · 목표 획득 전 이탈률 · 재화 공급 ±5% <em>(목표·가정)</em></p></div></div><a class="sx-btn" href="dnf.html">던전앤파이터 분석 보기 →</a></div></div><div class="gp-section"><h3>사업PM 어시스턴트 </h3><p>4개 게임 분석 내용을 질문으로 빠르게 찾습니다.</p></div><div class="gp-grid"><div class="gp-card "><h4>포트폴리오 기반 검색형 PM 어시스턴트</h4><p>게임별 자주 묻는 질문을 누르거나 직접 질문하면 핵심 결론 → 문제와 근거 → 사업PM 개선 전략 → 핵심 KPI → 관련 페이지 순서로 답합니다.</p><div class="gp-meta">생성형 AI API 미연결 · 사이트 분석 자료 원문만 검색 · 자료에 없으면 &#x27;현재 분석 자료에서 확인되지 않습니다&#x27;</div></div></div><a class="sx-btn" href="assistant.html">사업PM 어시스턴트 열기 →</a><div class="gp-section"><h3>분석 프레임워크 </h3><p>4개 게임 모두 같은 6단계 구조 (각 게임 페이지의 01~06 탭)</p></div><div class="gp-grid"><div class="gp-card "><h4>01 문제 정의</h4><p>누가, 어디서, 왜 불편한가를 한 문장으로</p></div><div class="gp-card "><h4>02 근거</h4><p>실제 유저 의견 · 공식 자료 · 게임 화면 (출처·한계 표시)</p></div><div class="gp-card "><h4>03 원인 가설</h4><p>불만과 원인의 연결은 가설로 두고 검증 데이터를 명시</p></div><div class="gp-card "><h4>04 개선안</h4><p>기존 시스템과 겹치지 않는 차별화 + 부작용</p></div><div class="gp-card "><h4>05 KPI · 실험</h4><p>주요 · 보조 · 가드레일 지표와 A/B 설계</p></div><div class="gp-card "><h4>06 실행 판단</h4><p>우선순위 · 예산 · 리스크 · 확대/중단 조건</p></div></div><div class="gp-footer">GamePulse AI · 게임 사업PM 포트폴리오 프로젝트 · '실제 자료' 배지가 없는 수치와 시뮬레이션은 예시·가정 데이터이며, 언급된 게임 및 상표는 각 권리자에게 있습니다. 본 사이트는 해당 게임사와 관련이 없는 개인 분석물입니다.</div></main><footer class="sx-foot">GamePulse AI 정적 보고서 · 생성 2026-11-27 07:47 KST · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> · <a href="https://github.com/dbswnsghek3-cmyk/gamepulse.ai">GitHub 저장소</a> · 언급된 게임 및 상표는 각 권리자에게 있으며, 본 보고서는 해당 게임사와 관련이 없는 개인 분석물입니다.</footer></body></html>
+</style></head><body><header class="sx-top"><div class="sx-top-in"><div class="gp-brand"><a href="index.html">Game<span>Pulse</span> AI</a></div><nav><a class="" href="index.html">보고서 첫 화면</a><a class="on" href="home.html">사이트 홈 · 개요</a><a class="" href="overwatch.html">오버워치 · PROJECT RE:START</a><a class="" href="fconline.html">FC 온라인 · 축구 게임인가, 주식 게임인가?</a><a class="" href="pubg.html">PUBG · NEW START</a><a class="" href="dnf.html">던전앤파이터 · 노력은 남고, 성취는 이어져야 한다</a><a class="" href="assistant.html">사업PM 어시스턴트</a></nav></div></header><main class="sx-main"><div class="sx-note"><b>정적 보고서</b> · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> 스냅샷 (2026-11-27 08:35 KST) · 버튼·슬라이더는 기본값 · 차트 수치는 "차트 데이터 표"에</div><div class="sx-legend"><b>배지 뜻</b><span class="gp-badge k-real">실제 자료</span> 공개 출처·직접 캡처로 확인<span class="gp-badge k-interp">분석자 해석</span> 자료를 바탕으로 한 판단<span class="gp-badge k-hypo">검증 전 가설</span> 아직 입증되지 않음<span class="gp-badge k-mock">기획 시안</span> 게임에 없는 제안·계획<span class="gp-badge k-sim">가정 시뮬레이션</span> 가정값으로 계산 (실적 아님)<span class="gp-badge k-sample">예시 데이터</span> 시연용 가상 데이터</div><div class="gp-hero"><div class="gp-eyebrow">Game Business PM Portfolio</div><h1>GamePulse AI</h1><p>실제 유저 의견과 공식 자료로 게임의 사업 문제를 정의하고, 실행 가능한 개선안 · KPI · 실험으로 연결한 사업PM 포트폴리오</p><div class="gp-quote">“불만을 &#x27;가설&#x27;로, 가설을 &#x27;실험 가능한 전략&#x27;과 &#x27;KPI&#x27;로.”</div></div><div class="gp-section"><h3>4개 게임 · 핵심 문제와 대표 전략 </h3><p>게임마다 문제 → 근거 → 원인 → 개선안 → KPI → 실행 판단 (01~06 탭)</p></div><div class="sx-row"><div class="sx-col" style="flex:0.5000 1 0"><div class="hm-game"><div class="hm-img overwatch"><img src="assets/img/7262ab9ba2f933c9.jpg" alt="오버워치 대표 이미지"><span>실제 게임 화면 · 작성자 캡처</span></div><div class="hm-body"><div class="hm-k">오버워치 · PROJECT RE:START</div><h4>신규·복귀 유저의 학습 부담 · 영웅별 스킨 상품 차이와 고정형 묶음의 선택권 한계</h4><p><b>대표 전략</b> 복귀율: PROJECT RE:START (복귀 브리핑 → 첫 10경기 미션 → 전투 학습 카드) · 매출: YOUR HERO · YOUR CHOICE</p><p class="kpi"><b>핵심 KPI</b> 복귀 D7 잔존율 · 패키지 구매 전환율 · 평균 결제 금액 <em>(목표·가정)</em></p></div></div><a class="sx-btn" href="overwatch.html">오버워치 분석 보기 →</a></div><div class="sx-col" style="flex:0.5000 1 0"><div class="hm-game"><div class="hm-img fconline"><img src="assets/img/b3f1abb3603317c6.jpg" alt="FC 온라인 대표 이미지"><span>실제 게임 메인 화면 · 작성자 캡처</span></div><div class="hm-body"><div class="hm-k">FC 온라인 · 축구 게임인가, 주식 게임인가?</div><h4>구단 가치 하락에 따른 이탈은 막고, 국내 축구 팬덤으로 새 고객을 데려온다</h4><p><b>대표 전략</b> CLUB CARE · CLUB REBUILD (이탈 방지) · MY CLUB WAR «답답해서 내가 뛴다» (16개 유럽 구단 감독형 챔피언십) · FAIR PLAY (조작 환경)</p><p class="kpi"><b>핵심 KPI</b> 급락 유저 D30 · 결제 유지율 · 신규 가입 CAC · 캠페인 ROI <em>(목표·가정)</em></p></div></div><a class="sx-btn" href="fconline.html">FC 온라인 분석 보기 →</a></div></div><div class="sx-row"><div class="sx-col" style="flex:0.5000 1 0"><div class="hm-game"><div class="hm-img logo pubg"><img src="assets/img/89f01c50df5ceb9c.png" alt="PUBG 대표 이미지"><span>로고 © KRAFTON</span></div><div class="hm-body"><div class="hm-k">PUBG · NEW START</div><h4>첫 치킨을 맛보기도 전에 떠나는 유저들. 그리고 돌아오지 않는 전우들.</h4><p><b>대표 전략</b> 다음 경기 코치(NEXT MATCH COACH)로 신규 정착 + 복귀 캠페인 «야, 배그 한 판 할래?»는 디지털 파일럿부터</p><p class="kpi"><b>핵심 KPI</b> 신규 D7 · 순증 D30 재정착 유저당 비용 <em>(목표·가정)</em></p></div></div><a class="sx-btn" href="pubg.html">PUBG 분석 보기 →</a></div><div class="sx-col" style="flex:0.5000 1 0"><div class="hm-game"><div class="hm-img logo dnf"><img src="assets/img/1fa9a48bc33df8b4.png" alt="던전앤파이터 대표 이미지"><span>로고 © NEOPLE</span></div><div class="hm-body"><div class="hm-k">던전앤파이터 · 노력은 남고, 성취는 이어져야 한다</div><h4>어려운 콘텐츠를 깨도 보상이 운에 갈리고, 시즌 전환·운영 신뢰·수리비 부담이 겹친다</h4><p><b>대표 전략</b> PROJECT ACHIEVEMENT(누적 보장) · SEASON LEGACY · DNF RE:TRUST · ARAD CARE — 확률 보상은 유지하고 노력이 쌓이게</p><p class="kpi"><b>핵심 KPI</b> 레이드 재참여율 · 장기 미획득 비율 · 신규 시즌 접속률 · 순골드 공급 <em>(목표·가정)</em></p></div></div><a class="sx-btn" href="dnf.html">던전앤파이터 분석 보기 →</a></div></div><div class="gp-section"><h3>사업PM 어시스턴트 </h3><p>4개 게임 분석 내용을 질문으로 빠르게 찾습니다.</p></div><div class="gp-grid"><div class="gp-card "><h4>포트폴리오 기반 검색형 PM 어시스턴트</h4><p>게임별 자주 묻는 질문을 누르거나 직접 질문하면 핵심 결론 → 문제와 근거 → 사업PM 개선 전략 → 핵심 KPI → 관련 페이지 순서로 답합니다.</p><div class="gp-meta">생성형 AI API 미연결 · 사이트 분석 자료 원문만 검색 · 자료에 없으면 &#x27;현재 분석 자료에서 확인되지 않습니다&#x27;</div></div></div><a class="sx-btn" href="assistant.html">사업PM 어시스턴트 열기 →</a><div class="gp-section"><h3>분석 프레임워크 </h3><p>4개 게임 모두 같은 6단계 구조 (각 게임 페이지의 01~06 탭)</p></div><div class="gp-grid"><div class="gp-card "><h4>01 문제 정의</h4><p>누가, 어디서, 왜 불편한가를 한 문장으로</p></div><div class="gp-card "><h4>02 근거</h4><p>실제 유저 의견 · 공식 자료 · 게임 화면 (출처·한계 표시)</p></div><div class="gp-card "><h4>03 원인 가설</h4><p>불만과 원인의 연결은 가설로 두고 검증 데이터를 명시</p></div><div class="gp-card "><h4>04 개선안</h4><p>기존 시스템과 겹치지 않는 차별화 + 부작용</p></div><div class="gp-card "><h4>05 KPI · 실험</h4><p>주요 · 보조 · 가드레일 지표와 A/B 설계</p></div><div class="gp-card "><h4>06 실행 판단</h4><p>우선순위 · 예산 · 리스크 · 확대/중단 조건</p></div></div><div class="gp-footer">GamePulse AI · 게임 사업PM 포트폴리오 프로젝트 · '실제 자료' 배지가 없는 수치와 시뮬레이션은 예시·가정 데이터이며, 언급된 게임 및 상표는 각 권리자에게 있습니다. 본 사이트는 해당 게임사와 관련이 없는 개인 분석물입니다.</div></main><footer class="sx-foot">GamePulse AI 정적 보고서 · 생성 2026-11-27 08:35 KST · <a href="https://gamepulse-ai2.streamlit.app/">원본 앱</a> · <a href="https://github.com/dbswnsghek3-cmyk/gamepulse.ai">GitHub 저장소</a> · 언급된 게임 및 상표는 각 권리자에게 있으며, 본 보고서는 해당 게임사와 관련이 없는 개인 분석물입니다.</footer></body></html>

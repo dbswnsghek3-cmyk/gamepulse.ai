@@ -58,14 +58,14 @@ def _games() -> list[dict]:
          "answer": "복귀율: PROJECT RE:START (복귀 브리핑 → 첫 10경기 미션 → 전투 학습 카드) · 매출: YOUR HERO · YOUR CHOICE",
          "kpi": "복귀 D7 잔존율 · 패키지 구매 전환율 · 평균 결제 금액"},
         {"id": "fconline", "name": "FC 온라인", "proj": "축구 게임인가, 주식 게임인가?", "img": "assets/fconline/main_screen.jpg", "png": False, "blur": (),
-         "credit": "실제 게임 메인 화면 · 작성자 캡처", "problem": "구단 가치 하락에 따른 이탈은 막고, 국내 축구 팬덤으로 새 고객을 데려온다", "answer": "CLUB CARE · CLUB REBUILD (이탈 방지) · MY CLUB WAR (팬덤 마케팅) · FAIR PLAY (조작 환경)",
-         "kpi": "급락 유저 D30 · 결제 유지율 · 신규 가입 CPA"},
+         "credit": "실제 게임 메인 화면 · 작성자 캡처", "problem": "구단 가치 하락에 따른 이탈은 막고, 국내 축구 팬덤으로 새 고객을 데려온다", "answer": "CLUB CARE · CLUB REBUILD (이탈 방지) · MY CLUB WAR «답답해서 내가 뛴다» (16개 유럽 구단 감독형 챔피언십) · FAIR PLAY (조작 환경)",
+         "kpi": "급락 유저 D30 · 결제 유지율 · 신규 가입 CAC · 캠페인 ROI"},
         {"id": "pubg", "name": "PUBG", "proj": "NEW START", "img": "assets/pubg/brand/pubg_logo.png", "png": True, "blur": (),
-         "credit": "로고 © KRAFTON", "problem": pb["cover"]["copy"], "answer": "A1 경기별 코칭으로 신규 정착 + B1 복귀 광고 «다시 낙하할 시간»은 디지털 파일럿부터",
+         "credit": "로고 © KRAFTON", "problem": pb["cover"]["copy"], "answer": "다음 경기 코치(NEXT MATCH COACH)로 신규 정착 + 복귀 캠페인 «야, 배그 한 판 할래?»는 디지털 파일럿부터",
          "kpi": "신규 D7 · 순증 D30 재정착 유저당 비용"},
-        {"id": "dnf", "name": "던전앤파이터", "proj": "시즌의 가치 회복", "img": dn["cover"]["logo"] if "/" in dn["cover"]["logo"] else f"assets/dnf/{dn['cover']['logo']}",
-         "png": True, "blur": (), "credit": "로고 © NEOPLE", "problem": "고난도 던전을 클리어해도 보상이 운에 갈려 성장이 쌓이지 않는다",
-         "answer": "B 지정 장비 진척 게이지: 목표를 정하고 기대 미만 클리어도 진척으로 쌓이게 (확률·경매 유지) · 소규모 파일럿", "kpi": "주간 고난도 재도전율 · 목표 획득 전 이탈률 · 재화 공급 ±5%"},
+        {"id": "dnf", "name": "던전앤파이터", "proj": "노력은 남고, 성취는 이어져야 한다", "img": dn["cover"]["logo"] if "/" in dn["cover"]["logo"] else f"assets/dnf/{dn['cover']['logo']}",
+         "png": True, "blur": (), "credit": "로고 © NEOPLE", "problem": "어려운 콘텐츠를 깨도 보상이 운에 갈리고, 시즌 전환·운영 신뢰·수리비 부담이 겹친다",
+         "answer": "PROJECT ACHIEVEMENT(누적 보장) · SEASON LEGACY · DNF RE:TRUST · ARAD CARE — 확률 보상은 유지하고 노력이 쌓이게", "kpi": "레이드 재참여율 · 장기 미획득 비율 · 신규 시즌 접속률 · 순골드 공급"},
     ]
 
 

@@ -254,7 +254,7 @@ def _market(ns: dict) -> None:
          f'<small>{escape(kr["why"])} · {link(kr["url"], kr["src"])}</small></div>'
          f'<div class="i"><span>사업PM 해석 {b_interp()}</span><b>규모는 여전히 상위권</b>'
          f'<small>{escape(kr["franchise"])} · {escape(kr["next"])} → 콘텐츠만으로는 부족, 신규 정착·복귀가 과제</small></div></div>'
-         f'<div class="pn-cav2">{escape(mk["note"])}</div>')
+         '<div class="pn-cav2">Steam 동시접속 ≠ 전체 플랫폼 이용자 · 배그 단독 매출·이용자 수는 비공개</div>')
 
 
 def flag_rows(ns: dict, ops: pd.DataFrame, plan: dict) -> dict[str, list]:
@@ -310,7 +310,7 @@ def s1(ns: dict, ops: pd.DataFrame, plan: dict) -> None:
     gap = int(a["category"].isin(GAP_CATS).sum())
     pk = ns["peak"]
     head("결론: 신규는 '다음 경기 행동 1개'로 붙잡고, 떠난 유저는 친구의 한마디로 다시 부른다",
-         "① 다음 경기 코치 먼저 → ② 복귀 캠페인 «야, 배그 한 판 할래?» → BM은 내부 분석", b_mock())
+         "코치 먼저 → 복귀 캠페인 → BM은 내부 분석", b_mock())
     _market(ns)
     fr = flag_rows(ns, ops, plan)
     html('<div class="pz-flags">'
@@ -362,7 +362,7 @@ def s1(ns: dict, ops: pd.DataFrame, plan: dict) -> None:
 def s2(ns: dict, ops: pd.DataFrame, ret: pd.DataFrame, steam: pd.DataFrame, pool: dict, rpool: dict) -> None:
     a = ops[ops["track"] == "A"]
     head("근거: 신규는 '첫 실전'에서, 복귀 유저는 '핵·계정·친구'에서 막힌다",
-         f"Steam 리뷰를 직접 대조해 신규({len(a)}건)·복귀({len(ret)}건)를 별도 표본으로 관리 · 대표 의견만 먼저", b_real())
+         f"신규·복귀 리뷰를 별도 표본으로 · 대표 의견만 먼저", b_real())
 
     r_ = ret.groupby("category").size()
     gap_n = int(a["category"].isin(GAP_CATS).sum())
@@ -372,8 +372,9 @@ def s2(ns: dict, ops: pd.DataFrame, ret: pd.DataFrame, steam: pd.DataFrame, pool
               ("b", f"{int(r_.get('친구·스쿼드', 0))}건", "복귀 · 친구 이탈", "친구가 해야 하는 게임 · 혼자면 재미없다", f"복귀 리뷰 {len(ret)}건 중")]
     html('<div class="pn-cause">' + "".join(
         f'<div class="{c}"><small>{escape(src)}</small><b>{n}</b><strong>{escape(t)}</strong><span>{escape(d)}</span></div>'
-        for c, n, t, d, src in causes) + '</div>'
-        f'<div class="pn-cav2"><b>서로 다른 리뷰 {len(set(ops.source_url) | set(ret.source_url))}개</b> (신규·BM {len(ops)}건 + 복귀 {len(ret)}건 · '
+        for c, n, t, d, src in causes) + '</div>')
+    with st.expander("표본 구성 · 언어·성향 분포 · 원문 재확인"):
+        html(f'<div class="pn-cav2"><b>서로 다른 리뷰 {len(set(ops.source_url) | set(ret.source_url))}개</b> (신규·BM {len(ops)}건 + 복귀 {len(ret)}건 · '
         f'같은 리뷰 {len(set(ops.source_url) & set(ret.source_url))}건은 두 표본에 각각 분류)는 직접 고른 선별 사례다 · '
         f'한국어 {int((ops.language == "한국어").sum() + (ret.language == "한국어").sum())}건 · 해외 {int((ops.language != "한국어").sum() + (ret.language != "한국어").sum())}건 · '
         f'긍정 {int((ops.sentiment == "긍정").sum() + (ret.sentiment == "긍정").sum())} · 중립 {int((ops.sentiment == "중립").sum() + (ret.sentiment == "중립").sum())} · '
@@ -553,7 +554,7 @@ def _table_ops(df: pd.DataFrame, key: str) -> None:
 def s3(ns: dict, ops: pd.DataFrame, ret: pd.DataFrame, rpool: dict) -> None:
     n = ops.groupby("category").size()
     r = ret.groupby("category").size()
-    head("원인 가설: 세 트랙은 막히는 이유가 다르다", "관찰한 사실과 가설을 구분했다. 인과관계는 실험으로만 판단한다.", b_hypo())
+    head("원인 가설: 세 트랙은 막히는 이유가 다르다", "사실과 가설을 구분 · 인과는 실험으로 판단", b_hypo())
     html(photo("gameplay", "교전 직전 · 바위 하나, 팀원과의 거리 하나에 생존이 갈린다", "strip"))
     sub("TRACK A · 신규 유저", tr("A"))
     html(_flow3([("real", "훈련·봇 경기", "기본 훈련 · 봇이 많은 초반 일반전"),
@@ -604,7 +605,7 @@ def s3(ns: dict, ops: pd.DataFrame, ret: pd.DataFrame, rpool: dict) -> None:
 # 04 해결책 데모 — 포트폴리오의 중심
 def s4(ns: dict, ops: pd.DataFrame, plan: dict) -> None:
     head("해결책: 실제 화면 옆에 제안 시안을 놓고, 직접 눌러 본다",
-         "★ 대표 기획 2개부터 · 다음 경기 코치·첫 10경기 로드맵·복귀 첫날은 직접 조작 · 복귀 캠페인 = 광고 3종 + 랜딩페이지 · 수치는 모두 가상 · 시안은 실제 PUBG에 없다", b_mock())
+         "수치는 가상 · 시안은 실제 PUBG에 없음", b_mock())
     fr = flag_rows(ns, ops, plan)
     t = st.tabs(DEMO_TABS)
     with t[0]:
@@ -677,10 +678,11 @@ def demo_a1(ns: dict, rows: list) -> None:
          '<div><span class="pg-tag mock">제안 (시안)</span>다음 경기 코치는 <b>다음 경기 행동</b>과 달성 여부를 잇는다'
          '<small>MVP는 공개 텔레메트리로 판정되는 차량·팀플레이만 · 엄폐·시야는 확장</small></div></div>')
     sub("이미 있는 기능과 겹치지 않나? · 공식 자료로 확인", b_real())
-    table(["기능", "언제", "무엇을", "실전 → 다음 경기 행동 연결", "출처"],
-          [[f"<b>{escape(a)}</b>", escape(b), escape(c), f"<b>{escape(d_)}</b>" if d_.startswith("○") else escape(d_), link(u, sr) if u else escape(sr)]
-           for a, b, c, d_, sr, u in ns["coach_vs"]], cls="pz-vs")
-    note(ns["coach_vs_note"])
+    with st.expander("기존 기능 7개 비교표 (훈련장·AI 훈련·캐주얼 모드)"):
+        table(["기능", "언제", "무엇을", "실전 → 다음 경기 행동 연결", "출처"],
+              [[f"<b>{escape(a)}</b>", escape(b), escape(c), f"<b>{escape(d_)}</b>" if d_.startswith("○") else escape(d_), link(u, sr) if u else escape(sr)]
+               for a, b, c, d_, sr, u in ns["coach_vs"]], cls="pz-vs")
+        note(ns["coach_vs_note"])
 
 
 def demo_a2(ns: dict) -> None:
@@ -974,7 +976,7 @@ def s5(ns: dict, plan: dict) -> None:
     cp = ns["campaign"]
     ret_n = (pr["arms"] - 1) * pr["n"] * (R["base_return"] + pr["mde"]) / 100      # 광고 그룹 복귀자 (가정)
     add_n = (pr["arms"] - 1) * pr["n"] * pr["mde"] / 100                            # 대조군 대비 순증 복귀자 (가정)
-    head("KPI: 신규 D7 · 복귀율 · 복귀 D30 · 순증 복귀 유저당 비용", "모든 수치는 실험 전 가정이다 · 실제 결과가 아니다", b_mock())
+    head("KPI: 신규 D7 · 복귀율 · 복귀 D30 · 순증 복귀 유저당 비용", "모두 실험 전 가정 · 실제 결과 아님", b_mock())
     html('<div class="pn-k4">'
          f'<div class="a"><span>신규 D7 잔존율</span><b>{A["base_d7"]:.0f}% → {A["base_d7"] + pa["mde"]:.0f}%</b><small>다음 경기 코치 · 가정 설계</small></div>'
          f'<div class="b"><span>복귀율</span><b>{R["base_return"]:.1f}% → {R["base_return"] + pr["mde"]:.1f}%</b><small>광고 vs 대조군 · 가정 설계</small></div>'
@@ -987,7 +989,9 @@ def s5(ns: dict, plan: dict) -> None:
     html(f'<div class="pn-abt"><div class="pn-abt-h">{b_mock()} 복귀 캠페인 광고 A/B 테스트 · 대조군 포함 4그룹</div>'
          '<table><tr><th>그룹</th><th>광고</th><th>가설</th></tr>' + "".join(
              f'<tr><td><b>{escape(g)}</b></td><td>{escape(ad)}</td><td>{escape(h)}</td></tr>' for g, ad, h in cp["abtest"]) + '</table>'
-         '<div class="pn-abt-k"><span>주요 KPI</span><b>순증 D30 재정착 유저당 비용</b> · 보조: CTR · 복귀 로그인 전환율 · 첫 매치 완료율 · D7 · D30 · 스쿼드 재참여율 · 같은 휴면 리스트를 4그룹 무작위 배정(광고별 타깃 동일 · 같은 예산·기간) · 홀드아웃 대비 순증 · 배정된 전원 기준(ITT)</div></div>')
+         '<div class="pn-abt-k"><span>주요 KPI</span><b>순증 D30 재정착 유저당 비용</b></div></div>')
+    with st.expander("A/B 보조 지표 · 배정 방식"):
+        html('<div class="pn-abt-k">보조: CTR · 복귀 로그인 전환율 · 첫 매치 완료율 · D7 · D30 · 스쿼드 재참여율 · 같은 휴면 리스트를 4그룹 무작위 배정(광고별 타깃 동일 · 같은 예산·기간) · 홀드아웃 대비 순증 · 배정된 전원 기준(ITT)</div>')
     dig = cp["budget"] * next(w for n, _, w in cp["channels"] if "디지털" in n) / 100
     land = ex["cost"]["B1_effort"] * ex["cost"]["monthly_cost_per_person"]
     pilot = dig + land
@@ -996,8 +1000,9 @@ def s5(ns: dict, plan: dict) -> None:
     html(f'<div class="gb-big pz-biz3"><div><em>전액 집행 손익분기 (순증 1인당 기대 매출)</em><b>약 {full_u / 1e4:,.0f}만 원↑</b><small>가정 시뮬레이션</small></div>'
          f'<div><em>공개 자료로 본 수익성</em><b>판단 불가</b><small>PUBG ARPU·LTV 비공개</small></div>'
          f'<div><em>권고</em><b>파일럿 {won(pilot)}</b><small>전액 {won(plan["b1_cost"])}은 보류</small></div></div>')
-    html(f'<div class="pn-biz"><p><b>손익분기 조건</b> 순증 복귀자 1명이 남은 기간 동안 내는 기대 매출이 <b>약 {full_u / 1e4:,.0f}만 원 이상</b>이어야 전액 집행이 정당화된다. '
-         'PUBG의 ARPU·LTV는 공개 자료로 확인하지 못해 <b>수익성은 판단 불가</b> → 1억 원 전액 집행은 보류한다.</p></div>')
+    with st.expander("손익분기 조건 설명"):
+        html(f'<div class="pn-biz"><p><b>손익분기 조건</b> 순증 복귀자 1명이 남은 기간 동안 내는 기대 매출이 <b>약 {full_u / 1e4:,.0f}만 원 이상</b>이어야 전액 집행이 정당화된다. '
+             'PUBG의 ARPU·LTV는 공개 자료로 확인하지 못해 <b>수익성은 판단 불가</b> → 1억 원 전액 집행은 보류한다.</p></div>')
     with st.expander(f"파일럿 {won(pilot)} 산출 · 손익분기 기여이익 계산식"):
         html(f'<div class="pn-biz"><p><b>파일럿 {won(pilot)} 산출</b> = 디지털 광고 {won(dig)} (광고 예산 {won(cp["budget"])} × 디지털 비중, 가정) + 랜딩·UTM 제작 '
              f'{ex["cost"]["B1_effort"]:g}인월 × {ex["cost"]["monthly_cost_per_person"] / 1e4:,.0f}만 원 = {won(land)} (가정) · 실제 집행 데이터 아님</p></div>')
@@ -1012,8 +1017,9 @@ def s5(ns: dict, plan: dict) -> None:
             " / ".join(f"{c / add_n / r / 1e4:,.0f}만" for r in (0.2, 0.3, 0.4)), dcs] for a, b, c, dcs in scen], badge_html=b_sim())
     html('<div class="pn-cav2"><b>확대</b> 파일럿에서 소재 1개 이상이 홀드아웃 대비 유의한 순증 + 측정된 재정착 1인당 비용 ≤ 내부 LTV 기준 · '
          '<b>중단</b> 모든 소재가 홀드아웃과 차이 없음 · 또는 복귀자 신고율 악화 · 2주 차 중간 점검에서 차이 없는 소재는 먼저 중단</div>')
-    note("BM 내부 분석은 후속 정책 검토: 확률형 불만을 줄이는 변경은 단기 매출을 줄일 수 있어 서로 상충 → 매출 효과는 단정하지 않고 내부 데이터로 시나리오만 비교")
-    note("BM 내부 분석은 실험 없이 구매 전환율·ARPPU·구매 만족도를 내부 시나리오·설문으로 본다.")
+    with st.expander("BM 내부 분석 (후속 검토)"):
+        note("BM 내부 분석은 후속 정책 검토: 확률형 불만을 줄이는 변경은 단기 매출을 줄일 수 있어 서로 상충 → 매출 효과는 단정하지 않고 내부 데이터로 시나리오만 비교")
+        note("BM 내부 분석은 실험 없이 구매 전환율·ARPPU·구매 만족도를 내부 시나리오·설문으로 본다.")
 
     with st.expander("자세히 보기 · 가정 시뮬레이션 · 판정 기준 · 비용 계산"):
         d30_base, d30_up = A["base_d7"] / 2, pa["mde"] / 2
@@ -1065,17 +1071,17 @@ def s6(ns: dict, plan: dict) -> None:
     sc = plan["sched"]
     pm = plan["practical_min"]
     c = ns["experiment"]["cost"]
-    sub("대표 전략 한눈에 · 다음 경기 코치 · 복귀 캠페인", b_mock())
     a1c, b1p = c["A1_effort"] * c["monthly_cost_per_person"], ns["campaign"]["budget"] * 0.5 + c["B1_effort"] * c["monthly_cost_per_person"]
-    table(["단계", "다음 경기 코치 (먼저 실행)", "복귀 캠페인 «야, 배그 한 판 할래?»"], [
-        ["<b>문제</b>", "첫 실전에서 막혀 떠난다", "떠난 유저에게 다시 할 이유와 달라진 점이 전달되지 않는다"],
-        ["<b>근거</b>", "신규 리뷰 26건 중 11건 (실력 격차 5 · 봇→실전 4 · 첫 사망 2)", "복귀 리뷰 21건 (추억 6 · 핵·도용 6 · 친구 3 · 운영·과금 4 · 숙련도 2)"],
-        ["<b>해결책</b>", "경기 후 행동 1개 코칭 → 다음 경기 달성 확인 (기본 훈련·훈련소 이후 첫 실전)", "친구가 부르는 광고 3종 + 랜딩 '달라진 점' (공식 변경만) + 첫날 친구와 3경기"],
-        ["<b>비용</b>", f"{c['A1_effort']}인월 = <b>{won(a1c)}</b> (가정)", f"파일럿 <b>{won(b1p)}</b> (전액 {won(plan['b1_cost'])}은 보류)"],
-        ["<b>KPI</b>", "신규 D7 (ITT)", "순증 D30 재정착 유저당 비용"],
-        ["<b>실험</b>", "신규 계정 50:50", "휴면 리스트 4그룹 (홀드아웃 포함)"],
-        ["<b>사업적 판단</b>", "<b>소규모 파일럿 → 유의하면 확대</b> · 매칭 변경 없음", "<b>소규모 파일럿</b> · 수익성은 LTV 확인 전 판단 불가"]])
-    head(f"실행: 다음 경기 코치 → 복귀 캠페인·복귀 첫날 순서로 검증 · 준비 2주 + 운영 {sc['decision']}주 (가정 표본 기준)", "우선순위는 예상 효과 · 개발 난도 · 데이터 접근성으로 다시 점검했다", b_mock())
+    with st.expander("대표 전략 2개 비교표"):
+        table(["단계", "다음 경기 코치 (먼저 실행)", "복귀 캠페인 «야, 배그 한 판 할래?»"], [
+            ["<b>문제</b>", "첫 실전에서 막혀 떠난다", "떠난 유저에게 다시 할 이유와 달라진 점이 전달되지 않는다"],
+            ["<b>근거</b>", "신규 리뷰 26건 중 11건 (실력 격차 5 · 봇→실전 4 · 첫 사망 2)", "복귀 리뷰 21건 (추억 6 · 핵·도용 6 · 친구 3 · 운영·과금 4 · 숙련도 2)"],
+            ["<b>해결책</b>", "경기 후 행동 1개 코칭 → 다음 경기 달성 확인 (기본 훈련·훈련소 이후 첫 실전)", "친구가 부르는 광고 3종 + 랜딩 '달라진 점' (공식 변경만) + 첫날 친구와 3경기"],
+            ["<b>비용</b>", f"{c['A1_effort']}인월 = <b>{won(a1c)}</b> (가정)", f"파일럿 <b>{won(b1p)}</b> (전액 {won(plan['b1_cost'])}은 보류)"],
+            ["<b>KPI</b>", "신규 D7 (ITT)", "순증 D30 재정착 유저당 비용"],
+            ["<b>실험</b>", "신규 계정 50:50", "휴면 리스트 4그룹 (홀드아웃 포함)"],
+            ["<b>사업적 판단</b>", "<b>소규모 파일럿 → 유의하면 확대</b> · 매칭 변경 없음", "<b>소규모 파일럿</b> · 수익성은 LTV 확인 전 판단 불가"]])
+    head(f"실행: 코치 → 복귀 캠페인·복귀 첫날 · 준비 2주 + 운영 {sc['decision']}주 (가정)", "효과 · 난도 · 데이터 접근성으로 우선순위 점검", b_mock())
     order = [("1차", "A", "다음 경기 코치", "신규 코칭 MVP · 공개 텔레메트리로 판정 · 매칭 변경 없음"),
              ("2차", "B", "복귀 캠페인 «야, 배그 한 판 할래?» · 복귀 첫날", "광고 3종 + 랜딩 · 광고 A/B(대조군 포함) · 복귀 첫날 친구와 3경기"),
              ("3차", "A", "첫 10경기 로드맵 · 매칭 품질 실험", "코치 결과 후 · 매칭 실험은 내부 데이터 확인 후"),

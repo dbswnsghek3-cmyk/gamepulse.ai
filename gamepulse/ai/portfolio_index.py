@@ -231,18 +231,18 @@ def _dnf() -> list[Entry]:
     pb = next(x for x in d["problems"] if x[0] == "B")
     out.append(Entry("dnf", "cause", "랜덤 보상이 성취감 문제가 되는 이유 (가설)", pb[2],
                      ([f"공식 (2026-07-29 · 퍼스트서버): {upd['fact']}"] if upd else []) + [op_line(o) for o in ops_all if o["sol"] == "B"],
-                     ["확률 보상의 재미는 유지하고, 목표를 정해 운이 나쁜 클리어도 진척으로 쌓이게 → B 지정 장비 진척 게이지 (04 탭)"],
+                     ["확률 보상의 재미는 유지하고, 목표를 정해 운이 나쁜 클리어도 진척으로 쌓이게 → PROJECT ACHIEVEMENT(누적 보장) (04 탭)"],
                      [k[1] for k in d.get("kpi_main", [])][:3], "03", "랜덤 확률 운 운에 따라 달라 갈리 격차 왜 문제 성취감 노력"))
     out.append(Entry("dnf", "cause", "미카엘라 하드 레이드 보상 논란 (2026)", "하드·일반 이상 난이도의 보상이 시간·난이도 대비 약하다는 유저 비판 → 개발사가 보상 부족을 인정",
                      [op_line(o) for o in ops_all if o["no"] in ("②", "③")] + [f"{a}: {b}" for a, b, _ in d["dev_response"][:1]],
-                     [d["dev_gap"], "→ B 지정 장비 진척 게이지로 '반복 클리어 → 예측 가능한 목표' 연결 (04 탭)"],
+                     [d["dev_gap"], "→ PROJECT ACHIEVEMENT(누적 보장)로 '반복 클리어 → 예측 가능한 목표' 연결 (04 탭)"],
                      [k[1] for k in d.get("kpi_main", [])][:3], "02", "미카엘라 레이드 하드 보상 논란 비판 왜"))
     ro = d.get("reward_obs")
     if ro:
         out.append(Entry("dnf", "evidence", "미카엘라 하드 클리어와 실제 보상 (영상 확인)",
                          "하드모드 정화 성공 · 클리어 타임 29분 26초 · 클리어 보상과 입찰 전리품 화면을 영상에서 확인",
                          ["클리어 보상 (캐릭터 1명): " + " · ".join(ro["items"]), ro["auction"], ro["official"]],
-                         [ro["pm"], "→ B 지정 장비 진척 게이지로 '반복 클리어 → 예측 가능한 목표' 연결 (04 탭)"],
+                         [ro["pm"], "→ PROJECT ACHIEVEMENT(누적 보장)로 '반복 클리어 → 예측 가능한 목표' 연결 (04 탭)"],
                          [k[1] for k in d.get("kpi_main", [])][:3], "02", "클리어 보상 결과 실제 화면 영상 전투 하드 레이드 빛망울 입찰 전리품 업그레이드"))
         out[-1].sources = [("유튜브 · 하드 미카엘라 클리어 (2026-08-09)", d["media"]["clear"]["url"]),
                            ("공식 7/29 업데이트 (퍼스트서버)", "https://df.nexon.com/community/news/update/2928057")]
@@ -251,7 +251,7 @@ def _dnf() -> list[Entry]:
                      [d["dev_gap"], "GamePulse AI 제안은 이 대응을 대체하지 않고 보완: 입찰 없는 본인 귀속 목표 · 확률·경매 유지"],
                      [k[1] for k in d.get("kpi_main", [])][:3], "02", "개발사 대응 개발진 디렉터 특별 경매 공지 조치"))
     out[-1].sources = [(f"{a.split(' · ')[0]} {a.split(' · ')[1] if ' · ' in a else ''}".strip(), u) for a, _, u in d["dev_response"]]
-    out.append(Entry("dnf", "strategy", "기존 보장 장치와 B 지정 장비 진척 게이지의 차이",
+    out.append(Entry("dnf", "strategy", "기존 보장 장치와 PROJECT ACHIEVEMENT(누적 보장)의 차이",
                      "기존 경매·상점 재화·기대 배율은 확률 결과나 입찰에 달려 있음 · '목표 지정 + 이번 클리어의 불운 반영'은 확인되지 않음",
                      [f"{a}: {b}" for a, b, _, _ in d["gap"]],
                      [f"{a} → {c} ({e})" for a, _, c, e in d["gap"][:3]] + [f"{x[0]}: {x[1]} — {x[2]}" for x in d["alternatives"][1:]],
@@ -267,7 +267,7 @@ def _dnf() -> list[Entry]:
                      f"원본 캡처 {v['capture']['original_files']}장 + 2026 공식 게시판 글 {v['board']['posts']}개 → 중복 제외 유효 VOC {len(vi)}건 "
                      f"(유튜브 댓글 {n_yt} · 공식 게시판 {len(vi) - n_yt - n_kk} · 지인 1명 {n_kk}) · 이전 사이트 반영 {sum(x['before'] for x in vi)}건 → 전체 목록화",
                      [f"{vc[str(c)]} {len(by(c))}건 — 예: {by(c)[0]['summary']}" for c in order if by(c)],
-                     ["핵심 범주(보상 체감·확률 불확실성·반복 동기·난이도 차이) → 지정 장비 진척 게이지",
+                     ["핵심 범주(보상 체감·확률 불확실성·반복 동기·난이도 차이) → PROJECT ACHIEVEMENT 누적 보장",
                       f"분석 범위 밖 {sum(x['cat'] not in order for x in vi)}건 (운영·디렉터 평가 등) · 영상 주제에 따른 편향 있음 · 건수는 표본 내 분포일 뿐 전체 비율 아님"],
                      [k[1] for k in d.get("kpi_main", [])][:3], "02", "유저 의견 총 몇 건 지적 문제 voc 전수 범주 불만 의견들"))
     out[-1].sources = [(vs[k][0], vs[k][1]) for k in ("A", "D", "E") ]
@@ -275,21 +275,21 @@ def _dnf() -> list[Entry]:
     out.append(Entry("dnf", "cause", "난이도별 보상 차이 · 하드 진입 효율 (유저 의견)",
                      "일반·하드의 보상 차이가 작아 상위 난이도로 갈 이유가 약하다는 의견이 많다 · 반대로 하드 경매·원하는 아이템 획득 경험을 이유로 갈 만하다는 의견도 있다",
                      [f"{x['summary']} — {vlink(x)}" for x in c4 if x["src"] in ("A", "B", "C", "E", "F2")][:6],
-                     ["공식 7/29: 하드는 경매가 확률적으로 진행 · 재료 구성이 난이도별로 다름", "→ 지정 장비 진척 게이지에서 하드 진척 가중치를 실험 변수로 두고 일반↔하드 이동 비율로 검증"],
+                     ["공식 7/29: 하드는 경매가 확률적으로 진행 · 재료 구성이 난이도별로 다름", "→ PROJECT ACHIEVEMENT 누적 보장에서 하드 진척 가중치를 실험 변수로 두고 일반↔하드 이동 비율로 검증"],
                      ["일반↔하드 이동 비율", "하드 레이드 재도전율", "클리어 후 보상 만족도"], "02",
                      "일반 하드 난이도 보상 차이 진입 효율 비용 투자 싱글 매칭 갈 이유"))
     out[-1].sources = [(vs[k][0], vs[k][1]) for k in ("A", "B", "C")]
     pos = [x for x in vi if x["stance"] == "긍정" or x["cat"] == v["positive_cat"]]
     out.append(Entry("dnf", "evidence", "던파 유저의 긍정적인 반응 · 반대 의견", "레이드 전투·난이도 자체는 재미있다는 평가가 있다 → 문제는 '레이드가 재미없다'가 아니라 전투 성취감과 장기 성장·보상 체감 사이의 간극",
                      [f"{x['summary']} — {vlink(x)}" for x in pos] + ["2026-08-12 질문 글도 레이드 자체는 호평 (공식 게시판)"],
-                     ["전투 경험은 유지하고 보상·성장 체감만 보완 → 지정 장비 진척 게이지"], [], "02",
+                     ["전투 경험은 유지하고 보상·성장 체감만 보완 → PROJECT ACHIEVEMENT 누적 보장"], [], "02",
                      "긍정 반응 좋은 평가 재미 호평 반대 의견 장점"))
     out[-1].sources = [(vs["D"][0], vs["D"][1]), (vs["A"][0], vs["A"][1])]
     c6 = by(6)
     out.append(Entry("dnf", "cause", "후발 유저의 레이드 진입 장벽 (보조 분석)",
                      "하드 파티 모집 기준(명성·스펙)이 높아 후발·복귀 유저가 진입을 고민한다는 질문과 정보성 답변이 있다",
                      [f"{x['summary']} — {vlink(x)}" for x in c6][:6],
-                     ["현재 개선안(지정 장비 진척 게이지)은 진입 장벽을 직접 해결하지 않음 → 보조 분석으로만 다룸",
+                     ["현재 개선안(PROJECT ACHIEVEMENT 누적 보장)은 진입 장벽을 직접 해결하지 않음 → 보조 분석으로만 다룸",
                       "유저들이 제시한 방법: 일반 파티로 숙련도를 올린 뒤 하드 진입 (2026-11-17 댓글) · 새 기능을 추가로 제안하지 않음"],
                      ["일반↔하드 이동 비율 (관찰 지표)", "하드 레이드 재도전율"], "02",
                      "후발 유저 진입 장벽 스펙 컷 파티 흑아 명성 복귀 해결"))
@@ -299,7 +299,7 @@ def _dnf() -> list[Entry]:
                      [f"{r[0]} {r[1]}: {r[2]}" for r in d["roadmap"]] + list(d["experiment"][:3]),
                      ["VOC 102건은 문제를 찾는 출발점 · 이탈률·불만 비율은 단정하지 않음"],
                      [k[1] for k in d.get("kpi_main", [])], "06", "실제 이탈 데이터 없이 검증 방법 어떻게 검증 로그 실험"))
-    out.append(Entry("dnf", "priority", "우선 실행: B 지정 장비 진척 게이지 소규모 파일럿", d["decision"],
+    out.append(Entry("dnf", "priority", "우선 실행: PROJECT ACHIEVEMENT(누적 보장) 소규모 파일럿", d["decision"],
                      [f"{r[0]} {r[1]}: {r[2]}" for r in d["roadmap"]][:3],
                      [d["decision"]], [f"{k[1]}" for k in d.get("kpi_main", [])], "06", "우선 먼저 순서 1순위"))
     out.append(Entry("dnf", "kpi", "KPI · 실험", "개선안별 측정 지표와 실험 설계", list(d["experiment"]), [],

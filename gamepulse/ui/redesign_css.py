@@ -709,14 +709,14 @@ OW_REDESIGN_CSS += """
 }
 
 /* 세 페이지 한정 글자 크기: 본문 16px 내외 · 보조 글씨 13.5px 이상 (던전앤파이터·홈 제외) */
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) .ox-h p { font-size: 1rem; }
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) :is(.sx-cap, [data-testid="stCaptionContainer"]) { font-size: 0.875rem; line-height: 1.6; }
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) :is(.ox-fig figcaption, .ox-note, .ox-legend) { font-size: 0.84rem; }
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) :is(.gp-table td, .gp-table th) { font-size: 0.94rem; }
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) .sx-exp > summary { font-size: 0.94rem; }
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) :is(.ox-cols3 li, .ox-purpose, .ox-road li, .ox-road p) { font-size: 0.97rem; line-height: 1.6; }
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) :is(.ox-strats small, .ox-prob small, .ox-mcards small, .ox-res small, .ox-road small) { font-size: 0.84rem; }
-:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) .ox-strats p { font-size: 0.97rem; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .ox-h p { font-size: 1rem; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) :is(.sx-cap, [data-testid="stCaptionContainer"]) { font-size: 0.875rem; line-height: 1.6; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) :is(.ox-fig figcaption, .ox-note, .ox-legend) { font-size: 0.84rem; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) :is(.gp-table td, .gp-table th) { font-size: 0.94rem; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .sx-exp > summary { font-size: 0.94rem; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) :is(.ox-cols3 li, .ox-purpose, .ox-road li, .ox-road p) { font-size: 0.97rem; line-height: 1.6; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) :is(.ox-strats small, .ox-prob small, .ox-mcards small, .ox-res small, .ox-road small) { font-size: 0.84rem; }
+:root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .ox-strats p { font-size: 0.97rem; }
 :root:has(.gp-theme[data-game="fconline"]) :is(.fx-bm p, .fx-road p) { font-size: 0.9rem; line-height: 1.5; }
 :root:has(.gp-theme[data-game="fconline"]) :is(.fx-steps small, .fx-4 span, .fx-dirs span) { font-size: 0.9rem; }
 :root:has(.gp-theme[data-game="fconline"]) :is(.fx-nums small, .fx-mcw-strip small) { font-size: 0.84rem; }
@@ -810,11 +810,11 @@ OW_REDESIGN_CSS += """
 # 13차-모바일 표: 세 페이지에서 표 → 카드일 때 열 이름을 왼쪽, 값을 오른쪽 한 줄에 (세로 길이 축소 · 던전앤파이터 제외)
 OW_REDESIGN_CSS += """
 @media (max-width: 760px) {
-  :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) .ow-table tr td:not(:first-child) {
+  :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .ow-table tr td:not(:first-child) {
     display: flow-root; padding: 0.42rem 0.7rem 0.42rem 6.6rem; }
-  :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) .ow-table tr td:not(:first-child)::before {
+  :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .ow-table tr td:not(:first-child)::before {
     float: left; width: 5.6rem; margin: 0.05rem 0 0 -5.9rem; line-height: 1.35; word-break: keep-all; }
-  :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"])) .ow-table tr td:first-child { padding: 0.5rem 0.75rem; }
+  :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .ow-table tr td:first-child { padding: 0.5rem 0.75rem; }
 }
 """
 
@@ -900,7 +900,7 @@ OW_REDESIGN_CSS += """
   .fx-hero2 { grid-template-columns: 1fr; padding: 1.1rem; } .fx-hero2-l b { font-size: 1.9rem; }
   .fx-hero2-r { grid-template-columns: 1fr; } .fx-hero2-r > i { text-align: center; }
   .fx-16-g { grid-template-columns: repeat(4, minmax(0, 1fr)); } .fx-16-g b { font-size: 0.72rem; }
-  .fx-room { grid-template-columns: 1fr; } .fx-room-pitch { max-height: 360px; } .fx-room-pitch span small { display: none; }
+  .fx-room { grid-template-columns: 1fr; } .fx-room-pitch { max-height: 360px; } .fx-room-pitch span small { font-size: 0.52rem; padding: 0 0.15rem; } .fx-room-pitch span b { width: 2rem; height: 2rem; font-size: 0.64rem; }
   .fx-bk { grid-template-columns: 1fr; } .fx-bk-t span { font-size: 2.2rem; }
   .fx-tour-i { grid-template-columns: repeat(2, minmax(0, 1fr)); } .fx-tier, .fx-mk4, .fx-pol, .fx-risk6 { grid-template-columns: 1fr; }
   .fx-kpi5 { grid-template-columns: 1fr 1fr; } .fx-f7 > div { width: 100% !important; }
@@ -909,4 +909,90 @@ OW_REDESIGN_CSS += """
 OW_REDESIGN_CSS += """
 .fx-lg-r.cut { border-bottom: 2px dashed #FACC15; padding-bottom: 0.55rem; margin-bottom: 0.15rem; }
 .fx-lg-r.cut::after { content: "8강 진출선"; grid-column: 1 / -1; font-size: 0.7rem; font-weight: 800; color: #FACC15; text-align: right; margin-top: 0.15rem; }
+"""
+
+
+# 15차-DNF: 던파 7탭 개편 (df2-* · 던파 페이지에만 있음) · 테마 #C62828 · 오버워치·FC와 같은 정보 구조
+OW_REDESIGN_CSS += """
+:root:has(.gp-dnf-page) { --ow-acc: #C62828; --ow-ink: #B71C1C; }
+body:has(.gp-dnf-page) .ow-tabbar button[aria-selected="true"] { background: #B71C1C !important; border-color: #B71C1C !important; color: #FFFFFF !important; }
+body:has(.gp-dnf-page) .ow-tabbar button[aria-selected="true"] b { color: #FFFFFF !important; }
+body:has(.gp-dnf-page) .ox-btn.pri, body:has(.gp-dnf-page) .ox-pill.on { color: #FFFFFF; }
+.st-key-df_tab label[data-testid="stRadioOption"]:has(input:checked) { background: #B71C1C !important; border-color: #B71C1C !important; }
+.df2-hero { display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; padding: 1.4rem 1.5rem; border-radius: 18px; margin: 0.4rem 0 0.8rem;
+  background: radial-gradient(120% 140% at 0% 0%, #7F1D1D 0%, #2A0A0A 60%, #120404 100%); color: #FFFFFF; }
+.df2-hero-t span { font-size: 0.8rem; font-weight: 800; color: #FCA5A5; letter-spacing: 0.06em; }
+.df2-hero-t b { display: block; font-size: 2.3rem; font-weight: 900; letter-spacing: -0.03em; line-height: 1.2; margin: 0.3rem 0 0.5rem; word-break: keep-all; }
+.df2-hero-t p { margin: 0 0 0.4rem; font-size: 1.02rem; color: #FEE2E2; word-break: keep-all; } .df2-hero-t small { font-size: 0.82rem; color: #FCA5A5; }
+.df2-hero .df-logo { width: 180px; max-width: 30%; height: auto; flex: 0 0 auto; }
+.df2-w { display: flex; gap: 4px; margin: 0.3rem 0 0.2rem; border-radius: 10px; overflow: hidden; }
+.df2-w > div { background: #B71C1C; color: #FFFFFF; padding: 0.5rem 0.7rem; min-width: 0; display: flex; flex-direction: column; }
+.df2-w > div:nth-child(2) { background: #DC2626; } .df2-w > div:nth-child(3) { background: #7F1D1D; } .df2-w > div:nth-child(4) { background: #475569; }
+.df2-w b { font-size: 0.86rem; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .df2-w span { font-size: 0.74rem; color: #FEE2E2; }
+.df2-w.big { margin: 1rem 0 0.3rem; } .df2-w.big > div { padding: 0.8rem; } .df2-w.big b { font-size: 1rem; }
+.df2-wn { font-size: 0.8rem; color: #64748B; margin: 0.2rem 0 0.8rem; }
+.df2-fig { margin: 0.4rem 0 1rem; } .df2-fig img { width: 100%; border-radius: 12px; border: 1px solid #E5E7EB; }
+.df2-fig.sm img { max-width: 760px; } .df2-fig figcaption { font-size: 0.84rem; color: #64748B; margin-top: 0.3rem; } .df2-fig figcaption b { color: #B71C1C; margin-right: 0.4rem; }
+.df2-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; margin: 0.4rem 0 1rem; }
+.df2-facts > div { border-top: 4px solid #C62828; background: #F8FAFC; border-radius: 0 0 10px 10px; padding: 0.7rem 0.85rem; min-width: 0; }
+.df2-facts span { font-size: 0.78rem; font-weight: 800; color: #B71C1C; } .df2-facts b { display: block; font-size: 0.98rem; line-height: 1.45; margin: 0.2rem 0 0.35rem; color: #0F172A; word-break: keep-all; }
+.df2-facts small { font-size: 0.8rem; color: #64748B; line-height: 1.45; }
+.df2-tl { display: grid; gap: 0.5rem; margin: 0.4rem 0 0.8rem; }
+.df2-tl > div { display: grid; grid-template-columns: 13rem minmax(0, 1fr) auto; gap: 0.8rem; align-items: baseline; padding: 0.55rem 0.2rem; border-bottom: 1px solid #E5E7EB; }
+.df2-tl em { font-style: normal; font-weight: 800; color: #B71C1C; font-size: 0.86rem; } .df2-tl p { margin: 0; font-size: 0.95rem; line-height: 1.5; } .df2-tl small { font-size: 0.8rem; }
+.df2-ch { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.6rem; margin: 0.3rem 0 0.8rem; }
+.df2-ch > div { background: #FEF2F2; border-radius: 10px; padding: 0.7rem 0.8rem; } .df2-ch > div.x { background: #F1F5F9; }
+.df2-ch b { display: block; font-size: 1.7rem; font-weight: 900; color: #B71C1C; line-height: 1.1; } .df2-ch .x b { color: #94A3B8; } .df2-ch span { font-size: 0.84rem; color: #334155; }
+.df2-ach, .df2-care { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 1rem; color: #FEE2E2; }
+.df2-ach-l span, .df2-ach-m > span, .df2-care span { font-size: 0.76rem; font-weight: 800; color: #FCA5A5; }
+.df2-ach-l > b { display: block; font-size: 1.4rem; font-weight: 900; color: #FFFFFF; margin: 0.2rem 0 0.6rem; }
+.df2-ach-r { background: rgba(255,255,255,0.06); border-radius: 10px; padding: 0.6rem 0.7rem; } .df2-ach-r em { font-style: normal; font-size: 0.74rem; color: #FCA5A5; }
+.df2-ach-r p { margin: 0.2rem 0 0; font-size: 0.92rem; color: #FFFFFF; } .df2-ach-r small { color: #FCA5A5; }
+.df2-cells { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 3px; margin: 0.4rem 0; }
+.df2-cells i { height: 18px; border-radius: 3px; background: rgba(255,255,255,0.12); } .df2-cells i.on { background: linear-gradient(180deg, #FDE047, #F59E0B); }
+.df2-ach-m > b { font-size: 1.5rem; font-weight: 900; color: #FDE047; margin-right: 0.5rem; } .df2-ach-m > small { font-size: 0.82rem; color: #FEE2E2; }
+.df2-rec { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem; margin-top: 0.6rem; }
+.df2-rec > div { background: rgba(255,255,255,0.06); border-radius: 8px; padding: 0.4rem 0.5rem; } .df2-rec em { font-style: normal; font-size: 0.72rem; color: #FCA5A5; display: block; }
+.df2-rec b { color: #FFFFFF; font-size: 1.05rem; }
+.df2-leg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; color: #FEE2E2; }
+.df2-leg > div { background: rgba(255,255,255,0.06); border-radius: 12px; padding: 0.8rem; min-width: 0; } .df2-leg > div.n { background: rgba(253,224,71,0.15); border: 1px solid rgba(253,224,71,0.4); }
+.df2-leg span { font-size: 0.76rem; font-weight: 800; color: #FCA5A5; } .df2-leg b { display: block; font-size: 1.15rem; color: #FFFFFF; margin: 0.25rem 0; word-break: keep-all; }
+.df2-leg p { margin: 0.25rem 0; font-size: 0.9rem; color: #FFFFFF; } .df2-leg small { font-size: 0.8rem; color: #FECACA; }
+.df2-rt-s { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.7rem; }
+.df2-rt-s i { font-style: normal; font-size: 0.78rem; font-weight: 800; color: #FEE2E2; background: rgba(255,255,255,0.08); border-radius: 999px; padding: 0.15rem 0.6rem; }
+.df2-rt-b { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; }
+.df2-rt-b > div { border-radius: 10px; padding: 0.7rem 0.8rem; background: rgba(255,255,255,0.05); border-left: 4px solid #64748B; color: #F8FAFC; min-width: 0; }
+.df2-rt-b > div.real { border-left-color: #60A5FA; } .df2-rt-b span { font-size: 0.76rem; font-weight: 800; color: #FCA5A5; }
+.df2-rt-b b { display: block; font-size: 0.98rem; margin: 0.2rem 0; } .df2-rt-b em { font-style: normal; display: inline-block; font-size: 0.78rem; font-weight: 900; color: #0F172A; background: #FDE047; border-radius: 4px; padding: 0 0.4rem; }
+.df2-rt-b > div.mock em { background: #CBD5E1; } .df2-rt-b small { display: block; font-size: 0.78rem; color: #CBD5E1; margin-top: 0.3rem; line-height: 1.4; }
+.df2-care-l b { display: block; font-size: 1.6rem; font-weight: 900; color: #FFFFFF; } .df2-care-l > small { color: #FDE047; font-weight: 800; }
+.df2-care-l .ox-bar { display: block; height: 8px; background: rgba(255,255,255,0.15); border-radius: 4px; margin: 0.5rem 0; } .df2-care-l .ox-bar i { display: block; height: 100%; background: #FDE047; border-radius: 4px; }
+.df2-care-l p { font-size: 0.86rem; color: #FEE2E2; margin: 0; }
+.df2-care-r { display: flex; flex-direction: column; gap: 0.3rem; } .df2-care-r > div { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 0.6rem; align-items: center;
+  background: rgba(255,255,255,0.05); border-radius: 8px; padding: 0.35rem 0.6rem; } .df2-care-r em { font-style: normal; color: #FFFFFF; font-size: 0.88rem; }
+.df2-care-r b { color: #FDE047; } .df2-care-r small { font-size: 0.74rem; color: #FECACA; }
+.df2-dd { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 0.6rem 0 0.8rem; }
+.df2-dd > div { border-radius: 12px; padding: 0.8rem 0.9rem; background: #F0FDF4; border: 1px solid #BBF7D0; } .df2-dd > div.x { background: #FEF2F2; border-color: #FECACA; }
+.df2-dd span { font-weight: 900; font-size: 0.9rem; color: #15803D; } .df2-dd .x span { color: #B91C1C; }
+.df2-dd p { margin: 0.25rem 0 0; font-size: 0.92rem; } .df2-dd p::before { content: "✓ "; color: #16A34A; font-weight: 900; } .df2-dd .x p::before { content: "✕ "; color: #DC2626; }
+.df2-bars { margin: 0.6rem 0 0.4rem; display: grid; gap: 0.35rem; } .df2-bars > div { display: grid; grid-template-columns: 8rem minmax(0, 1fr) 4.5rem; gap: 0.6rem; align-items: center; }
+.df2-bars span { font-size: 0.86rem; color: #334155; } .df2-bars i { display: block; height: 14px; border-radius: 7px; background: #9CA3AF; min-width: 2px; }
+.df2-bars .n i { background: #C62828; } .df2-bars b { font-size: 0.9rem; } .df2-bars small { font-size: 0.78rem; color: #64748B; }
+.df2-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0.6rem 0; font-size: 0.9rem; }
+.df2-flow span { background: #F1F5F9; border-radius: 8px; padding: 0.3rem 0.6rem; } .df2-flow i { font-style: normal; font-weight: 900; color: #64748B; } .df2-flow b { color: #B71C1C; font-size: 1rem; }
+.df2-kpi { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; margin: 0.4rem 0 1rem; }
+.df2-kpi > div { border-top: 4px solid #C62828; background: #F8FAFC; border-radius: 0 0 10px 10px; padding: 0.7rem; display: flex; flex-wrap: wrap; gap: 0.3rem; align-content: flex-start; }
+.df2-kpi span { width: 100%; font-weight: 900; color: #B71C1C; font-size: 0.92rem; } .df2-kpi i { font-style: normal; font-size: 0.84rem; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 999px; padding: 0.1rem 0.55rem; }
+@media (max-width: 760px) {
+  .df2-hero { flex-direction: column; align-items: flex-start; } .df2-hero-t b { font-size: 1.7rem; } .df2-hero .df-logo { max-width: 50%; }
+  .df2-w { flex-direction: column; } .df2-w > div { flex: 1 1 auto !important; }
+  .df2-facts, .df2-ach, .df2-care, .df2-leg, .df2-rt-b, .df2-dd, .df2-kpi { grid-template-columns: 1fr; }
+  .df2-ch { grid-template-columns: repeat(2, minmax(0, 1fr)); } .df2-tl > div { grid-template-columns: 1fr; gap: 0.2rem; }
+  .df2-bars > div { grid-template-columns: 6rem minmax(0, 1fr) 3.8rem; } .df2-cells i { height: 14px; }
+}
+"""
+OW_REDESIGN_CSS += """
+@media (max-width: 760px) {
+  :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .ow-table tr td { white-space: normal !important; overflow-wrap: anywhere; word-break: keep-all; }
+}
 """

@@ -1419,7 +1419,6 @@ def _t1_overview(rs: dict, ops: pd.DataFrame, plan: dict, bz: dict, heroes: dict
         ["<b>복귀율</b>", "신규·복귀 유저의 학습 부담", "PROJECT RE:START", f"복귀 D7 잔존율 (목표 +{plan['seg']['복귀']['mde']['D7']:.1f}%p)"],
         ["<b>매출</b>", "영웅별 상품 차이 · 고정형 묶음", "YOUR HERO · YOUR CHOICE", "패키지 구매 전환율 · 평균 결제 금액"],
     ], cls="ox-two")
-    st.caption("두 전략은 목표 지표가 달라 따로 실험하고 따로 판단한다.")
 
     h(f"배울 것은 계속 늘고, 스킨 상품은 영웅·구성에 따라 고를 폭이 다르다", "", num="02", name="핵심 문제 정의")
     stt = statuses.get("hero_select")
@@ -1475,16 +1474,16 @@ def _t2_screens_voc(rs: dict, kp: dict, steam: pd.DataFrame, pc: pd.DataFrame, o
     if not rep.empty:
         mix = " · ".join(f"{k} {n}" for k, n in rep["user_type"].value_counts().items())
         html(f'<div class="ox-legend"><b>대표 의견 {len(rep)}건</b> · {escape(mix)} · 긍정(반대 사례) {int((rep["sentiment"] == "긍정").sum())}건 포함 · '
-             f'전체 {len(v)}건은 아래 펼쳐보기에서 검색·필터</div>'
+             f'전체 {len(v)}건은 아래 펼쳐보기</div>'
              f'<div class="ow-grid2">{"".join(_opinion_card(r) for _, r in rep.iterrows())}</div>')
     p = rs["problem"]
     html('<div class="ox-cause">' + '<i>→</i>'.join(
         f'<div class="{f.get("kind", "hypo")}"><small>{KIND_TXT[f.get("kind", "hypo")]}</small><b>{escape(f["step"])}</b></div>'
         for f in p["flow"]) + "</div>")
-    st.caption("정보 과부하·전투 이해 실패는 의견으로 확인 · 반복 패배와 이탈의 연결은 아직 확인하지 않음")
     with st.expander(f"유저 의견 {len(v)}건 전체 · 원문 링크 · 검색 · 표본과 분류 기준"):
         _opinions_all(rs, ops)
     with st.expander(f"원인 {len(p['flow'])}단계 근거·검증 지표 · 다른 원인 {len(p['alternatives'])}가지"):
+        st.caption("정보 과부하·전투 이해 실패는 의견으로 확인 · 반복 패배와 이탈의 연결은 아직 확인하지 않음")
         _cause_detail(p, v, code_counts(v))
     with st.expander(f"블리자드 기존 지원 {len(rs['official'])}건 · 넥슨 퍼블리싱 범위"):
         _official_detail(rs, kp)
@@ -1513,11 +1512,12 @@ def _t3_restart(rs: dict, ops: pd.DataFrame, heroes: dict, tl: pd.DataFrame, sta
                     ("추천 영웅", "하던 역할 기준 1~2명 · 연습장 바로가기"), ("C 첫 10경기 미션", "역할·기술 → 상대 대응 → 팀 플레이 (복귀는 선택)"),
                     ("B 전투 학습 카드", "경기 후 어려웠던 상대의 대처법")],
                    title="복귀 유저 적응 과정 · 모든 안내는 끌 수 있다", hl=1))
-    html('<div class="ox-strats">'
-         '<div><em>A</em><b>복귀 브리핑</b><small>복귀 유저 · 접속 직후</small><p>무엇이 바뀌었는지 모른 채 시작 → 마지막 접속 이후 바뀐 것만 3분 요약 + 추천 영웅</p><small>KPI 복귀 D7 잔존율</small></div>'
-         '<div><em>B</em><b>전투 학습 카드</b><small>신규·복귀 · 경기 후</small><p>왜 졌는지 모름 → 어려웠던 상대의 기술·대처법 확인</p><small>KPI 카드 사용률</small></div>'
-         '<div><em>C</em><b>첫 10경기 미션</b><small>신규 (복귀는 선택) · 첫 10경기</small><p>무엇부터 익힐지 모름 → 역할·기술 → 상대 대응 → 팀 플레이 순서</p><small>KPI 신규 D7 잔존율</small></div></div>')
-    st.caption("출시 순서는 RICE 우선순위에 따라 A → C → B (07 탭)")
+    with st.expander("전략 A·B·C 상세"):
+        html('<div class="ox-strats">'
+             '<div><em>A</em><b>복귀 브리핑</b><small>복귀 유저 · 접속 직후</small><p>무엇이 바뀌었는지 모른 채 시작 → 마지막 접속 이후 바뀐 것만 3분 요약 + 추천 영웅</p><small>KPI 복귀 D7 잔존율</small></div>'
+             '<div><em>B</em><b>전투 학습 카드</b><small>신규·복귀 · 경기 후</small><p>왜 졌는지 모름 → 어려웠던 상대의 기술·대처법 확인</p><small>KPI 카드 사용률</small></div>'
+             '<div><em>C</em><b>첫 10경기 미션</b><small>신규 (복귀는 선택) · 첫 10경기</small><p>무엇부터 익힐지 모름 → 역할·기술 → 상대 대응 → 팀 플레이 순서</p><small>KPI 신규 D7 잔존율</small></div></div>')
+        st.caption("출시 순서는 RICE 우선순위에 따라 A → C → B (07 탭)")
     t = st.tabs(["A 복귀 브리핑", "B 전투 학습 카드", "C 첫 10경기 미션"])
     with t[0]:
         _proto_a(heroes, tl, statuses)
@@ -1564,24 +1564,27 @@ def _t4_skin_bm(bz: dict) -> None:
     html('<div class="ox-purpose"><span>BM 판단</span>신화 스킨이 이미 단계 해금 구조라 이전에 검토한 \'성장형 스킨\'은 겹쳐 제외했다. '
          '대신 <b>상품이 적은 영웅의 수요 확인(YOUR HERO)</b>과 <b>고정형 묶음의 선택권 보완(YOUR CHOICE)</b>을 제안한다.</div>')
     _pair(_fig(bz, "battle_pass"), _fig(bz, "store_main"))
-    html(_facts(["배틀 패스: '프리미엄으로 업그레이드해 즉시 3개의 보상을 잠금 해제' 문구 · 보상마다 잠금 표시와 숫자(14·12·8)",
-                 "상점 추천: 묶음 상품 15개를 한 번에 6,900 코인 (정가 9,500 · 27% 할인) · 구성은 고를 수 없음 · 새로고침 6일 남음",
-                 "상점 탭: 추천 · 할인 중 · 신화 · 시즌 · 재출시 패스 · 이스포츠 · 맞춤 추천"]))
+    with st.expander("화면에서 확인한 내용"):
+        html(_facts(["배틀 패스: '프리미엄으로 업그레이드해 즉시 3개의 보상을 잠금 해제' 문구 · 보상마다 잠금 표시와 숫자(14·12·8)",
+                     "상점 추천: 묶음 상품 15개를 한 번에 6,900 코인 (정가 9,500 · 27% 할인) · 구성은 고를 수 없음 · 새로고침 6일 남음",
+                     "상점 탭: 추천 · 할인 중 · 신화 · 시즌 · 재출시 패스 · 이스포츠 · 맞춤 추천"]))
 
     h("같은 화면에서도 영웅별 스킨 수와 가격대가 다르다", "real")
     _pair(_fig(bz, "kiriko_skins"), _fig(bz, "mercy_skins"))
-    table(["", "키리코", "메르시"], [
-        ["스킨 수 표기", "<b>1/11</b>", "<b>15/25</b>"],
-        ["목록에 보이는 가격", "1,900 코인 4종 · 1,000 코인 1종 · 300 코인 4종 · 프리즘 1종(신화)", "보이는 항목에 가격 표기 없음"],
-        ["획득 경로 문구", "점쟁이(전설): 전리품 상자로 잠금 해제", "용기수(전설): 가끔 상점에서 획득 가능"],
-    ], cls="ox-cmp")
-    st.caption("출시 시기가 다른 영웅이라 스킨 수 차이에는 출시 기간 영향이 섞여 있다 · 일부 1,900 항목은 다른 코인 아이콘으로 표기")
+    with st.expander("키리코 vs 메르시 상세"):
+        table(["", "키리코", "메르시"], [
+            ["스킨 수 표기", "<b>1/11</b>", "<b>15/25</b>"],
+            ["목록에 보이는 가격", "1,900 코인 4종 · 1,000 코인 1종 · 300 코인 4종 · 프리즘 1종(신화)", "보이는 항목에 가격 표기 없음"],
+            ["획득 경로 문구", "점쟁이(전설): 전리품 상자로 잠금 해제", "용기수(전설): 가끔 상점에서 획득 가능"],
+        ], cls="ox-cmp")
+        st.caption("출시 시기가 다른 영웅이라 스킨 수 차이에는 출시 기간 영향이 섞여 있다 · 일부 1,900 항목은 다른 코인 아이콘으로 표기")
 
     h("신화 스킨은 이미 '단계별 해금' 구조다: 50 → 10 → 10 → 10 프리즘", "real")
     _pair(_fig(bz, "mythic_roadhog"), _fig(bz, "mythic_wuyang"))
-    html(_facts(["로드호그 '과거의 기사'와 우양 '용의 협객' 모두 4단계 · 1레벨 50, 2~4레벨 각 10 = 총 80 프리즘",
-                 "단계마다 추가: 1레벨 기술 시각 효과·마스크/머리카락·색상 → 2레벨 마스크/머리카락 2종 → 3레벨 색상 2종 → 4레벨 스킨 시각 효과",
-                 "'모든 레벨 잠금 해제' 버튼으로 한 번에 구매 가능"]))
+    with st.expander("신화 스킨 단계별 구성"):
+        html(_facts(["로드호그 '과거의 기사'와 우양 '용의 협객' 모두 4단계 · 1레벨 50, 2~4레벨 각 10 = 총 80 프리즘",
+                     "단계마다 추가: 1레벨 기술 시각 효과·마스크/머리카락·색상 → 2레벨 마스크/머리카락 2종 → 3레벨 색상 2종 → 4레벨 스킨 시각 효과",
+                     "'모든 레벨 잠금 해제' 버튼으로 한 번에 구매 가능"]))
     with st.expander("판매 상품 8종 정리 · 캡처에서 확인한 내용만"):
         table(["상품", "판매 방식", "가격", "구성·해금 구조", "근거 화면"],
               [[f"<b>{escape(p['name'])}</b>", escape(p["sale"]), escape(p["price"]), escape(p["unlock"]), escape(p["source"])]
@@ -1598,7 +1601,6 @@ def _bm_block(bz: dict, key: str, img: str, num: str, pre: str = "") -> None:
     if pre:
         html(pre)
     html(f'<div class="ox-bm">{_fig(bz, img, b.get("image_note", ""))}</div>')
-    html(f'<div class="ox-purpose"><span>기획 목적</span>{escape(b["purpose"])}</div>')
 
 
 def _t5_new_bm(bz: dict) -> None:
@@ -1609,7 +1611,9 @@ def _t5_new_bm(bz: dict) -> None:
         "후보 영웅·콘셉트를 <b>유저 투표</b>로 고르고, 사업성을 함께 검토해 제작",
         "제작 전 수요 확인 · <b>상품이 적은 영웅의 구매 수요 발굴</b>", name="YOUR HERO", tag="기획 시안"))
     html(flow_html([(escape(s["t"]), escape(s["d"])) for s in hero["steps"]], title="운영 구조 · 유저 참여형 스킨 제작 과정", hl=1))
-    html(chips_html("기대 효과", hero["effects"]) + chips_html("측정 KPI", hero["kpis"], "kpi"))
+    html(chips_html("측정 KPI", hero["kpis"], "kpi"))
+    with st.expander("기획 목적 · 기대 효과 5개"):
+        html(f'<div class="ox-purpose"><span>기획 목적</span>{escape(hero["purpose"])}</div>' + chips_html("기대 효과", hero["effects"]))
 
     from gamepulse.sim.ow_business import tier_prices
     prices = tier_prices(ch)
@@ -1633,7 +1637,9 @@ def _t5_new_bm(bz: dict) -> None:
                for t, p in zip(ch["tiers"], prices)], cls="ox-price")
         st.caption(f"{ch['price_note']} · 가격 = 기본 {ch['base_price']:,}원 × 스킨 수 × (1 − 할인율)")
     html(flow_html([(escape(x), "") for x in ch["ops"]], title="운영 방식 · 구매 흐름", hl=1))
-    html(chips_html("기대 효과", ch["effects"]) + chips_html("측정 KPI", ch["kpis"], "kpi"))
+    html(chips_html("측정 KPI", ch["kpis"], "kpi"))
+    with st.expander("기획 목적 · 기대 효과 5개"):
+        html(f'<div class="ox-purpose"><span>기획 목적</span>{escape(ch["purpose"])}</div>' + chips_html("기대 효과", ch["effects"]))
     html(flow_html([("YOUR CHOICE", "기존 스킨 활용 테스트 · 신규 제작비 없음"), ("YOUR HERO", "투표·수요 검증"),
                     ("신규 스킨 제작·출시", "검증된 영웅만")], title="실행 순서 (기획안) · 단계별 일정은 07 탭", hl=0))
 
@@ -1654,7 +1660,7 @@ def _t6_business(rs: dict, plan: dict, bz: dict) -> None:
     rr, nw = seg["복귀"], seg["신규"]
     mo = bz["marketing_ops"]
     h("마케팅·운영 전략 6개로 복귀율 → 잔존 → 구매 전환 → 객단가를 차례로 올린다", "mock", num="09",
-      name="KPI 및 사업성 시뮬레이션", lead=escape(mo["note"]))
+      name="KPI 및 사업성 시뮬레이션", lead="기획 시안 · 목표 수치는 아래 시뮬레이터의 가정값")
     html('<div class="ox-mcards">' + "".join(
         f'<div><b>{escape(m["name"])}</b><span>{escape(m["target"])} → <em>{escape(m["goal"])}</em></span><small>KPI {escape(m["kpi"])}</small></div>'
         for m in mo["items"]) + "</div>")
@@ -1882,20 +1888,21 @@ def _t7_plan(rs: dict, g: dict, statuses: dict, plan: dict, ops: pd.DataFrame, b
          '<div><em class="s">가정 시뮬레이션</em><b>신규 스킨을 만드는 일은 수요 확인이 먼저다.</b><p>가정 기준 신규 스킨 손익분기 전환율은 '
          + (f"{b['bep']:.1f}%" if b["bep_state"] == "ok" else "달성 불가") +
          '로 높다. 신규 스킨 제작비가 들지 않는 YOUR CHOICE로 먼저 매출을 확인하고, YOUR HERO 투표로 수요를 본 뒤 제작한다.</p></div></div>')
-    table(["실행 전략", "핵심 KPI", "기대 효과 (검증 전)", "확대 조건", "중단 · 보류 조건"], [
-        ["<b>PROJECT RE:START</b><br><small>A 복귀 브리핑부터</small>", f"복귀 D7 잔존율 (목표 +{r['mde']['D7']:.1f}%p · 가정)",
-         "복귀 첫 주 적응 · 잔존 개선", f"D7 효과의 95% 신뢰구간 하한 &gt; 0 이고 목표 이상 → C·B 확대",
-         "재실험에도 효과 없음 · 불만·신고율 유의 증가"],
-        ["<b>① YOUR CHOICE</b><br><small>기존 스킨 활용 테스트</small>", "패키지 구매 전환율 · 평균 결제 금액",
-         "구매 전환·객단가 상승", "잠식을 빼고도 순증 → 전체 출시·시즌 운영",
-         "개별 스킨 잠식이 순증보다 큼 · 평균 결제 금액 하락 → 구성·할인율 조정, 반복되면 중단"],
-        ["<b>② YOUR HERO</b><br><small>투표·수요 검증</small>", "투표 참여율 · 영웅별 선호도",
-         "제작 전 수요 확인 · 커뮤니티 참여", "선호가 뚜렷하고 손익분기 조건 충족 → 제작",
-         "참여가 낮아 수요 판단 불가 → 후보·채널 조정 후 1회 재시도"],
-        ["<b>③ 신규 스킨 제작·출시</b>", "출시 후 판매량 · 제작비 대비 수익",
-         "상품이 적은 영웅의 구매 수요 발굴", "제작비 대비 수익 기준 초과 → 다음 투표 회차",
-         "예상 수요가 손익분기 조건 미달 → 제작 보류"],
-    ], cls="ox-final")
+    with st.expander("확대·중단 조건표"):
+        table(["실행 전략", "핵심 KPI", "기대 효과 (검증 전)", "확대 조건", "중단 · 보류 조건"], [
+            ["<b>PROJECT RE:START</b><br><small>A 복귀 브리핑부터</small>", f"복귀 D7 잔존율 (목표 +{r['mde']['D7']:.1f}%p · 가정)",
+             "복귀 첫 주 적응 · 잔존 개선", f"D7 효과의 95% 신뢰구간 하한 &gt; 0 이고 목표 이상 → C·B 확대",
+             "재실험에도 효과 없음 · 불만·신고율 유의 증가"],
+            ["<b>① YOUR CHOICE</b><br><small>기존 스킨 활용 테스트</small>", "패키지 구매 전환율 · 평균 결제 금액",
+             "구매 전환·객단가 상승", "잠식을 빼고도 순증 → 전체 출시·시즌 운영",
+             "개별 스킨 잠식이 순증보다 큼 · 평균 결제 금액 하락 → 구성·할인율 조정, 반복되면 중단"],
+            ["<b>② YOUR HERO</b><br><small>투표·수요 검증</small>", "투표 참여율 · 영웅별 선호도",
+             "제작 전 수요 확인 · 커뮤니티 참여", "선호가 뚜렷하고 손익분기 조건 충족 → 제작",
+             "참여가 낮아 수요 판단 불가 → 후보·채널 조정 후 1회 재시도"],
+            ["<b>③ 신규 스킨 제작·출시</b>", "출시 후 판매량 · 제작비 대비 수익",
+             "상품이 적은 영웅의 구매 수요 발굴", "제작비 대비 수익 기준 초과 → 다음 투표 회차",
+             "예상 수요가 손익분기 조건 미달 → 제작 보류"],
+        ], cls="ox-final")
     rm = bz["roadmap"]
     h("BM 실행 순서와 단계별 일정", "mock", escape(rm["note"]))
     html('<div class="ox-road">' + "".join(
