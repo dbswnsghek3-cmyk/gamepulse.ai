@@ -42,13 +42,18 @@ def load() -> dict:
     return json.loads((DATA / "fc2.json").read_text(encoding="utf-8"))
 
 
+OFF_CAP = "FC 온라인 공식 홈페이지 배너 · 2026-11-26 수집 · ⓒ NEXON · EA"
+
+
 def fig(name: str, label: str, cap: str = CAP) -> str:
     p = ASSETS / name
     if not p.is_file():
         return ""
-    return (f'<figure class="ox-fig real"><details class="ox-zoom"><summary title="클릭하면 크게 보기">'
+    off = name.startswith("off_")
+    kind, cap = ("공식 이미지", OFF_CAP) if off else ("실제 게임 화면", cap)
+    return (f'<figure class="ox-fig real{" off" if off else ""}"><details class="ox-zoom"><summary title="클릭하면 크게 보기">'
             f'<img src="data:image/jpeg;base64,{_jpg_b64(str(p), p.stat().st_mtime)}" alt="{escape(label)}" loading="lazy"></summary></details>'
-            f'<figcaption><b>실제 게임 화면</b>{escape(label)} · {escape(cap)}</figcaption></figure>')
+            f'<figcaption><b>{kind}</b>{escape(label)} · {escape(cap)}</figcaption></figure>')
 
 
 def slot(name: str, label: str) -> str:
@@ -184,23 +189,23 @@ def t3(d: dict) -> None:
     by = {v["id"]: v for v in V}
     cats = Counter(v["cat"] for v in V)
     tones = Counter(v["tone"] for v in V)
-    h(f"VOC {len(V)}건: 구단 가치·강화 글은 '접는다'로 이어지고, 조작은 키보드·패드가 맞선다", "real", num="03", name="실제 유저 VOC",
+    h(f"VOC {len(V)}건: 불만은 구단 가치·강화에, 만족은 신규 클래스·이적시장·이벤트에 모인다", "real", num="03", name="실제 유저 VOC",
       lead=escape(d["voc_note"]))
     stats([(f"{len(V)}건", "검증한 VOC (원문 링크)", "real"), (f"{tones.get('부정', 0)} · {tones.get('중립', 0)} · {tones.get('긍정', 0)}", "부정 · 중립 · 긍정", "real"),
-           (f"{cats.get('키보드·패드 조작', 0) * 100 // len(V)}%", "조작 관련 비중 (편중 · 재수집 예정)", "real")])
+           (f"{cats.get('키보드·패드 조작', 0) * 100 // len(V)}%", "조작 관련 비중 (반복 댓글 정리 후)", "real")])
     order = [c for c, _ in cats.most_common()]
-    neg = Counter(v["cat"] for v in V if v["tone"] == "부정")
-    f = go.Figure([go.Bar(y=order, x=[neg.get(c, 0) for c in order], name="부정", orientation="h", marker_color=RED),
-                   go.Bar(y=order, x=[cats[c] - neg.get(c, 0) for c in order], name="중립", orientation="h", marker_color=GRAY)])
+    tc = {t: Counter(v["cat"] for v in V if v["tone"] == t) for t in ("부정", "중립", "긍정")}
+    f = go.Figure([go.Bar(y=order, x=[tc[t].get(c, 0) for c in order], name=t, orientation="h", marker_color=col)
+                   for t, col in (("부정", RED), ("중립", GRAY), ("긍정", ACC))])
     f.update_layout(barmode="stack")
     f.update_yaxes(autorange="reversed", automargin=True)
     f.update_xaxes(title="건")
-    ox_chart_card(f, key="fcvoc", kind="real", title="주제별 VOC · 빨강 = 부정, 회색 = 중립 (긍정 분류 0건)",
+    ox_chart_card(f, key="fcvoc", kind="real", title="주제별 VOC · 빨강 = 부정, 회색 = 중립, 초록 = 긍정",
                   unit="건 · 한 글은 주 분류 1개", kpis=[], analysis="", decision="", basis="", height=300, cols=("주제", "건"), series="방향")
     html('<ol class="ox-ins">' + "".join(f"<li>{escape(x)}</li>" for x in d["voc_insights"]) + "</ol>")
     h("대표 VOC 8건 · 어느 기획으로 이어지는가", "real")
     html('<div class="fx-vocs">' + "".join(
-        f'<div class="t-{"n" if by[i]["tone"] == "부정" else "z"}"><span>{escape(by[i]["cat"])} · {escape(by[i]["tone"])}</span>'
+        f'<div class="t-{ {"부정": "n", "긍정": "p"}.get(by[i]["tone"], "z") }"><span>{escape(by[i]["cat"])} · {escape(by[i]["tone"])}</span>'
         f'<b>{escape(by[i]["summary"])}</b><small>{escape(by[i]["src"])} · {escape(by[i]["date"])} · {src(by[i]["url"], "원문 ↗")}</small>'
         f'<em>→ {escape(by[i]["link"])}</em></div>' for i in d["voc_rep"]) + "</div>")
     with st.expander(f"VOC {len(V)}건 전체 · 출처·주제·방향 필터 · 원문 링크"):
@@ -320,6 +325,10 @@ def t4(d: dict) -> None:
     js_end()
     html('<div class="fx-steps">' + "".join(f'<div><em>STEP {k}</em><b>{escape(a)}</b><small>{escape(b)}</small></div>'
                                             for k, (a, b) in enumerate(rb["steps"], 1)) + "</div>")
+    ex = rb["exist"]
+    html(f'<div class="fx-exist">{fig(rb["exist_img"], "신규/복귀 이벤트 엪온 빌드업")}<div><b>이미 있는 기능과 겹치는 부분</b>'
+         + "".join(f'<p><span>{escape(a)}</span>{escape(b)} · {src(u, "공식 ↗")}</p>' for a, b, u in ex)
+         + f'<p class="fx-exist-n">→ {escape(rb["exist_note"])}</p></div></div>')
     with st.expander("대상 · 악용·경제 방지 · KPI"):
         html(f'<ul class="ox-facts"><li><b>대상 (기획 기준 · 내부 데이터로 확정)</b> · {dots(rb["target"])}</li>'
              f'<li><b>악용·경제 방지</b> · {dots(rb["guard"])} · 수수료 할인 사용 횟수 제한</li><li><b>KPI</b> · {dots(rb["kpi"])}</li></ul>')
@@ -355,6 +364,14 @@ def t5(d: dict) -> None:
         st.session_state["fc_rival_plus"] += 30
         st.rerun()
     js_end()
+
+    un = mc["union"]
+    h("이미 있는 '팀컬러 연합 레이스'와 무엇이 다른가 — 공식 자료로 확인", "real",
+      lead="기여도 적립·순위 보상은 이미 있는 방식 → 새 기능이라 하지 않고 활용 · 출처 " + " · ".join(src(u, t) for t, u in un["src"]))
+    html(f'<div class="fx-union">{fig(un["img"], "팀컬러 연합 레이스 (2026.10.29~11.25)")}<ul class="ox-facts">'
+         + "".join(f"<li><b>{escape(a)}</b> · {escape(b)}</li>" for a, b in un["facts"]) + "</ul></div>")
+    html('<div class="fx-diff3"><div class="hd"><span></span><b>팀컬러 연합 레이스 (기존)</b><b>MY CLUB WAR</b></div>'
+         + "".join(f'<div><span>{escape(a)}</span><p>{escape(b)}</p><p class="new">{escape(c)}</p></div>' for a, b, c in mc["diff3"]) + "</div>")
 
     h("팬덤 리그 순위표 · 주간 대항전 승 3 · 무 1 · 패 0", "mock", lead=escape(mc["league_note"]))
     rows = sorted(mc["league"], key=lambda r: -(r[1] * 3 + r[2]))
@@ -407,7 +424,7 @@ def t5(d: dict) -> None:
     with st.expander("구단 대표 크리에이터 대항전 · 외부 마케팅 채널 · 측정 지표"):
         html(f'<ul class="ox-facts"><li><b>콘텐츠</b> · {dots(mc["creator"])}</li><li><b>채널</b> · {dots(mc["channels"])}</li>'
              f'<li><b>측정</b> · {dots(mc["creator_kpi"])}</li><li>{escape(mc["creator_note"])}</li></ul>')
-    with st.expander("기존 이벤트와의 차별성 · 팀컬러 연합 레이스 · 아이콘매치"):
+    with st.expander("차별성 상세 비교표 8개 항목 · 아이콘매치와의 관계"):
         table(["비교 항목", "팀컬러 연합 레이스 (기존)", "MY CLUB WAR"], [[f"<b>{escape(a)}</b>", escape(b), escape(c)] for a, b, c in mc["diff"]], cls="ox-mops")
         st.caption(mc["diff_note"])
         table(["", "아이콘매치 (기존)", "MY CLUB WAR"], [[f"<b>{escape(a)}</b>", escape(b), escape(c)] for a, b, c in mc["vs_icon"]], cls="ox-mops")
@@ -432,6 +449,8 @@ def t6(d: dict) -> None:
     st.caption(fp["other"])
     h("검증 → 개선 → 선택 매칭 테스트 · 격차가 확인될 때만 다음 단계", "mock")
     html('<div class="fx-steps three">' + "".join(f'<div><em>{escape(a)}</em><small>{escape(b)}</small></div>' for a, b in fp["steps"]) + "</div>")
+    of = fp["official"]
+    html(f'<div class="ox-purpose fx-off"><span>공식 대응 확인</span>{escape(of[0])} · {src(of[1], "공지 ↗")}</div>')
     html(f'<div class="ox-purpose"><span>사업PM 관점</span>{escape(fp["pm"])} · {escape(fp["stop"])}</div>')
     with st.expander("공식 데이터센터 원본 캡처 · KPI"):
         html(fig("controller_share.jpg", "공식 데이터센터 · 컨트롤러 이용 비중"))

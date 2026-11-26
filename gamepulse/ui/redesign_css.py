@@ -538,6 +538,20 @@ body:has(.gp-fc-page) .ox-fields.four { grid-template-columns: repeat(4, minmax(
 .fx-road > div { border-top: 3px solid var(--ow-acc); padding-top: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
 .fx-road em { font-style: normal; font-weight: 900; color: var(--ow-ink); } .fx-road b { font-size: 0.88rem; color: var(--ox-text); line-height: 1.45; }
 .fx-road p { margin: 0; font-size: 0.8rem; line-height: 1.45; color: var(--ox-text); } .fx-road p span { font-weight: 800; color: var(--ox-muted); margin-right: 0.3rem; }
+.fx-vocs > div.t-p { border-left-color: #16A34A; }
+.ox-fig.off figcaption b { background: #DCFCE7; color: #166534; }
+.fx-exist { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 1rem; align-items: center; margin: 0.6rem 0; padding: 0.8rem; border: 1px dashed #86EFAC; border-radius: 12px; }
+.fx-exist .ox-fig { margin: 0; } .fx-exist b { font-size: 0.95rem; color: var(--ox-text); }
+.fx-exist p { margin: 0.35rem 0 0; font-size: 0.86rem; line-height: 1.5; color: var(--ox-text); } .fx-exist p span { font-weight: 800; color: var(--ow-ink); margin-right: 0.35rem; }
+.fx-exist p a { color: var(--ow-ink); } .fx-exist .fx-exist-n { font-weight: 700; }
+.fx-union { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; align-items: center; margin: 0.4rem 0 0.6rem; }
+.fx-union .ox-fig { margin: 0; } .fx-union .ox-facts { margin: 0; }
+.fx-diff3 { display: grid; gap: 0; border: 1px solid var(--ox-line); border-radius: 12px; overflow: hidden; margin: 0.4rem 0 1rem; }
+.fx-diff3 > div { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) minmax(0, 1fr); gap: 0.8rem; align-items: center; padding: 0.6rem 0.9rem; border-top: 1px solid var(--ox-line); }
+.fx-diff3 > div.hd { border-top: 0; background: #F8FAFC; } .fx-diff3 .hd b { font-size: 0.82rem; color: var(--ox-muted); } .fx-diff3 .hd b:last-child { color: var(--ow-ink); }
+.fx-diff3 span { font-size: 0.82rem; font-weight: 800; color: var(--ox-muted); }
+.fx-diff3 p { margin: 0; font-size: 0.92rem; color: var(--ox-text); line-height: 1.45; } .fx-diff3 p.new { font-weight: 800; color: var(--ow-ink); }
+.fx-off { border-left-color: #2563EB !important; } .fx-off a { color: #1D4ED8; }
 @media (max-width: 1000px) {
   .fx-bms, .fx-vocs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .fx-chain2 { grid-template-columns: repeat(4, minmax(0, 1fr)); } .fx-zone { display: none; }
@@ -545,6 +559,8 @@ body:has(.gp-fc-page) .ox-fields.four { grid-template-columns: repeat(4, minmax(
 }
 @media (max-width: 760px) {
   .fx-nums, .fx-bms, .fx-vocs, .fx-ba, .fx-road, .fx-care-pl { grid-template-columns: 1fr !important; }
+  .fx-exist, .fx-union { grid-template-columns: 1fr; }
+  .fx-diff3 > div { grid-template-columns: 1fr 1fr; gap: 0.3rem 0.8rem; } .fx-diff3 > div > span { grid-column: 1 / -1; } .fx-diff3 .hd span { display: none; }
   .fx-nums b, .fx-nums.big b { font-size: 1.8rem; }
   .fx-chain2, .fx-weeks, .fx-io { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   body:has(.gp-fc-page) .ox-fields.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }

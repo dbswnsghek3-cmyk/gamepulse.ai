@@ -68,7 +68,7 @@ def voc(d: dict) -> str:
             "<script>(function(){var S=document.getElementById('fxVocS'),c=document.getElementById('fxVocC'),T=document.getElementById('fxVocT'),q=document.getElementById('fxVocQ'),tr=document.querySelectorAll('#fxVoc tr[data-c]');"
             "function m(sel,v){return sel.value==='전체'||v===sel.value;}"
             "function f(){var k=q.value.trim().toLowerCase(),n=0;tr.forEach(function(t){var ok=m(S,t.dataset.s)&&m(c,t.dataset.c)&&m(T,t.dataset.t)&&(!k||t.dataset.q.indexOf(k)>=0);t.hidden=!ok;if(ok)n++;});"
-            "document.getElementById('fxVocN').textContent=n?(n+'건 표시 · 전체 '+tr.length+'건 · 제목을 누르면 원문'):'조건에 맞는 VOC가 없습니다 (긍정 분류는 현재 0건 · 추가 수집 예정)';}"
+            "document.getElementById('fxVocN').textContent=n?(n+'건 표시 · 전체 '+tr.length+'건 · 제목을 누르면 원문'):'조건에 맞는 VOC가 없습니다';}"
             "[S,c,T].forEach(function(e){e.addEventListener('change',f);});q.addEventListener('input',f);f();})();</script>")
 
 
