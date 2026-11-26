@@ -515,7 +515,8 @@ def pubg_body(kind: str) -> tuple[str, int]:
             f'<a href="{shots[n]}" target="_blank" rel="noopener">{H.escape(labels[n])}</a>' for n in labels if n in shots) + "</div>")
     note = ('<div class="sx-note">이 페이지는 JavaScript 없이도 01~06 탭 내용을 모두 HTML 글자로 담고 있습니다 '
             '(JavaScript 가 켜져 있으면 선택한 탭만 표시). 04 탭의 A1·A2·B2·C 데모는 이 페이지에서 직접 조작할 수 있고, B1 복귀 랜딩페이지 데모는 별도 페이지로 열립니다.</div>')
-    return PAGE_CSS + '<div class="pg-static">' + note + top + body + "</div>" + PAGE_JS, charts
+    # 2026-11-26 가독성: 상단 안내문·원본 캡처 링크 목록은 채용 담당자에게 불필요해 뺀다 (탭별 원본 캡처는 각 탭 끝 펼쳐보기에 그대로)
+    return PAGE_CSS + '<div class="pg-static">' + body + "</div>" + PAGE_JS, charts
 
 
 def fconline_body(kind: str) -> tuple[str, int]:

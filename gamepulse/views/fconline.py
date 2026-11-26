@@ -20,6 +20,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from gamepulse.sim import fc_biz as B
+from gamepulse.ui.brief import brief_html, flow_html
 from gamepulse.ui.components import html
 from gamepulse.views.overwatch import _jpg_b64, bullets, h, ox_badge_legend, ox_chart_card, stats, table
 from gamepulse.views.overwatch import won as owon
@@ -60,6 +61,19 @@ def slot(name: str, label: str) -> str:
     """받은 캡처는 실제 화면으로, 아직 없으면 '이미지 준비 중' 자리."""
     return fig(name, label) or (f'<div class="fx-slot"><b>이미지 준비 중</b><span>{escape(label)}</span>'
                                 f'<small>assets/fconline/{escape(name)}</small></div>')
+
+
+EFFECT = {"CLUB CARE": "급락 유저 <b>D30 잔존 · 기존 결제 유지</b> (검증 전)",
+          "CLUB REBUILD": "급락 유저 <b>D7·D30 유지 · 재건 완료</b> (검증 전)",
+          "MY CLUB WAR": "<b>신규 가입 → D30 정착</b> · 허용 CPA 안에서 (검증 전)",
+          "FAIR PLAY": "<b>보정 승률 격차 축소 · 공정성 만족도</b> (검증 전)"}
+
+
+def brief4(d: dict, key: str, tag: str = "기획 시안") -> str:
+    """01 탭 '문제 → 근거 → 해결 → 효과' 표의 같은 행을 기획 첫머리 4칸으로."""
+    row = next(r for r in d["summary4"] if r[0] == key)
+    return brief_html(escape(row[1]), escape(row[2]), escape(row[3]), EFFECT[key] + f"<br><small>판단 KPI · {escape(row[4])}</small>",
+                      name=key, tag=tag)
 
 
 def src(url: str, text: str) -> str:
@@ -203,11 +217,12 @@ def t3(d: dict) -> None:
     ox_chart_card(f, key="fcvoc", kind="real", title="주제별 VOC · 빨강 = 부정, 회색 = 중립, 초록 = 긍정",
                   unit="건 · 한 글은 주 분류 1개", kpis=[], analysis="", decision="", basis="", height=300, cols=("주제", "건"), series="방향")
     html('<ol class="ox-ins">' + "".join(f"<li>{escape(x)}</li>" for x in d["voc_insights"]) + "</ol>")
-    h("대표 VOC 8건 · 어느 기획으로 이어지는가", "real")
-    html('<div class="fx-vocs">' + "".join(
+    h("대표 VOC 6건 · 어느 기획으로 이어지는가", "real", lead="부정·중립·긍정을 함께 · 나머지는 아래 전체 목록에서 필터로 확인")
+    reps = [d["voc_rep"][i] for i in (0, 2, 4, 5, 6, 7)]
+    html('<div class="fx-vocs six">' + "".join(
         f'<div class="t-{ {"부정": "n", "긍정": "p"}.get(by[i]["tone"], "z") }"><span>{escape(by[i]["cat"])} · {escape(by[i]["tone"])}</span>'
         f'<b>{escape(by[i]["summary"])}</b><small>{escape(by[i]["src"])} · {escape(by[i]["date"])} · {src(by[i]["url"], "원문 ↗")}</small>'
-        f'<em>→ {escape(by[i]["link"])}</em></div>' for i in d["voc_rep"]) + "</div>")
+        f'<em>→ {escape(by[i]["link"])}</em></div>' for i in reps) + "</div>")
     with st.expander(f"VOC {len(V)}건 전체 · 출처·주제·방향 필터 · 원문 링크"):
         js("fcvoc")
         c1, c2, c3, c4 = st.columns(4)
@@ -272,6 +287,12 @@ def t4(d: dict) -> None:
     html('<div class="fx-chain2">' + "".join(
         f'<div class="{"care" if 1 <= k <= 3 else ("reb" if k >= 4 else "")}"><em>{k + 1}</em>{escape(s)}</div>' for k, s in enumerate(ch))
          + '</div><div class="fx-zone"><span class="care">CLUB CARE · 예방 (2~4단계)</span><span class="reb">CLUB REBUILD · 재건 (5~8단계)</span></div>')
+    cv = d["care_vs_rebuild"]
+    col = lambda j: "".join(f"<dt>{escape(r[0])}</dt><dd>{escape(r[j])}</dd>" for r in cv[1:] if r[0] != "개입 시점")  # noqa: E731
+    when = next(r for r in cv[1:] if r[0] == "개입 시점")
+    html('<div class="gb-flow-t fx-cvr-t">CARE는 예방, REBUILD는 회복 · 같은 복귀 이벤트가 아니다 <span class="ox-k mock">기획 시안</span></div>'
+         f'<div class="gb-vs fx-cvr2"><div><h5>CLUB CARE<small>{escape(cv[0][1])}</small></h5><span class="when">개입 · {escape(when[1])}</span><dl>{col(1)}</dl></div>'
+         f'<i>→</i><div class="b"><h5>CLUB REBUILD<small>{escape(cv[0][2])}</small></h5><span class="when">개입 · {escape(when[2])}</span><dl>{col(2)}</dl></div></div>')
     dv = d["value_demo"]
     xs = [p_[0] for p_ in dv["points"]]
     ys = [p_[1] for p_ in dv["points"]]
@@ -306,6 +327,7 @@ def t4(d: dict) -> None:
     ca = d["care"]
     h(f"{ca['name']} · {ca['slogan']}", "mock", num="04", name="개선 기획 A — PREVENTION · 구단 가치 관리",
       lead="선수 1명이 아니라 내 선수단 전체 · 휴면 기간까지 · 운영진 시장 관리와 연결 (가격을 강제로 유지하지 않는다)")
+    html(brief4(d, "CLUB CARE"))
     js("fccare")
     per = st.radio("기간", list(ca["mock"]["periods"]), horizontal=True, key="fc_care_p", index=1)
     html(_care_mock(ca, per))
@@ -319,6 +341,7 @@ def t4(d: dict) -> None:
     rb = d["rebuild"]
     h(f"{rb['name']} · {rb['slogan']}", "mock", num="04", name="개선 기획 B — RECOVERY · 구단 재건",
       lead="이미 떠난 유저가 아니라, 급락 뒤 떠나기 전의 유저에게 먼저 다른 선택지를 준다")
+    html(brief4(d, "CLUB REBUILD"))
     js("fcrebuild")
     opt = st.radio("재건 방향", ["팀컬러 유지형", "신규 팀컬러 전환형"], horizontal=True, key="fc_rb_opt")
     html(_rebuild_mock(rb, "keep" if opt == "팀컬러 유지형" else "switch"))
@@ -332,9 +355,6 @@ def t4(d: dict) -> None:
     with st.expander("대상 · 악용·경제 방지 · KPI"):
         html(f'<ul class="ox-facts"><li><b>대상 (기획 기준 · 내부 데이터로 확정)</b> · {dots(rb["target"])}</li>'
              f'<li><b>악용·경제 방지</b> · {dots(rb["guard"])} · 수수료 할인 사용 횟수 제한</li><li><b>KPI</b> · {dots(rb["kpi"])}</li></ul>')
-    h("CARE는 예방, REBUILD는 회복 · 같은 복귀 이벤트가 아니다", "mock")
-    cv = d["care_vs_rebuild"]
-    table(cv[0], [[f"<b>{escape(a)}</b>", escape(b), escape(c)] for a, b, c in cv[1:]], cls="ox-mops fx-cvr")
 
 
 # ----------------------------------------------------------------------
@@ -349,10 +369,55 @@ def _rival_html(rv: dict, extra: int = 0) -> str:
             f'<span>나의 기여 +{180 + extra}점</span></div></div>')
 
 
+EMB = ["#B91C1C", "#1D4ED8", "#B45309", "#7C3AED", "#0F766E", "#BE185D", "#334155", "#15803D", "#0369A1", "#A16207"]
+
+
+def league_html(league: list, my_club: str) -> str:
+    """팬덤 리그 순위표: 엠블럼 · 1위 트로피 · 내 구단 표시 · 승점 막대 (가상 시즌)."""
+    rows = sorted(league, key=lambda r: -(r[1] * 3 + r[2]))
+    top = max(w * 3 + dr for _, w, dr, _, _ in rows) or 1
+    out = []
+    for k, (n, w, dr, l, ch) in enumerate(rows, 1):
+        pts = w * 3 + dr
+        mv = f'<span class="{"up" if ch > 0 else ("dn" if ch < 0 else "")}">{"▲" if ch > 0 else ("▼" if ch < 0 else "—")}{abs(ch) if ch else ""}</span>'
+        cls = " r1" if k == 1 else ""
+        cls += " me" if n == my_club else ""
+        tag = '<u>MY</u>' if n == my_club else ""
+        out.append(f'<div class="fx-lg-r{cls}"><em>{"🏆" if k == 1 else k}</em><b><i style="--c:{EMB[(k - 1) % len(EMB)]}">{escape(n[0])}</i>'
+                   f'<span>{escape(n)}{tag}</span></b><span class="g">{w + dr + l}</span><span>{w}</span><span>{dr}</span><span>{l}</span>'
+                   f'<strong>{pts}<small style="--w:{pts / top * 100:.0f}%"></small></strong>{mv}</div>')
+    return ('<div class="fx-lg"><div class="fx-lg-t">FANDOM LEAGUE<small>시즌 1 · 5주차 · 가상</small></div>'
+            '<div class="fx-lg-r hd"><em>#</em><b>구단</b><span class="g">경기</span><span>승</span><span>무</span><span>패</span><strong>승점</strong><span>변동</span></div>'
+            + "".join(out) + "</div>")
+
+
+def me_html(me: dict, missions: list) -> str:
+    rk, tot = (me["rank"].replace("구단 내 ", "").split(" / ") + [""])[:2]
+    d0, d1 = me["daily"]
+    return ('<div class="fx-me"><div class="fx-me-c"><span>MY CONTRIBUTION · ' + escape(me["club"]) + '</span>'
+            f'<div class="fx-me-g"><div><b>{me["season"]:,}<small>점</small></b><em>시즌 누적 기여</em></div>'
+            f'<div><b>{escape(rk)}</b><em>구단 내 개인 순위 · {escape(tot)}</em></div>'
+            f'<div><b>{d0}<small> / {d1}</small></b><em>오늘 기여 / 일일 상한</em><i class="ox-bar"><i style="width:{d0 / d1 * 100:.0f}%"></i></i></div></div>'
+            f'<p>{escape(me["need"])} · 보상: {escape(me["reward"])}</p></div>'
+            '<div class="fx-me-m"><span>기여 미션 (가상 예시)</span>' + "".join(f"<i>{escape(x)}</i>" for x in missions) + "</div></div>")
+
+
+def podium_html(res: list, w: int) -> str:
+    """경쟁 점수 결과 먼저: 최종 순위 · 점수 막대 · 누적만/평균만 순위 비교 (정적 위젯 JS 와 같은 마크업)."""
+    o = sorted(res, key=lambda r: r["rank_score"])
+    big = next((r for r in res if r["rank_total"] == 1), None)
+    cards = "".join(f'<div class="{"r1" if r["rank_score"] == 1 else ""}"><em>{"🏆 " if r["rank_score"] == 1 else ""}{r["rank_score"]}위</em>'
+                    f'<b>{escape(r["name"])}</b><strong>{r["score"]:.1f}</strong><i><span style="width:{min(r["score"], 100):.0f}%"></span></i>'
+                    f'<small>누적만 {r["rank_total"]}위 · 평균만 {r["rank_avg"]}위</small></div>' for r in o)
+    note = (f'반영 비중 누적 {w} : 평균 {100 - w} · 사람 수가 가장 많은 {escape(big["name"])}(누적 1위)는 최종 {big["rank_score"]}위' if big else "")
+    return f'<div class="fx-pod">{cards}</div><p class="fx-pod-n">{note} · <span class="ox-k sim">가정 시뮬레이션</span></p>'
+
+
 def t5(d: dict) -> None:
     mc = d["mcw"]
     h("MY CLUB WAR · 우리 구단의 자존심을 걸고.", "mock", num="05", name="대표 마케팅 기획 — 실제 구단 팬덤 시즌 리그",
       lead=escape(mc["sub"]) + " · 보상 이벤트가 아니라 '내 구단을 우승시키려고' 참여하는 8주 시즌제 대항전 · " + escape(mc["license"]))
+    html(brief4(d, "MY CLUB WAR", "대표 기획 · 기획 시안"))
     names = [r["name"] for r in mc["rivals"]]
     js("fcrival")
     pick = st.radio("라이벌 매치", names, horizontal=True, key="fc_rival")
@@ -374,41 +439,41 @@ def t5(d: dict) -> None:
          + "".join(f'<div><span>{escape(a)}</span><p>{escape(b)}</p><p class="new">{escape(c)}</p></div>' for a, b, c in mc["diff3"]) + "</div>")
 
     h("팬덤 리그 순위표 · 주간 대항전 승 3 · 무 1 · 패 0", "mock", lead=escape(mc["league_note"]))
-    rows = sorted(mc["league"], key=lambda r: -(r[1] * 3 + r[2]))
-    table(["순위", "구단", "경기", "승", "무", "패", "승점", "변동"],
-          [[f"<b>{k}</b>", f'<b>{escape(n)}</b>', str(w + dr + l), str(w), str(dr), str(l), f"<b>{w * 3 + dr}</b>",
-            f'<span class="{"up" if ch > 0 else ("dn" if ch < 0 else "")}">{"▲" if ch > 0 else ("▼" if ch < 0 else "—")}{abs(ch) if ch else ""}</span>']
-           for k, (n, w, dr, l, ch) in enumerate(rows, 1)], cls="ox-mops fx-league")
     me = mc["me"]
+    html(league_html(mc["league"], me["club"]))
     h("나의 기여도 · 이기는 것만이 아니라 참여로도 기여한다", "mock", lead=escape(mc["mission_rules"]))
-    stats([(f"{me['season']:,}점", f"시즌 누적 기여 · {me['club']}", "sim"), (me["rank"].split(" / ")[0].replace("구단 내 ", ""), "구단 내 개인 기여 순위", "sim"),
-           (f"{me['daily'][0]} / {me['daily'][1]}", "오늘 기여 점수 / 일일 상한", "sim")])
-    st.caption(f"{me['need']} · 보상: {me['reward']} · 미션: {' · '.join(mc['missions'])} (모두 가상 예시)")
+    html(me_html(me, mc["missions"]))
 
     h("인기 구단이 사람 수만으로 이기지 않게 · 경쟁 점수 시뮬레이터", "sim",
-      lead="최종 = 정규화 누적 × 규모 비중 + 정규화 평균 × 활동 비중 · 정규화 = 해당 값 ÷ 최고값 × 100 · 기본 30:70은 테스트용 가정")
+      lead="사람 수(누적)와 1인당 활동(평균)을 함께 본다 · 결과 먼저, 계산식과 가정값은 아래 펼쳐보기")
     fs = d["fandom_sim"]
     js("fcfandom")
     st.session_state.setdefault("fc_fw", fs["w_total"])
-    w = st.slider("누적 활동 점수 반영 비중 (%) · 평균 비중은 100 − 이 값", 0, 100, key="fc_fw")
-    cols = st.columns(3)
-    rows_in = []
-    for k, (n, ppl, av) in enumerate(fs["rows"]):
-        c = cols[k]
-        a1 = c.number_input(f"{n} 참여 인원", 0, 10_000_000, int(ppl), step=1000, key=f"fc_fp{k}")
-        a2 = c.number_input(f"{n} 1인당 평균 점수", 0.0, 10_000.0, float(av), step=1.0, key=f"fc_fa{k}")
-        rows_in.append([n, a1, a2])
-    res = B.fandom(rows_in, w)
-    table(["팬덤 (가상)", "누적 점수", "정규화 누적", "정규화 평균", f"최종 ({w}:{100 - w})", "누적만 순위", "평균만 순위", "최종 순위"],
-          [[escape(r["name"]), f'{r["total"]:,.0f}', f'{r["n_total"]:.1f}', f'{r["n_avg"]:.1f}', f'<b>{r["score"]:.1f}</b>',
-            f'{r["rank_total"]}위', f'{r["rank_avg"]}위', f'<b>{r["rank_score"]}위</b>'] for r in res], cls="ox-mops")
-    f = go.Figure(go.Bar(x=[r["name"] for r in res], y=[r["score"] for r in res], marker_color=ACC, text=[f'{r["score"]:.1f}' for r in res],
-                         textposition="outside", cliponaxis=False))
-    f.update_yaxes(title="최종 경쟁 점수", range=[0, 110])
-    ox_chart_card(f, key="fcfan", kind="sim", title="최종 경쟁 점수 (0~100)", unit="점 · 가상 팬덤 3개", kpis=[], analysis="", decision="",
-                  basis="", height=260, legend=False, cols=("팬덤", "점수"))
+    board = st.container()
+    with st.expander("가정값 바꾸기 · 계산 과정 · 반영 비중 슬라이더"):
+        st.caption("최종 = 정규화 누적 × 규모 비중 + 정규화 평균 × 활동 비중 · 정규화 = 해당 값 ÷ 최고값 × 100 · 기본 30:70은 테스트용 가정")
+        w = st.slider("누적 활동 점수 반영 비중 (%) · 평균 비중은 100 − 이 값", 0, 100, key="fc_fw")
+        cols = st.columns(3)
+        rows_in = []
+        for k, (n, ppl, av) in enumerate(fs["rows"]):
+            c = cols[k]
+            a1 = c.number_input(f"{n} 참여 인원", 0, 10_000_000, int(ppl), step=1000, key=f"fc_fp{k}")
+            a2 = c.number_input(f"{n} 1인당 평균 점수", 0.0, 10_000.0, float(av), step=1.0, key=f"fc_fa{k}")
+            rows_in.append([n, a1, a2])
+        res = B.fandom(rows_in, w)
+        table(["팬덤 (가상)", "누적 점수", "정규화 누적", "정규화 평균", f"최종 ({w}:{100 - w})", "누적만 순위", "평균만 순위", "최종 순위"],
+              [[escape(r["name"]), f'{r["total"]:,.0f}', f'{r["n_total"]:.1f}', f'{r["n_avg"]:.1f}', f'<b>{r["score"]:.1f}</b>',
+                f'{r["rank_total"]}위', f'{r["rank_avg"]}위', f'<b>{r["rank_score"]}위</b>'] for r in res], cls="ox-mops")
+        f = go.Figure(go.Bar(x=[r["name"] for r in res], y=[r["score"] for r in res], marker_color=ACC, text=[f'{r["score"]:.1f}' for r in res],
+                             textposition="outside", cliponaxis=False))
+        f.update_yaxes(title="최종 경쟁 점수", range=[0, 110])
+        ox_chart_card(f, key="fcfan", kind="sim", title="최종 경쟁 점수 (0~100)", unit="점 · 가상 팬덤 3개", kpis=[], analysis="", decision="",
+                      basis="", height=260, legend=False, cols=("팬덤", "점수"))
+    with board:
+        html(podium_html(res, w))
     js_end()
-    st.caption("추가 공정 장치: 최소 유효 참여 인원 · 소규모 팬덤 평균 변동성 검토 · 다중 계정·반복 참여 방지 · 일일 상한 · 규모별 리그 · 시즌 중 구단 변경 제한 — 실제 데이터 테스트로 조정")
+    with st.expander("추가 공정 장치 · 운영 규칙"):
+        st.caption("추가 공정 장치: 최소 유효 참여 인원 · 소규모 팬덤 평균 변동성 검토 · 다중 계정·반복 참여 방지 · 일일 상한 · 규모별 리그 · 시즌 중 구단 변경 제한 — 실제 데이터 테스트로 조정")
 
     h("신규 축구 팬 → 장기 유저: 8단계 전환 퍼널", "mock", lead="처음부터 큰돈을 쓰거나 고전력 유저와 바로 부딪히지 않게 · 기간제 체험 선수단")
     html('<div class="fx-funnel8">' + "".join(f'<div style="--w:{96 - k * 8}%"><em>{k + 1}</em>{escape(s)}</div>' for k, s in enumerate(mc["funnel"]))
@@ -439,6 +504,7 @@ def t6(d: dict) -> None:
     c = fp["controller"]
     h("'패드가 무조건 유리하다'고 단정하지 않는다 — 데이터로 먼저 검증", "hypo", num="06", name="FAIR PLAY PROJECT",
       lead=f"{c['date']} 공식 데이터센터 · 공식경기 1ON1 · 랭킹 1~10,000위 기준 · 전체 유저 비율이나 승률이 아님")
+    html(brief4(d, "FAIR PLAY"))
     html(f'<div class="fx-io"><div><i class="kb"></i><b>{c["kb"]}%</b><span>키보드</span></div><div><i class="pad"></i><b>{c["pad"]}%</b><span>패드</span></div></div>')
     html(f'<div class="ox-pair">{slot(fp["slots"][0][0], fp["slots"][0][1])}{slot(fp["slots"][1][0], fp["slots"][1][1])}</div>')
     s = fp["voc_sides"]
@@ -448,7 +514,7 @@ def t6(d: dict) -> None:
     html('<div class="fx-chips">' + "".join(f"<span>{escape(x)}</span>" for x in fp["cats"]) + "</div>")
     st.caption(fp["other"])
     h("검증 → 개선 → 선택 매칭 테스트 · 격차가 확인될 때만 다음 단계", "mock")
-    html('<div class="fx-steps three">' + "".join(f'<div><em>{escape(a)}</em><small>{escape(b)}</small></div>' for a, b in fp["steps"]) + "</div>")
+    html(flow_html([(escape(a.split(" ", 1)[-1]), escape(b)) for a, b in fp["steps"]], hl=0))
     of = fp["official"]
     html(f'<div class="ox-purpose fx-off"><span>공식 대응 확인</span>{escape(of[0])} · {src(of[1], "공지 ↗")}</div>')
     html(f'<div class="ox-purpose"><span>사업PM 관점</span>{escape(fp["pm"])} · {escape(fp["stop"])}</div>')

@@ -41,6 +41,7 @@ from gamepulse.sim.restart_sim import (CohortInput, SimInput, experiment_plan, r
                                        sample_size_two_proportions, validate_base)
 from gamepulse.ui.charts import PLOTLY_CONFIG, style
 from gamepulse.ui.components import badge, html
+from gamepulse.ui.brief import brief_html, chips_html, flow_html
 from gamepulse.views import game_page
 from gamepulse.views.deep_dives import DEEP_DIVES
 
@@ -1465,8 +1466,17 @@ def _t2_screens_voc(rs: dict, kp: dict, steam: pd.DataFrame, pc: pd.DataFrame, o
             + f" · 제외·대기 {len(other)}건 (Reddit {reddit}건은 수집 환경 접근 차단) · 한 의견이 여러 유형에 걸치면 각각 집계"))
     _opinion_chart(v)
     rep = v[v["opinion_id"].isin(rs["rep_opinions"]) & (v["sentiment"] != "긍정")].sort_values("published_date", ascending=False).head(2)
+    # 대표 의견 4건: 기존 대표 2건(복귀) + 신규 유저 1건 + 반대 사례(긍정) 1건 · 모두 원문 확인한 같은 63건에서 최신순
+    rest = v[~v["opinion_id"].isin(rep["opinion_id"])].sort_values("published_date", ascending=False)
+    new1 = rest[rest["user_type"].str.contains("신규") & (rest["sentiment"] != "긍정")].head(1)
+    pos = rest[rest["sentiment"] == "긍정"]
+    pos1 = pos[pos.apply(lambda r: "긍정적인 학습 경험" in opinion_codes(r), axis=1)].head(1) if not pos.empty else pos
+    rep = pd.concat([rep, new1, pos1 if not pos1.empty else pos.head(1)])
     if not rep.empty:
-        html(f'<div class="ow-grid2">{"".join(_opinion_card(r) for _, r in rep.iterrows())}</div>')
+        mix = " · ".join(f"{k} {n}" for k, n in rep["user_type"].value_counts().items())
+        html(f'<div class="ox-legend"><b>대표 의견 {len(rep)}건</b> · {escape(mix)} · 긍정(반대 사례) {int((rep["sentiment"] == "긍정").sum())}건 포함 · '
+             f'전체 {len(v)}건은 아래 펼쳐보기에서 검색·필터</div>'
+             f'<div class="ow-grid2">{"".join(_opinion_card(r) for _, r in rep.iterrows())}</div>')
     p = rs["problem"]
     html('<div class="ox-cause">' + '<i>→</i>'.join(
         f'<div class="{f.get("kind", "hypo")}"><small>{KIND_TXT[f.get("kind", "hypo")]}</small><b>{escape(f["step"])}</b></div>'
@@ -1494,6 +1504,15 @@ def _t3_restart(rs: dict, ops: pd.DataFrame, heroes: dict, tl: pd.DataFrame, sta
     cc = code_counts(v)
     h("신규와 복귀를 나눠, 필요한 것만 먼저 보여 준다", "mock", num="05", name="신규·복귀 유저 개선 전략 — PROJECT RE:START",
       lead="영웅·밸런스·매칭은 그대로 · 모든 안내는 끌 수 있다")
+    html(brief_html("복귀 메인 화면에 <b>변경점 안내가 없고</b>, 신규는 무엇부터 익힐지 모른다",
+                    f"검증 의견 {len(v)}건 중 <b>{_learn(v)}건</b>이 학습·적응 어려움 · 영웅 54명 · 1명당 설명 10개",
+                    "신규·복귀를 나눠 <b>복귀 브리핑 · 전투 학습 카드 · 첫 10경기 미션</b>",
+                    f"복귀 D7 잔존율 <b>+{plan['seg']['복귀']['mde']['D7']:.1f}%p</b> 목표 (가정 · A/B로 검증)",
+                    name="PROJECT RE:START", tag="기획 시안"))
+    html(flow_html([("접속 · 복귀 판별", "90일 이상 미접속 = 복귀 · 신규는 C로"), ("A 복귀 브리핑", "마지막 접속 이후 바뀐 것만 3분"),
+                    ("추천 영웅", "하던 역할 기준 1~2명 · 연습장 바로가기"), ("C 첫 10경기 미션", "역할·기술 → 상대 대응 → 팀 플레이 (복귀는 선택)"),
+                    ("B 전투 학습 카드", "경기 후 어려웠던 상대의 대처법")],
+                   title="복귀 유저 적응 과정 · 모든 안내는 끌 수 있다", hl=1))
     html('<div class="ox-strats">'
          '<div><em>A</em><b>복귀 브리핑</b><small>복귀 유저 · 접속 직후</small><p>무엇이 바뀌었는지 모른 채 시작 → 마지막 접속 이후 바뀐 것만 3분 요약 + 추천 영웅</p><small>KPI 복귀 D7 잔존율</small></div>'
          '<div><em>B</em><b>전투 학습 카드</b><small>신규·복귀 · 경기 후</small><p>왜 졌는지 모름 → 어려웠던 상대의 기술·대처법 확인</p><small>KPI 카드 사용률</small></div>'
@@ -1538,6 +1557,12 @@ def _t4_skin_bm(bz: dict) -> None:
     ex = bz["existing_bm"]
     h("영웅마다 스킨 수가 다르고, 묶음 상품은 구성이 고정돼 있다", "real", num="06", name="기존 스킨 BM 분석",
       lead=escape(bz["capture_note"]) + " · 원화 가격은 캡처에 없어 코인·프리즘 단위로만 적는다")
+    html('<div class="gb-big">'
+         '<div><em>영웅별 스킨 수 표기</em><b>11 vs 25</b><p>키리코 1/11 · 메르시 15/25</p><small>실제 캡처 · 출시 기간 영향 포함</small></div>'
+         '<div><em>상점 추천 묶음</em><b>15개 고정</b><p>6,900 코인 (정가 9,500 · 27% 할인) · 구성 선택 불가</p><small>실제 캡처</small></div>'
+         '<div><em>신화 스킨</em><b>50→10→10→10</b><p>이미 단계 해금 구조 · 총 80 프리즘</p><small>실제 캡처 · 로드호그·우양</small></div></div>')
+    html('<div class="ox-purpose"><span>BM 판단</span>신화 스킨이 이미 단계 해금 구조라 이전에 검토한 \'성장형 스킨\'은 겹쳐 제외했다. '
+         '대신 <b>상품이 적은 영웅의 수요 확인(YOUR HERO)</b>과 <b>고정형 묶음의 선택권 보완(YOUR CHOICE)</b>을 제안한다.</div>')
     _pair(_fig(bz, "battle_pass"), _fig(bz, "store_main"))
     html(_facts(["배틀 패스: '프리미엄으로 업그레이드해 즉시 3개의 보상을 잠금 해제' 문구 · 보상마다 잠금 표시와 숫자(14·12·8)",
                  "상점 추천: 묶음 상품 15개를 한 번에 6,900 코인 (정가 9,500 · 27% 할인) · 구성은 고를 수 없음 · 새로고침 6일 남음",
@@ -1557,8 +1582,6 @@ def _t4_skin_bm(bz: dict) -> None:
     html(_facts(["로드호그 '과거의 기사'와 우양 '용의 협객' 모두 4단계 · 1레벨 50, 2~4레벨 각 10 = 총 80 프리즘",
                  "단계마다 추가: 1레벨 기술 시각 효과·마스크/머리카락·색상 → 2레벨 마스크/머리카락 2종 → 3레벨 색상 2종 → 4레벨 스킨 시각 효과",
                  "'모든 레벨 잠금 해제' 버튼으로 한 번에 구매 가능"]))
-    html('<div class="ox-purpose"><span>BM 판단</span>신화 스킨이 이미 단계 해금 구조라 이전에 검토한 \'성장형 스킨\'은 겹쳐 제외했다. '
-         '대신 <b>상품이 적은 영웅의 수요 확인(YOUR HERO)</b>과 <b>고정형 묶음의 선택권 보완(YOUR CHOICE)</b>을 제안한다.</div>')
     with st.expander("판매 상품 8종 정리 · 캡처에서 확인한 내용만"):
         table(["상품", "판매 방식", "가격", "구성·해금 구조", "근거 화면"],
               [[f"<b>{escape(p['name'])}</b>", escape(p["sale"]), escape(p["price"]), escape(p["unlock"]), escape(p["source"])]
@@ -1568,33 +1591,51 @@ def _t4_skin_bm(bz: dict) -> None:
 
 # ----------------------------------------------------------------------
 # 탭 05 · 섹션 07 YOUR HERO · 08 YOUR CHOICE
-def _bm_block(bz: dict, key: str, img: str, num: str) -> None:
+def _bm_block(bz: dict, key: str, img: str, num: str, pre: str = "") -> None:
+    """제목 → 4칸 요약(pre) → 기획 이미지 → 기획 목적 순서 (요약을 먼저 읽고 이미지로 확인)."""
     b = bz[key]
     h(f"{b['title']} {b['slogan']}", "mock", num=num, name=f"신규 BM 제안 — {b['title'].rstrip('.')}", lead=escape(b["kind"]))
+    if pre:
+        html(pre)
     html(f'<div class="ox-bm">{_fig(bz, img, b.get("image_note", ""))}</div>')
     html(f'<div class="ox-purpose"><span>기획 목적</span>{escape(b["purpose"])}</div>')
 
 
 def _t5_new_bm(bz: dict) -> None:
     hero, ch = bz["your_hero"], bz["your_choice"]
-    _bm_block(bz, "your_hero", "your_hero", "07")
-    html('<div class="ox-cols3">'
-         '<div><b>운영 구조</b><ol>' + "".join(f"<li><em>{escape(s['t'])}</em> {escape(s['d'])}</li>" for s in hero["steps"]) + "</ol></div>"
-         f'<div><b>기대 효과</b>{bullets(hero["effects"])}</div><div><b>측정 KPI</b>{bullets(hero["kpis"])}</div></div>')
+    _bm_block(bz, "your_hero", "your_hero", "07", brief_html(
+        "스킨 판매가 <b>인기 영웅 중심</b> · 키리코 11종 vs 메르시 25종 (캡처)",
+        "만들기 전에는 수요를 몰라 <b>신규 스킨 제작비가 위험</b>하다",
+        "후보 영웅·콘셉트를 <b>유저 투표</b>로 고르고, 사업성을 함께 검토해 제작",
+        "제작 전 수요 확인 · <b>상품이 적은 영웅의 구매 수요 발굴</b>", name="YOUR HERO", tag="기획 시안"))
+    html(flow_html([(escape(s["t"]), escape(s["d"])) for s in hero["steps"]], title="운영 구조 · 유저 참여형 스킨 제작 과정", hl=1))
+    html(chips_html("기대 효과", hero["effects"]) + chips_html("측정 KPI", hero["kpis"], "kpi"))
 
     from gamepulse.sim.ow_business import tier_prices
-    _bm_block(bz, "your_choice", "your_choice", "08")
     prices = tier_prices(ch)
-    table(["구분", "할인율", "예시 가격", "정가 합계 대비"],
-          [[f"<b>{escape(t['name'])}</b>", f"{t['disc']}%" if t["disc"] else "없음", f"<b>{p:,}원</b>",
-            f"{t['n'] * ch['base_price']:,}원 − {t['n'] * ch['base_price'] - p:,}원" if t["disc"] else "—"]
-           for t, p in zip(ch["tiers"], prices)], cls="ox-price")
-    st.caption(f"{ch['price_note']} · 가격 = 기본 {ch['base_price']:,}원 × 스킨 수 × (1 − 할인율)")
-    html('<div class="ox-cols3">'
-         f'<div><b>운영 방식</b>{bullets(ch["ops"])}</div><div><b>기대 효과</b>{bullets(ch["effects"])}</div>'
-         f'<div><b>측정 KPI</b>{bullets(ch["kpis"])}</div></div>')
-    html('<div class="ox-purpose"><span>실행 순서 (기획안)</span>① YOUR CHOICE 기존 스킨 활용 테스트 → ② YOUR HERO 투표·수요 검증 → '
-         '③ 검증된 영웅만 신규 스킨 제작·출시 · 단계별 일정은 07 탭</div>')
+    t3, t5 = ch["tiers"][1], ch["tiers"][2]
+    _bm_block(bz, "your_choice", "your_choice", "08", brief_html(
+        "상점 추천 묶음은 <b>15개 고정 구성</b> · 원하는 스킨만 고를 수 없다 (캡처)",
+        "원하지 않는 스킨이 섞이면 <b>구매 부담</b>이 커져 구매를 미룰 수 있다",
+        f"원하는 스킨 <b>{t3['n']}개·{t5['n']}개를 직접 골라</b> {t3['disc']}%·{t5['disc']}% 할인",
+        "<b>구매 전환율 · 평균 결제 금액</b> 상승 가능성 (검증 전)", name="YOUR CHOICE", tag="기획 시안"))
+    html('<div class="gb-vs"><div><h5>기존 상점 추천 묶음<small>실제 캡처</small></h5><span class="when">상점이 정한 구성</span><dl>'
+         '<dt>구성</dt><dd>15개 고정 · 선택 불가</dd><dt>가격</dt><dd>6,900 코인 (정가 9,500 · 27% 할인)</dd>'
+         '<dt>구매 판단</dt><dd>원하지 않는 스킨도 함께 산다</dd></dl></div><i>VS</i>'
+         f'<div class="b"><h5>YOUR CHOICE<small>기획 시안</small></h5><span class="when">유저가 고른 구성</span><dl>'
+         f'<dt>구성</dt><dd>원하는 영웅·스킨 {t3["n"]}개 또는 {t5["n"]}개</dd>'
+         f'<dt>가격</dt><dd>{prices[1]:,}원 · {prices[2]:,}원 (예시 · {t3["disc"]}%·{t5["disc"]}%)</dd>'
+         '<dt>구매 판단</dt><dd>원하는 스킨만 · 많이 고를수록 할인</dd></dl></div></div>')
+    with st.expander("예시 가격 계산 · 정가 합계 대비 할인액"):
+        table(["구분", "할인율", "예시 가격", "정가 합계 대비"],
+              [[f"<b>{escape(t['name'])}</b>", f"{t['disc']}%" if t["disc"] else "없음", f"<b>{p:,}원</b>",
+                f"{t['n'] * ch['base_price']:,}원 − {t['n'] * ch['base_price'] - p:,}원" if t["disc"] else "—"]
+               for t, p in zip(ch["tiers"], prices)], cls="ox-price")
+        st.caption(f"{ch['price_note']} · 가격 = 기본 {ch['base_price']:,}원 × 스킨 수 × (1 − 할인율)")
+    html(flow_html([(escape(x), "") for x in ch["ops"]], title="운영 방식 · 구매 흐름", hl=1))
+    html(chips_html("기대 효과", ch["effects"]) + chips_html("측정 KPI", ch["kpis"], "kpi"))
+    html(flow_html([("YOUR CHOICE", "기존 스킨 활용 테스트 · 신규 제작비 없음"), ("YOUR HERO", "투표·수요 검증"),
+                    ("신규 스킨 제작·출시", "검증된 영웅만")], title="실행 순서 (기획안) · 단계별 일정은 07 탭", hl=0))
 
 
 # ----------------------------------------------------------------------
@@ -1833,14 +1874,14 @@ def _t7_plan(rs: dict, g: dict, statuses: dict, plan: dict, ops: pd.DataFrame, b
     b = _biz_base(bz)
     h("복귀율은 A 파일럿부터, 매출은 YOUR CHOICE → YOUR HERO → 신규 스킨 순서로", "mock", num="10",
       name="최종 인사이트 및 사업PM 관점의 실행 판단")
-    html('<ol class="ox-ins">'
-         f'<li><b>[실제 자료] 진입장벽은 확인됐고, 이탈과의 연결은 [검증 전]이다.</b> 의견 {len(v)}건 중 {_learn(v)}건과 실제 화면이 학습 부담을 보여 주지만 '
-         '이탈 원인인지는 로그와 A/B 테스트로 확인한다.</li>'
-         '<li><b>[실제 자료] 스킨 상품 구성 차이는 화면으로 확인됐다.</b> 키리코 11종과 메르시 25종, 15개 고정 묶음은 사실이고, '
-         '유저 선호와 어긋나는지는 [검증 전] 영웅별 플레이·구매 데이터로 확인한다.</li>'
-         '<li><b>[가정 시뮬레이션] 신규 스킨을 만드는 일은 수요 확인이 먼저다.</b> 가정 기준 신규 스킨 손익분기 전환율은 '
+    html('<div class="gb-concl">'
+         f'<div><em class="r">실제 자료 · 이탈 연결은 검증 전</em><b>진입장벽은 확인됐고, 이탈과의 연결은 검증 전이다.</b><p>의견 {len(v)}건 중 {_learn(v)}건과 실제 화면이 학습 부담을 보여 주지만 '
+         '이탈 원인인지는 로그와 A/B 테스트로 확인한다.</p></div>'
+         '<div><em class="r">실제 자료</em><b>스킨 상품 구성 차이는 화면으로 확인됐다.</b><p>키리코 11종과 메르시 25종, 15개 고정 묶음은 사실이고, '
+         '유저 선호와 어긋나는지는 [검증 전] 영웅별 플레이·구매 데이터로 확인한다.</p></div>'
+         '<div><em class="s">가정 시뮬레이션</em><b>신규 스킨을 만드는 일은 수요 확인이 먼저다.</b><p>가정 기준 신규 스킨 손익분기 전환율은 '
          + (f"{b['bep']:.1f}%" if b["bep_state"] == "ok" else "달성 불가") +
-         '로 높다. 신규 스킨 제작비가 들지 않는 YOUR CHOICE로 먼저 매출을 확인하고, YOUR HERO 투표로 수요를 본 뒤 제작한다.</li></ol>')
+         '로 높다. 신규 스킨 제작비가 들지 않는 YOUR CHOICE로 먼저 매출을 확인하고, YOUR HERO 투표로 수요를 본 뒤 제작한다.</p></div></div>')
     table(["실행 전략", "핵심 KPI", "기대 효과 (검증 전)", "확대 조건", "중단 · 보류 조건"], [
         ["<b>PROJECT RE:START</b><br><small>A 복귀 브리핑부터</small>", f"복귀 D7 잔존율 (목표 +{r['mde']['D7']:.1f}%p · 가정)",
          "복귀 첫 주 적응 · 잔존 개선", f"D7 효과의 95% 신뢰구간 하한 &gt; 0 이고 목표 이상 → C·B 확대",
