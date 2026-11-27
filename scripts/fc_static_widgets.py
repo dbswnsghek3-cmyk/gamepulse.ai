@@ -110,7 +110,7 @@ def fandom(d: dict) -> str:
                   f'<label class="ox-f"><span>{H.escape(n)} 1인당 평균 점수</span><input type="number" data-r="{k}" data-c="a" value="{a}" min="0" max="10000" step="1"></label>'
                   for k, (n, p, a) in enumerate(fs["rows"]))
     chart = ('<div class="ox-chart"><div class="ow-chart-h"><div class="ow-chart-t">최종 경쟁 점수 (0~100) <span class="ox-k sim">가정 시뮬레이션</span></div>'
-             '<div class="ow-chart-u">점 · 10개 구단 · 가정값</div></div><div id="fxFanC" class="sx-chart-c" style="height:260px"></div></div>')
+             '<div class="ow-chart-u">점 · 엠블럼 10개 구단 예시 · 가정값</div></div><div id="fxFanC" class="sx-chart-c" style="height:260px"></div></div>')
     return (f'<div class="ox-w" id="fxFan"><div id="fxFanB"></div><details class="sx-exp" id="fxFanD"><summary>가정값 바꾸기 · 계산 과정 · 반영 비중 슬라이더 <span class="sx-more">펼쳐보기</span></summary><div class="sx-exp-b">'
             f'<p class="ox-note">{H.escape(fs["note"])}</p>'
             '<p class="ox-note">최종 = 정규화 누적 × 규모 비중 + 정규화 평균 × 활동 비중 · 정규화 = 해당 값 ÷ 최고값 × 100 · 기본 30:70은 테스트용 가정</p>'
@@ -203,7 +203,7 @@ def prize(d: dict) -> str:
             "+'<div><span>유니폼</span><b>'+won(r.goods)+'</b><small>'+n0(r.x.jersey_n)+'벌</small></div>'"
             "+'<div class=\"acc\"><span>총 경품 예산 (가상)</span><b>'+won(r.total)+'</b><small>실제 견적 아님</small></div></div>'"
             "+'<div class=\"fx-pbar\">'+bars+'</div><div class=\"fx-pleg\">'+leg+'</div>'"
-            "+'<p class=\"ox-note\">07 탭 기본 캠페인 비용 5,000만 원 · 가입 1만 명 가정에 경품을 더하면 CAC '+cac+' (가정 · 경품은 07 탭 비용 8개 항목에 포함되지 않음)</p>';}"
+            "+'<p class=\"ox-note\">경품 포함 시 CAC '+cac+' (07 탭 기본 가정 · 세금·보험·비자 별도)</p>';}"
             "window.fxPrize=sim;setv(C.d);draw();})();</script>")
 
 

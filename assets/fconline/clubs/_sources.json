@@ -8,12 +8,12 @@
   "date": "2012-08-01"
  },
  "crest_liverpool.png": {
-  "title": "Logo Liverpool FC (2024).png",
-  "license": "Public domain",
+  "title": "리버풀 FC 엠블럼",
+  "license": "작성자 제공 이미지 · 원 출처 미확인 · 상표권 구단",
   "artist": "Liverpool FC",
-  "page": "https://commons.wikimedia.org/wiki/File:Logo_Liverpool_FC_(2024).png",
+  "page": "",
   "license_url": "",
-  "date": "2024-11-27"
+  "date": "2026-11-27"
  },
  "crest_bayern.png": {
   "title": "FC Bayern München logo (2024).svg",
@@ -38,14 +38,6 @@
   "page": "https://commons.wikimedia.org/wiki/File:FC_Internazionale_Milano_2021.svg",
   "license_url": "",
   "date": "2021-03-30"
- },
- "crest_napoli.png": {
-  "title": "SSC Neapel.svg",
-  "license": "Public domain",
-  "artist": "Unknown authorUnknown author",
-  "page": "https://commons.wikimedia.org/wiki/File:SSC_Neapel.svg",
-  "license_url": "",
-  "date": ""
  },
  "crest_barcelona.png": {
   "title": "FC Barcelona (crest).svg",
@@ -86,5 +78,13 @@
   "page": "https://en.wikipedia.org/wiki/File:Manchester_City_FC_badge.svg",
   "license_url": "",
   "date": ""
+ },
+ "crest_milan.png": {
+  "title": "AC 밀란 엠블럼",
+  "license": "작성자 제공 이미지 · 원 출처 미확인 · 상표권 구단",
+  "artist": "AC Milan",
+  "page": "",
+  "license_url": "",
+  "date": "2026-11-27"
  }
 }

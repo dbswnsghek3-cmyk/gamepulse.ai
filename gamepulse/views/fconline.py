@@ -130,7 +130,7 @@ def render() -> None:
     html('<div class="fx-nums">' + "".join(f'<div><b>{escape(v)}</b><span>{escape(l)}</span><small>{escape(s)}</small></div>'
                                            for v, l, s in cv["numbers"]) + "</div>")
     html(f'<a class="fx-mcw-strip" href="#t05"><span>대표 기획</span><b>MY CLUB WAR</b><em>{escape(mc["slogan"])}</em>'
-         f'<small>유럽 인기 구단 10개 가상 팬덤 챔피언십 · 우승하고, 진짜 홈경기로 → 05 탭</small></a>')
+         f'<small>유럽 인기 구단 16개 가상 팬덤 챔피언십 · 우승하고, 진짜 홈경기로 → 05 탭</small></a>')
     html('<div class="fx-4 slim">' + "".join(f'<div><em>{escape(n)}</em><span>{escape(g)}</span></div>' for n, g in d["final"]) + "</div>")
     i = tab_nav()
     ox_badge_legend()
@@ -412,6 +412,7 @@ def _rival_html(rv: dict, extra: int = 0) -> str:
             f'<span>나의 기여 +{180 + extra}점</span></div></div>')
 
 
+SP, SPS = '<i class="cr cr-x"></i>', '<i class="cr s cr-x"></i>'   # 엠블럼 없는 구단: 같은 자리만 비워 이름 줄 맞춤
 EMB = ["#B91C1C", "#1D4ED8", "#B45309", "#7C3AED", "#0F766E", "#BE185D", "#334155", "#15803D", "#0369A1", "#A16207"]
 
 
@@ -427,7 +428,7 @@ def league_html(league: list, my_club: str, title: str = "FANDOM LEAGUE", sub: s
         cls += " me" if n == my_club else ""
         cls += " cut" if cut and k == cut else ""
         tag = '<u>MY</u>' if n == my_club else ""
-        out.append(f'<div class="fx-lg-r{cls}"><em>{"🏆" if k == 1 else k}</em><b>{crest(n, k - 1)}'
+        out.append(f'<div class="fx-lg-r{cls}"><em>{"🏆" if k == 1 else k}</em><b>{crest(n, k - 1) or SP}'
                    f'<span>{escape(n)}{tag}</span></b><span class="g">{w + dr + l}</span><span>{w}</span><span>{dr}</span><span>{l}</span>'
                    f'<strong>{pts}<small style="--w:{pts / top * 100:.0f}%"></small></strong>{mv}</div>')
     return (f'<div class="fx-lg"><div class="fx-lg-t">{escape(title)}<small>{escape(sub)}</small></div>'
@@ -461,12 +462,12 @@ def hero_html(mc: dict) -> str:
     cp = mc["copy"]
     return (f'<div class="fx-hero2 ph" style="--bg:{photo("stadium_oldtrafford.jpg")}"><div class="fx-hero2-l"><span class="fx-hero2-k">MY CLUB WAR · 메인 광고 카피 (기획 시안)</span>'
             f'<b>{escape(cp["main"])}</b><p>{escape(cp["sub"])}</p><em>{escape(cp["reward"])}</em>'
-            f'<small>{escape(cp["insight"])}</small></div>'
+            '</div>'
             '<div class="fx-hero2-r"><div><span>감독으로</span><b>전술 · 선발 명단</b><small>포메이션·전술을 내가 짠다</small></div>'
             '<i>+</i><div><span>선수로</span><b>직접 조작</b><small>FC 온라인 경기로 내가 뛴다</small></div>'
             '<i>=</i><div class="w"><span>구단 우승</span><b>진짜 홈경기 직관</b><small>MY CLUB WORLD TOUR</small></div></div>'
             '<div class="fx-hero2-t"><span>🎟 홈경기 티켓 2매</span><span>✈ 2인 왕복 항공</span><span>🏨 호텔 3박</span><span>👕 공식 유니폼</span></div>'
-            f'<div class="fx-hero2-c">{escape(mc["disclaimer_img"])} · 배경 {credit("stadium_oldtrafford.jpg")} (어둡게 처리)</div></div>')
+            f'<div class="fx-hero2-c">가상 기획 · 구단·넥슨과 제휴 아님 · 배경 {credit("stadium_oldtrafford.jpg")}</div></div>')
 
 
 def clubs_html(mc: dict) -> str:
@@ -474,10 +475,11 @@ def clubs_html(mc: dict) -> str:
     for r in mc["rivals"]:
         rv[r["a"]] = r["name"]
         rv[r["b"]] = r["name"]
-    clubs = mc["clubs10"]
+    clubs, rest = mc["clubs10"], mc["clubs_text"]
     cells = "".join(f'<div>{crest(n)}<b>{escape(n)}</b><small>{escape(rv.get(n, ""))}</small></div>' for n in clubs)
-    return (f'<div class="fx-16 fx-10"><div class="fx-16-h">참가 {len(clubs)}개 구단 <span class="fx-tag">가상 팬덤 챔피언십</span></div><div class="fx-16-g top">{cells}</div>'
-            '<p>유럽 인기 구단 10개 · 실제 대회 참가·순위와 무관한 가상 기획 · 엠블럼 출처와 사용 조건은 아래 펼쳐보기</p></div>')
+    return (f'<div class="fx-16 fx-10"><div class="fx-16-h">참가 {len(clubs) + len(rest)}개 구단 <span class="fx-tag">가상 팬덤 챔피언십</span></div><div class="fx-16-g top">{cells}</div>'
+            f'<div class="fx-16-rest"><span>그 외 {len(rest)}개 구단</span>{" · ".join(escape(n) for n in rest)}</div>'
+            '<p>위아래 = 라이벌 · 실제 대회와 무관한 가상 대회</p></div>')
 
 
 def room_html(sq: dict) -> str:
@@ -488,7 +490,7 @@ def room_html(sq: dict) -> str:
     std = "".join(f"<li>{escape(s)}</li>" for s in sq["std"])
     return mock("MY CLUB WAR · 감독실 · 현역 선수 전술 배치 · 가상 기획 UI", (
         f'<div class="fx-room"><div class="fx-room-p"><div class="fx-room-pitch">{toks}</div></div>'
-        f'<div class="fx-room-r"><div class="fx-room-club"><span>MY CLUB</span><b>{escape(sq["club"])}</b><small>감독 등록 완료 · 선발 11 / 교체 7 · 교체: {escape(", ".join(sq["bench"]))}</small></div>'
+        f'<div class="fx-room-r"><div class="fx-room-club"><span>MY CLUB</span><b>{escape(sq["club"])}</b><small>선발 11 · 교체 7</small></div>'
         f'<div class="fx-room-f"><span>포메이션</span><div>{forms}</div></div><div class="fx-room-t">{tac}</div>'
         f'<div class="fx-room-s"><span>이벤트 전용 스쿼드 · 모두 같은 조건</span><ul>{std}</ul></div>'
         '<div class="fx-room-go">전술 저장 → 경기 시작 · 내가 직접 뛴다</div></div></div>'), "night")
@@ -496,12 +498,13 @@ def room_html(sq: dict) -> str:
 
 def bracket_html(bk: dict) -> str:
     def m(a, b, w):
-        return (f'<div class="fx-bk-m"><span class="{"w" if a == w else ""}">{crest(a, 2, "s")}{escape(a)}</span>'
-                f'<span class="{"w" if b == w else ""}">{crest(b, 3, "s")}{escape(b)}</span></div>')
+        return (f'<div class="fx-bk-m"><span class="{"w" if a == w else ""}">{crest(a, 2, "s") or SPS}{escape(a)}</span>'
+                f'<span class="{"w" if b == w else ""}">{crest(b, 3, "s") or SPS}{escape(b)}</span></div>')
+    qf = "".join(m(a, b, w) for (a, b), w in zip(bk["qf"], bk["qf_w"]))
     sf = "".join(m(a, b, w) for (a, b), w in zip(bk["sf"], bk["sf_w"]))
     fn = m(bk["final"][0], bk["final"][1], bk["champ"])
-    return (f'<div class="fx-bk four"><div class="fx-bk-c"><em>4강 · 6주</em>{sf}</div>'
-            f'<div class="fx-bk-c"><em>결승 · 7주</em>{fn}</div><div class="fx-bk-t"><span>🏆</span>{crest(bk["champ"], 4, "big")}<b>{escape(bk["champ"])}</b>'
+    return (f'<div class="fx-bk"><div class="fx-bk-c"><em>8강 · 6주</em>{qf}</div><div class="fx-bk-c"><em>4강 · 7주</em>{sf}</div>'
+            f'<div class="fx-bk-c"><em>결승 · 8주</em>{fn}</div><div class="fx-bk-t"><span>🏆</span>{crest(bk["champ"], 4, "big")}<b>{escape(bk["champ"])}</b>'
             f'<small>예시 우승 구단 → 홈경기 직관 패키지</small></div></div><p class="fx-pod-n">{escape(bk["note"])} · <span class="ox-k mock">기획 시안</span></p>')
 
 
@@ -510,7 +513,7 @@ def tour_html(t: dict) -> str:
     tiers = "".join(f'<div><span>{escape(a)}</span><b>{escape(b)}</b><small>{escape(c)}</small></div>' for a, b, c in t["tiers"])
     return (f'<div class="fx-tour"><div class="fx-tour-h ph" style="--bg:{photo("stadium_oldtrafford.jpg")}"><span>{escape(t["name"])}</span><b>우승하고, 진짜 홈경기로.</b>'
             f'<small>예시 우승 구단(맨체스터 유나이티드) 홈구장 올드 트래포드 · {credit("stadium_oldtrafford.jpg")}</small></div>'
-            f'<div class="fx-tour-i">{items}</div></div><div class="fx-tier">{tiers}</div><p class="fx-pod-n">가상 보상안 · 추첨은 일정 기여도를 채운 유저 대상</p>')
+            f'<div class="fx-tour-i">{items}</div></div><div class="fx-tier">{tiers}</div><p class="fx-pod-n">추첨은 기여도 기준을 채운 유저만</p>')
 
 
 def prize_html(r: dict) -> str:
@@ -524,7 +527,7 @@ def prize_html(r: dict) -> str:
             f'<div><span>유니폼</span><b>{owon(r["goods"])}</b><small>{r["x"]["jersey_n"]:,.0f}벌</small></div>'
             f'<div class="acc"><span>총 경품 예산 (가상)</span><b>{owon(r["total"])}</b><small>실제 견적 아님</small></div></div>'
             f'<div class="fx-pbar">{bars}</div><div class="fx-pleg">{leg}</div>'
-            f'<p class="ox-note">07 탭 기본 캠페인 비용 5,000만 원 · 가입 1만 명 가정에 경품을 더하면 CAC {cac} (가정 · 경품은 07 탭 비용 8개 항목에 포함되지 않음)</p>')
+            f'<p class="ox-note">경품 포함 시 CAC {cac} (07 탭 기본 가정 · 세금·보험·비자 별도)</p>')
 
 
 def funnel7_html(mc: dict, cfg: dict) -> str:
@@ -539,7 +542,7 @@ def funnel7_html(mc: dict, cfg: dict) -> str:
         v = f"{n[key]:,.0f}명" if key else "측정 예정"
         rows.append(f'<div style="--w:{100 - k * 11}%"><em>{k + 1}</em><b>{escape(lab)}</b><span>{v}</span></div>')
     kpi = "".join(f'<div><b>{escape(a)}</b><small>{escape(b)}</small></div>' for a, b in mc["kpi5"])
-    return (f'<div class="fx-f7">{"".join(rows)}</div><p class="fx-pod-n">07 탭 퍼널 기본 가정값 · 감독 등록·첫 경기는 캠페인에서 처음 측정 · '
+    return (f'<div class="fx-f7">{"".join(rows)}</div><p class="fx-pod-n">07 탭 기본 가정값 · '
             f'<span class="ox-k sim">가정 시뮬레이션</span></p><div class="fx-kpi5">{kpi}</div>')
 
 
@@ -550,15 +553,15 @@ def t5(d: dict) -> None:
     html(hero_html(mc))
     html(brief4(d, "MY CLUB WAR", "대표 기획 · 기획 시안"))
     html(clubs_html(mc))
-    with st.expander("구단 선정 기준 · 엠블럼·사진 출처와 사용 조건"):
+    with st.expander("구단 선정 기준 · 엠블럼 출처와 사용 조건"):
         html(f'<ul class="ox-facts"><li>{escape(mc["clubs_note"])}</li>'
              f'<li>{escape(mc["crest_note"])} · {escape(mc["emblem_note"])}</li><li>{escape(mc["europa"])}</li>'
-             + "".join(f'<li><b>{escape(t)}</b> · {escape(lic)} · {escape(a)} · {src(u, "원본")}</li>' for _f, t, lic, a, u, _dt in mc["image_credits"]) + "</ul>")
+             + "".join(f'<li><b>{escape(t)}</b> · {escape(lic)} · {escape(a)}{" · " + src(u, "원본") if u else ""}</li>' for _f, t, lic, a, u, _dt in mc["image_credits"])
+             + f'<li>{escape(mc["season_out"])}</li></ul>')
     html(flow_html([(f"{escape(a)} · {escape(b)}", escape(c)) for a, b, c in mc["season_flow"]],
-                   title="8주 시즌 · 감독 등록 → 정규 리그 → 4강 → 결승 → 시상", hl=3))
-    html(f'<div class="ox-purpose"><span>탈락 구단</span>{escape(mc["season_out"])}</div>')
+                   title="8주 시즌", hl=4))
 
-    h("감독실 · 내가 짜고, 내가 뛴다", "mock", lead="UEFA 등록 선수 · 강화·급여 같은 조건 → 과금 격차 최소화")
+    h("감독실 · 내가 짜고, 내가 뛴다", "mock", lead="모두 같은 조건의 스쿼드 → 과금 격차 없음")
     html(room_html(mc["squad"]))
     with st.expander("선수 명단 출처"):
         html(f'<p class="fx-pod-n">{escape(mc["squad"]["note"])} · {src(mc["squad"]["src"][1], mc["squad"]["src"][0])}</p>')
@@ -573,20 +576,19 @@ def t5(d: dict) -> None:
         st.session_state["fc_rival_plus"] += 30
         st.rerun()
     js_end()
-    html('<div class="gb-flow-t">지금 공식경기에도 구단 엠블럼과 소속 팀컬러가 나온다 → MY CLUB WAR는 이 구단 정체성을 시즌 챔피언십으로 묶는다 '
-         '<span class="ox-k real">실제 자료</span></div>'
-         '<div class="ox-pair">' + "".join(fig(f, t, "작성자 캡처 · 2026-11-26 · 닉네임 블러") for f, t in mc["match_shots"]) + "</div>")
+    with st.expander("실제 게임 화면 · 공식경기에도 구단 엠블럼이 나온다"):
+        html('<div class="ox-pair">' + "".join(fig(f, t, "작성자 캡처 · 2026-11-26 · 닉네임 블러") for f, t in mc["match_shots"]) + "</div>")
 
-    h("정규 리그 순위표 → 4강 토너먼트", "mock", lead=escape(mc["league_note"]))
+    h("정규 리그 → 8강 토너먼트", "mock", lead=escape(mc["league_note"]))
     me = mc["me"]
-    html(league_html(mc["league"], me["club"], "MY CLUB WAR · 정규 리그", "4라운드 종료 · 상위 4개 구단 4강 · 가상", cut=4))
+    html(league_html(mc["league"], me["club"], "MY CLUB WAR · 정규 리그", "4라운드 종료 · 가상", cut=8))
     html(bracket_html(mc["bracket"]))
-    h("구단별 개인 기여도 · 참여로도 기여한다", "mock", lead="결제 무관 · 개인 일일 상한")
+    h("내 기여도 · 참여만으로도 점수", "mock", lead="결제 무관 · 하루 상한")
     html(me_html(me, mc["missions"]))
 
-    h("MY CLUB WORLD TOUR · 우승 구단 홈경기 직관", "mock", lead="가상 보상안 · 실제 협업 확정 아님")
+    h("MY CLUB WORLD TOUR · 우승 구단 홈경기 직관", "mock", lead="가상 보상안")
     html(tour_html(mc["tour"]))
-    h("경품 예산 시뮬레이터 · 기본 약 3,050만 원 (가상)", "sim", lead="가상 예산 · 실제 견적 아님 · 제세공과금·보험·비자 별도")
+    h("경품 예산 · 기본 약 3,050만 원", "sim", lead="가상 예산 · 실제 견적 아님")
     ps = mc["prize_sim"]
     js("fcprize")
     box = st.container()
@@ -595,26 +597,23 @@ def t5(d: dict) -> None:
         html(prize_html(pr))
     js_end()
 
-    h("외부 축구 팬을 데려오는 마케팅 · 광고 노출부터 구매 전환까지", "mock", lead="참여 인원이 아니라 CAC · D30 · ROI로 판단")
+    h("축구 팬 유입 마케팅", "mock", lead="CAC · D30 · ROI로 판단")
     html(chips_html("마케팅 4종", [a for a, _ in mc["marketing4"]], "kpi"))
     with st.expander("마케팅 4종 실행 방식"):
         html('<div class="fx-mk4">' + "".join(f'<div><b>{escape(a)}</b><p>{escape(b)}</p></div>' for a, b in mc["marketing4"]) + "</div>")
     html(funnel7_html(mc, d["sims"]["funnel"]))
 
     un = mc["union"]
-    h("이미 있는 '팀컬러 연합 레이스'와 무엇이 다른가 — 공식 자료로 확인", "real",
-      lead="기여도·순위 보상·1인당 점수는 기존 방식 → 활용 · 출처 " + " · ".join(src(u, t) for t, u in un["src"]))
-    html(f'<div class="fx-union">{fig(un["img"], "팀컬러 연합 레이스 (2026.10.29~11.25)")}<ul class="ox-facts">'
-         + "".join(f"<li><b>{escape(a)}</b> · {escape(b)}</li>" for a, b in un["facts"] if a in ("경쟁 단위", "연합 점수")) + "</ul></div>")
-    with st.expander("연합 레이스 상세 · 실제 화면"):
-        html('<ul class="ox-facts">' + "".join(f"<li><b>{escape(a)}</b> · {escape(b)}</li>" for a, b in un["facts"] if a not in ("경쟁 단위", "연합 점수")) + "</ul>")
-        html('<div class="ox-pair">' + "".join(fig(f, t, un["shots_cap"]) for f, t in un["shots"]) + "</div>")
-    with st.expander("팀컬러 연합 레이스 vs MY CLUB WAR · 핵심 3개 항목"):
-        html('<div class="fx-diff3"><div class="hd"><span></span><b>팀컬러 연합 레이스 (기존)</b><b>MY CLUB WAR</b></div>'
+    h("기존 '팀컬러 연합 레이스'와 차이", "real", lead="공식 공지 확인 · 기여도·순위 보상은 기존 방식을 그대로 활용")
+    html('<div class="fx-diff3"><div class="hd"><span></span><b>팀컬러 연합 레이스 (기존)</b><b>MY CLUB WAR</b></div>'
          + "".join(f'<div><span>{escape(a)}</span><p>{escape(b)}</p><p class="new">{escape(c)}</p></div>' for a, b, c in mc["diff3"]) + "</div>")
+    with st.expander("연합 레이스 공식 자료 · 실제 화면"):
+        html('<p class="fx-pod-n">출처 ' + " · ".join(src(u, t) for t, u in un["src"]) + "</p>")
+        html(f'<div class="fx-union">{fig(un["img"], "팀컬러 연합 레이스 (2026.10.29~11.25)")}<ul class="ox-facts">'
+             + "".join(f"<li><b>{escape(a)}</b> · {escape(b)}</li>" for a, b in un["facts"]) + "</ul></div>")
+        html('<div class="ox-pair">' + "".join(fig(f, t, un["shots_cap"]) for f, t in un["shots"]) + "</div>")
 
-    h("인기 구단이 사람 수만으로 이기지 않게 · 경쟁 점수 시뮬레이터", "sim",
-      lead="누적(사람 수)과 평균(1인당 활동)을 함께 · 기존 연합 레이스는 1인당 방식 + 전주 5위 +5%")
+    h("인원이 많은 구단만 이기지 않게 · 점수 시뮬레이터", "sim", lead="인원(누적) 30 : 1인당 활동(평균) 70 · 모두 가정값")
     fs = d["fandom_sim"]
     js("fcfandom")
     st.session_state.setdefault("fc_fw", fs["w_total"])
@@ -638,7 +637,7 @@ def t5(d: dict) -> None:
                              textposition="outside", cliponaxis=False))
         f.update_yaxes(title="최종 경쟁 점수", range=[0, 110])
         f.update_xaxes(tickangle=-35)
-        ox_chart_card(f, key="fcfan", kind="sim", title="최종 경쟁 점수 (0~100)", unit="점 · 10개 구단 · 가정값", kpis=[], analysis="", decision="",
+        ox_chart_card(f, key="fcfan", kind="sim", title="최종 경쟁 점수 (0~100)", unit="점 · 엠블럼 10개 구단 예시 · 가정값", kpis=[], analysis="", decision="",
                       basis="", height=260, legend=False, cols=("구단", "점수"))
     with board:
         html(podium_html(res, w))
@@ -646,7 +645,7 @@ def t5(d: dict) -> None:
     with st.expander("악용 방지 정책 4개"):
         html('<div class="fx-pol">' + "".join(f'<div><span>{escape(a)}</span><p>{escape(b)}</p></div>' for a, b in mc["policies"]) + "</div>")
 
-    h("운영 리스크 · 협업이 확정된 것이 아니다", "hypo", lead="미확보 시 가상 구단명·게임 내 보상으로 축소")
+    h("운영 리스크", "hypo", lead="협업 미확보 시 가상 구단명·게임 내 보상으로 축소")
     html(chips_html("운영 리스크 6", [a for a, _ in mc["risks"]]))
     with st.expander("운영 리스크 6개 · 대응 방안"):
         html('<div class="fx-risk6">' + "".join(f'<div><b>{escape(a)}</b><p>{escape(b)}</p></div>' for a, b in mc["risks"]) + "</div>")

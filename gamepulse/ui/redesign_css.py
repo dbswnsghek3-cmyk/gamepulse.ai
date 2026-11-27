@@ -908,7 +908,7 @@ OW_REDESIGN_CSS += """
 """
 OW_REDESIGN_CSS += """
 .fx-lg-r.cut { border-bottom: 2px dashed #FACC15; padding-bottom: 0.55rem; margin-bottom: 0.15rem; }
-.fx-lg-r.cut::after { content: "4강 진출선"; grid-column: 1 / -1; font-size: 0.7rem; font-weight: 800; color: #FACC15; text-align: right; margin-top: 0.15rem; }
+.fx-lg-r.cut::after { content: "8강 진출선"; grid-column: 1 / -1; font-size: 0.7rem; font-weight: 800; color: #FACC15; text-align: right; margin-top: 0.15rem; }
 """
 
 
@@ -1083,6 +1083,7 @@ OW_REDESIGN_CSS += """
 .fx-10 .fx-16-g.top i.cr { width: 4.4rem; height: 4.4rem; border-radius: 14px; border: 1px solid #E2E8F0; background: #FFFFFF !important; }
 .fx-10 .fx-16-g.top i.cr img { width: 84%; height: 84%; object-fit: contain; }
 .fx-10 .fx-16-g.top small { min-height: 1em; }
+i.cr.cr-x { visibility: hidden; }
 .fx-bk.four { grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 0.8fr); }
 .fx-pod:has(> div:nth-child(6)) { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.55rem; }
 .fx-pod:has(> div:nth-child(6)) > div { padding: 0.7rem 0.75rem; }

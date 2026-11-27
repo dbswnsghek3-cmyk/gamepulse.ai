@@ -58,7 +58,7 @@ def _games() -> list[dict]:
          "answer": "복귀율: PROJECT RE:START (복귀 브리핑 → 첫 10경기 미션 → 전투 학습 카드) · 매출: YOUR HERO · YOUR CHOICE",
          "kpi": "복귀 D7 잔존율 · 패키지 구매 전환율 · 평균 결제 금액"},
         {"id": "fconline", "name": "FC 온라인", "proj": "축구 게임인가, 주식 게임인가?", "img": "assets/fconline/main_screen.jpg", "png": False, "blur": (),
-         "credit": "실제 게임 메인 화면 · 작성자 캡처", "problem": "구단 가치 하락에 따른 이탈은 막고, 국내 축구 팬덤으로 새 고객을 데려온다", "answer": "CLUB CARE · CLUB REBUILD (이탈 방지) · MY CLUB WAR «답답해서 내가 뛴다» (유럽 인기 구단 10개 가상 팬덤 챔피언십) · FAIR PLAY (조작 환경)",
+         "credit": "실제 게임 메인 화면 · 작성자 캡처", "problem": "구단 가치 하락에 따른 이탈은 막고, 국내 축구 팬덤으로 새 고객을 데려온다", "answer": "CLUB CARE · CLUB REBUILD (이탈 방지) · MY CLUB WAR «답답해서 내가 뛴다» (유럽 인기 구단 16개 가상 팬덤 챔피언십) · FAIR PLAY (조작 환경)",
          "kpi": "급락 유저 D30 · 결제 유지율 · 신규 가입 CAC · 캠페인 ROI"},
         {"id": "pubg", "name": "PUBG", "proj": "NEW START", "img": "assets/pubg/brand/pubg_logo.png", "png": True, "blur": (),
          "credit": "로고 © KRAFTON", "problem": pb["cover"]["copy"], "answer": "다음 경기 코치(NEXT MATCH COACH)로 신규 정착 + 복귀 캠페인 «야, 배그 한 판 할래?»는 디지털 파일럿부터",
