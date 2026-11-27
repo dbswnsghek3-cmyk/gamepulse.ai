@@ -1,0 +1,58 @@
+{
+ "stadium_oldtrafford.jpg": {
+  "title": "Oldtraffordstadpano.jpg",
+  "license": "CC BY-SA 3.0",
+  "artist": "LiamUK",
+  "page": "https://commons.wikimedia.org/wiki/File:Oldtraffordstadpano.jpg",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "date": "2012-08-01"
+ },
+ "stadium_metropolitano.jpg": {
+  "title": "Estadio Metropolitano - Atlético de Madrid - Septiembre 2022.jpg",
+  "license": "CC BY-SA 4.0",
+  "artist": "Cabeza2000",
+  "page": "https://commons.wikimedia.org/wiki/File:Estadio_Metropolitano_-_Atl%C3%A9tico_de_Madrid_-_Septiembre_2022.jpg",
+  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+  "date": "2022-09-16"
+ },
+ "crest_liverpool.png": {
+  "title": "Logo Liverpool FC (2024).png",
+  "license": "Public domain",
+  "artist": "Liverpool FC",
+  "page": "https://commons.wikimedia.org/wiki/File:Logo_Liverpool_FC_(2024).png",
+  "license_url": "",
+  "date": "2024-11-27"
+ },
+ "crest_bayern.png": {
+  "title": "FC Bayern München logo (2024).svg",
+  "license": "Public domain",
+  "artist": "FC Bayern Munich",
+  "page": "https://commons.wikimedia.org/wiki/File:FC_Bayern_M%C3%BCnchen_logo_(2024).svg",
+  "license_url": "",
+  "date": "2024-10-17"
+ },
+ "crest_dortmund.png": {
+  "title": "Borussia Dortmund logo.svg",
+  "license": "Public domain",
+  "artist": "Lispir (Lispir)",
+  "page": "https://commons.wikimedia.org/wiki/File:Borussia_Dortmund_logo.svg",
+  "license_url": "",
+  "date": ""
+ },
+ "crest_inter.png": {
+  "title": "FC Internazionale Milano 2021.svg",
+  "license": "Public domain",
+  "artist": "FC Internazionale Milano S.p.A. / Bureau Borsche",
+  "page": "https://commons.wikimedia.org/wiki/File:FC_Internazionale_Milano_2021.svg",
+  "license_url": "",
+  "date": "2021-03-30"
+ },
+ "crest_napoli.png": {
+  "title": "SSC Neapel.svg",
+  "license": "Public domain",
+  "artist": "Unknown authorUnknown author",
+  "page": "https://commons.wikimedia.org/wiki/File:SSC_Neapel.svg",
+  "license_url": "",
+  "date": ""
+ }
+}

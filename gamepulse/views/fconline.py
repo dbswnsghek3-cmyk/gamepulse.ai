@@ -372,11 +372,39 @@ def t4(d: dict) -> None:
 
 # ----------------------------------------------------------------------
 # 05 MY CLUB WAR
+CLUBS = ASSETS / "clubs"
+
+
+@st.cache_data(show_spinner=False)
+def _png64(path: str, mtime: float) -> str:
+    import base64
+    return base64.b64encode(Path(path).read_bytes()).decode()
+
+
+def crest(club: str, k: int = 0, cls: str = "") -> str:
+    """구단 표시: 자유 이용 가능한 엠블럼이 있으면 이미지, 없으면 이니셜 배지 (사유는 mcw.crest_note)."""
+    f = load()["mcw"].get("crests", {}).get(club)
+    p = CLUBS / f if f else None
+    if p and p.is_file():
+        return f'<i class="cr {cls}"><img src="data:image/png;base64,{_png64(str(p), p.stat().st_mtime)}" alt="{escape(club)} 엠블럼"></i>'
+    return f'<i class="{cls}" style="--c:{EMB[k % len(EMB)]}">{escape(club[0])}</i>'
+
+
+def photo(name: str, cls: str = "") -> str:
+    p = CLUBS / name
+    return f'url(data:image/jpeg;base64,{_jpg_b64(str(p), p.stat().st_mtime)})' if p.is_file() else "none"
+
+
+def credit(name: str) -> str:
+    c = next((x for x in load()["mcw"].get("image_credits", []) if x[0] == name), None)
+    return f'사진: {escape(c[3])} · {escape(c[2])} · {src(c[4], "Wikimedia Commons")}' if c else ""
+
+
 def _rival_html(rv: dict, extra: int = 0) -> str:
     pa = rv["pa"]
     return (f'<div class="fx-vs" style="--ca:{rv["ca"]};--cb:{rv["cb"]}"><div class="fx-vs-n">{escape(rv["name"])}</div>'
-            f'<div class="fx-vs-row"><div class="a"><i></i><b>{escape(rv["a"])}</b><strong>{pa:.1f}%</strong></div><div class="vs">VS</div>'
-            f'<div class="b"><strong>{100 - pa:.1f}%</strong><b>{escape(rv["b"])}</b><i></i></div></div>'
+            f'<div class="fx-vs-row"><div class="a">{crest(rv["a"], 0, "vs")}<b>{escape(rv["a"])}</b><strong>{pa:.1f}%</strong></div><div class="vs">VS</div>'
+            f'<div class="b"><strong>{100 - pa:.1f}%</strong><b>{escape(rv["b"])}</b>{crest(rv["b"], 1, "vs")}</div></div>'
             f'<div class="fx-vs-bar"><span style="width:{pa}%"></span></div>'
             f'<div class="fx-vs-meta"><span>남은 기간 {escape(rv["left"])}</span><span>점수 차 {abs(2 * pa - 100):.1f}%p</span>'
             f'<span>나의 기여 +{180 + extra}점</span></div></div>')
@@ -397,7 +425,7 @@ def league_html(league: list, my_club: str, title: str = "FANDOM LEAGUE", sub: s
         cls += " me" if n == my_club else ""
         cls += " cut" if cut and k == cut else ""
         tag = '<u>MY</u>' if n == my_club else ""
-        out.append(f'<div class="fx-lg-r{cls}"><em>{"🏆" if k == 1 else k}</em><b><i style="--c:{EMB[(k - 1) % len(EMB)]}">{escape(n[0])}</i>'
+        out.append(f'<div class="fx-lg-r{cls}"><em>{"🏆" if k == 1 else k}</em><b>{crest(n, k - 1)}'
                    f'<span>{escape(n)}{tag}</span></b><span class="g">{w + dr + l}</span><span>{w}</span><span>{dr}</span><span>{l}</span>'
                    f'<strong>{pts}<small style="--w:{pts / top * 100:.0f}%"></small></strong>{mv}</div>')
     return (f'<div class="fx-lg"><div class="fx-lg-t">{escape(title)}<small>{escape(sub)}</small></div>'
@@ -429,12 +457,14 @@ def podium_html(res: list, w: int) -> str:
 
 def hero_html(mc: dict) -> str:
     cp = mc["copy"]
-    return ('<div class="fx-hero2"><div class="fx-hero2-l"><span class="fx-hero2-k">MY CLUB WAR · 메인 광고 카피 (기획 시안)</span>'
+    return (f'<div class="fx-hero2 ph" style="--bg:{photo("stadium_oldtrafford.jpg")}"><div class="fx-hero2-l"><span class="fx-hero2-k">MY CLUB WAR · 메인 광고 카피 (기획 시안)</span>'
             f'<b>{escape(cp["main"])}</b><p>{escape(cp["sub"])}</p><em>{escape(cp["reward"])}</em>'
             f'<small>{escape(cp["insight"])}</small></div>'
             '<div class="fx-hero2-r"><div><span>감독으로</span><b>전술 · 선발 명단</b><small>포메이션·전술을 내가 짠다</small></div>'
             '<i>+</i><div><span>선수로</span><b>직접 조작</b><small>FC 온라인 경기로 내가 뛴다</small></div>'
-            '<i>=</i><div class="w"><span>구단 우승</span><b>진짜 홈경기 직관</b><small>MY CLUB WORLD TOUR</small></div></div></div>')
+            '<i>=</i><div class="w"><span>구단 우승</span><b>진짜 홈경기 직관</b><small>MY CLUB WORLD TOUR</small></div></div>'
+            '<div class="fx-hero2-t"><span>🎟 홈경기 티켓 2매</span><span>✈ 2인 왕복 항공</span><span>🏨 호텔 3박</span><span>👕 공식 유니폼</span></div>'
+            f'<div class="fx-hero2-c">{escape(mc["disclaimer_img"])} · 배경 {credit("stadium_oldtrafford.jpg")} (어둡게 처리)</div></div>')
 
 
 def clubs_html(mc: dict) -> str:
@@ -442,10 +472,10 @@ def clubs_html(mc: dict) -> str:
     for r in mc["rivals"]:
         rv[r["a"]] = r["name"]
         rv[r["b"]] = r["name"]
-    cells = "".join(f'<div><i style="--c:{EMB[k % len(EMB)]}">{escape(n[0])}</i><b>{escape(n)}</b>'
+    cells = "".join(f'<div>{crest(n, k)}<b>{escape(n)}</b>'
                     f'{f"<small>{escape(rv[n])}</small>" if n in rv else ""}</div>' for k, n in enumerate(mc["clubs16"]))
     return (f'<div class="fx-16"><div class="fx-16-h">참가 16개 구단 <span class="fx-tag">가상 예시</span></div><div class="fx-16-g">{cells}</div>'
-            f'<p>UEFA 2026/27 챔피언스리그 리그 페이즈 참가 구단 중 선택 · 16강 확정 전 가상 예시 · 엠블럼 이미지는 권리 미확보로 이니셜 표시</p></div>')
+            f'<p>UEFA 2026/27 챔피언스리그 리그 페이즈 참가 구단 중 선택 · 16강 확정 전 가상 예시 · 엠블럼은 자유 이용 파일이 있는 5개만 이미지, 나머지는 이니셜</p></div>')
 
 
 def room_html(sq: dict) -> str:
@@ -464,20 +494,21 @@ def room_html(sq: dict) -> str:
 
 def bracket_html(bk: dict) -> str:
     def m(a, b, w):
-        return (f'<div class="fx-bk-m"><span class="{"w" if a == w else ""}">{escape(a)}</span>'
-                f'<span class="{"w" if b == w else ""}">{escape(b)}</span></div>')
+        return (f'<div class="fx-bk-m"><span class="{"w" if a == w else ""}">{crest(a, 2, "s")}{escape(a)}</span>'
+                f'<span class="{"w" if b == w else ""}">{crest(b, 3, "s")}{escape(b)}</span></div>')
     qf = "".join(m(a, b, w) for (a, b), w in zip(bk["qf"], bk["qf_w"]))
     sf = "".join(m(a, b, w) for (a, b), w in zip(bk["sf"], bk["sf_w"]))
     fn = m(bk["final"][0], bk["final"][1], bk["champ"])
     return (f'<div class="fx-bk"><div class="fx-bk-c"><em>8강 · 6주</em>{qf}</div><div class="fx-bk-c"><em>4강 · 7주</em>{sf}</div>'
-            f'<div class="fx-bk-c"><em>결승 · 8주</em>{fn}</div><div class="fx-bk-t"><span>🏆</span><b>{escape(bk["champ"])}</b>'
+            f'<div class="fx-bk-c"><em>결승 · 8주</em>{fn}</div><div class="fx-bk-t"><span>🏆</span>{crest(bk["champ"], 4, "big")}<b>{escape(bk["champ"])}</b>'
             f'<small>예시 우승 구단 → 홈경기 직관 패키지</small></div></div><p class="fx-pod-n">{escape(bk["note"])} · <span class="ox-k mock">기획 시안</span></p>')
 
 
 def tour_html(t: dict) -> str:
     items = "".join(f'<div><i>{a}</i><b>{escape(b)}</b><small>{escape(c)}</small></div>' for a, b, c in t["items"])
     tiers = "".join(f'<div><span>{escape(a)}</span><b>{escape(b)}</b><small>{escape(c)}</small></div>' for a, b, c in t["tiers"])
-    return (f'<div class="fx-tour"><div class="fx-tour-h"><span>{escape(t["name"])}</span><b>우승하고, 진짜 홈경기로.</b></div>'
+    return (f'<div class="fx-tour"><div class="fx-tour-h ph" style="--bg:{photo("stadium_metropolitano.jpg")}"><span>{escape(t["name"])}</span><b>우승하고, 진짜 홈경기로.</b>'
+            f'<small>예시 우승 구단 홈구장 · {credit("stadium_metropolitano.jpg")}</small></div>'
             f'<div class="fx-tour-i">{items}</div></div><div class="fx-tier">{tiers}</div><p class="fx-pod-n">가상 보상안 · 추첨은 일정 기여도를 채운 유저 대상</p>')
 
 
@@ -518,9 +549,10 @@ def t5(d: dict) -> None:
     html(hero_html(mc))
     html(brief4(d, "MY CLUB WAR", "대표 기획 · 기획 시안"))
     html(clubs_html(mc))
-    with st.expander("구단 선정 기준 · 엠블럼 권한"):
+    with st.expander("구단 선정 기준 · 엠블럼·사진 출처와 사용 조건"):
         html(f'<ul class="ox-facts"><li>{escape(mc["clubs_note"])} · 출처 {src(mc["clubs_src"][1], mc["clubs_src"][0])}</li>'
-             f'<li>{escape(mc["emblem_note"])} · {src(mc["emblem_src"][1], mc["emblem_src"][0])}</li><li>{escape(mc["europa"])}</li></ul>')
+             f'<li>{escape(mc["crest_note"])} · {src(mc["emblem_src"][1], mc["emblem_src"][0])}</li><li>{escape(mc["europa"])}</li>'
+             + "".join(f'<li><b>{escape(t)}</b> · {escape(lic)} · {escape(a)} · {src(u, "원본")}</li>' for _f, t, lic, a, u, _dt in mc["image_credits"]) + "</ul>")
     html(flow_html([(f"{escape(a)} · {escape(b)}", escape(c)) for a, b, c in mc["season_flow"]],
                    title="8주 시즌 · 감독 등록 → 정규 리그 → 8강 → 4강 → 결승", hl=4))
     html(f'<div class="ox-purpose"><span>탈락 구단</span>{escape(mc["season_out"])}</div>')

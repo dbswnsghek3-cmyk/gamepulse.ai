@@ -932,7 +932,7 @@ body:has(.gp-dnf-page) .ox-btn.pri, body:has(.gp-dnf-page) .ox-pill.on { color: 
 .df2-w.big { margin: 1rem 0 0.3rem; } .df2-w.big > div { padding: 0.8rem; } .df2-w.big b { font-size: 1rem; }
 .df2-wn { font-size: 0.8rem; color: #64748B; margin: 0.2rem 0 0.8rem; }
 .df2-fig { margin: 0.4rem 0 1rem; } .df2-fig img { width: 100%; border-radius: 12px; border: 1px solid #E5E7EB; }
-.df2-fig.sm img { max-width: 760px; } .df2-fig figcaption { font-size: 0.84rem; color: #64748B; margin-top: 0.3rem; } .df2-fig figcaption b { color: #B71C1C; margin-right: 0.4rem; }
+.df2-fig.sm img { max-width: 520px; } .df2-fig figcaption { font-size: 0.84rem; color: #64748B; margin-top: 0.3rem; } .df2-fig figcaption b { color: #B71C1C; margin-right: 0.4rem; }
 .df2-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; margin: 0.4rem 0 1rem; }
 .df2-facts > div { border-top: 4px solid #C62828; background: #F8FAFC; border-radius: 0 0 10px 10px; padding: 0.7rem 0.85rem; min-width: 0; }
 .df2-facts span { font-size: 0.78rem; font-weight: 800; color: #B71C1C; } .df2-facts b { display: block; font-size: 0.98rem; line-height: 1.45; margin: 0.2rem 0 0.35rem; color: #0F172A; word-break: keep-all; }
@@ -995,4 +995,37 @@ OW_REDESIGN_CSS += """
 @media (max-width: 760px) {
   :root:has(.gp-theme:is([data-game="overwatch"], [data-game="fconline"], [data-game="pubg"], [data-game="dnf"])) .ow-table tr td { white-space: normal !important; overflow-wrap: anywhere; word-break: keep-all; }
 }
+"""
+
+
+# 16차-FC: 실제 엠블럼(자유 이용 파일만) · 홈구장 사진 배경 · 직관 보상 요소 (FC 페이지에만 있음)
+OW_REDESIGN_CSS += """
+i.cr { background: #FFFFFF !important; overflow: hidden; display: inline-flex !important; align-items: center; justify-content: center; }
+i.cr img { width: 82%; height: 82%; object-fit: contain; display: block; }
+.fx-vs-row i.vs { width: 2.6rem; height: 2.6rem; font-style: normal; font-weight: 900; font-size: 0.9rem; color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center;
+  border: 2px solid rgba(255,255,255,0.8); }
+.fx-vs-row .a i.vs:not(.cr) { background: var(--ca); } .fx-vs-row .b i.vs:not(.cr) { background: var(--cb); }
+.fx-bk-m span { display: flex; align-items: center; gap: 0.4rem; }
+.fx-bk-m i.s { width: 1.25rem; height: 1.25rem; border-radius: 50%; flex: none; font-style: normal; font-size: 0.6rem; font-weight: 900; color: #FFFFFF; background: var(--c);
+  display: inline-flex; align-items: center; justify-content: center; }
+.fx-bk-t i.big { width: 4rem; height: 4rem; border-radius: 50%; margin: 0.4rem auto 0; font-style: normal; font-size: 1.4rem; font-weight: 900; color: #FFFFFF; background: var(--c);
+  display: flex; align-items: center; justify-content: center; border: 3px solid #FACC15; }
+.fx-hero2.ph { background: linear-gradient(100deg, rgba(2,13,6,0.94) 0%, rgba(5,46,22,0.86) 45%, rgba(5,46,22,0.55) 100%), var(--bg) center / cover no-repeat; }
+.fx-hero2-t { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.45rem; position: relative; z-index: 1; }
+.fx-hero2-t span { font-size: 0.9rem; font-weight: 800; background: rgba(250,204,21,0.16); border: 1px solid rgba(250,204,21,0.55); color: #FDE68A; border-radius: 999px; padding: 0.25rem 0.75rem; }
+.fx-hero2-c { grid-column: 1 / -1; font-size: 0.72rem; color: #BBF7D0; position: relative; z-index: 1; } .fx-hero2-c a { color: #DCFCE7; }
+.fx-tour-h.ph { background: linear-gradient(90deg, rgba(11,59,30,0.92) 0%, rgba(11,59,30,0.55) 60%, rgba(11,59,30,0.25) 100%), var(--bg) center 60% / cover no-repeat; padding: 1.4rem 1.1rem 1rem; }
+.fx-tour-h small { display: block; font-size: 0.72rem; color: #D1FAE5; margin-top: 0.4rem; } .fx-tour-h small a { color: #ECFDF5; }
+@media (max-width: 760px) { .fx-vs-row i.vs { width: 2rem; height: 2rem; } .fx-hero2-t span { font-size: 0.8rem; } }
+"""
+OW_REDESIGN_CSS += """
+.df2-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; align-items: start; margin: 0.4rem 0 1rem; }
+.df2-pair .df2-fig { margin: 0; } .df2-pair .df2-fig img { aspect-ratio: 16 / 9; object-fit: cover; background: #0F172A; }
+.df2-fig .ox-zoom summary { list-style: none; cursor: zoom-in; } .df2-fig .ox-zoom summary::-webkit-details-marker { display: none; }
+.df2-fig .ox-zoom[open] img { aspect-ratio: auto; object-fit: contain; }
+.df2-yts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; margin: 0.4rem 0 0.3rem; }
+.df2-yt { display: flex; flex-direction: column; gap: 0.25rem; text-decoration: none; color: #0F172A; min-width: 0; }
+.df2-yt img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 10px; border: 1px solid #E5E7EB; }
+.df2-yt b { font-size: 0.92rem; line-height: 1.4; } .df2-yt small { font-size: 0.78rem; color: #B71C1C; }
+@media (max-width: 760px) { .df2-pair, .df2-yts { grid-template-columns: 1fr; } }
 """

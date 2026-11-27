@@ -2342,7 +2342,74 @@
     "emblem_src": [
       "UEFA General Terms and Conditions",
       "https://www.uefa.com/termsconditions/"
-    ]
+    ],
+    "crests": {
+      "리버풀": "crest_liverpool.png",
+      "바이에른 뮌헨": "crest_bayern.png",
+      "도르트문트": "crest_dortmund.png",
+      "인터 밀란": "crest_inter.png",
+      "나폴리": "crest_napoli.png"
+    },
+    "image_credits": [
+      [
+        "stadium_oldtrafford.jpg",
+        "Oldtraffordstadpano.jpg",
+        "CC BY-SA 3.0",
+        "LiamUK",
+        "https://commons.wikimedia.org/wiki/File:Oldtraffordstadpano.jpg",
+        "2012-08-01"
+      ],
+      [
+        "stadium_metropolitano.jpg",
+        "Estadio Metropolitano - Atlético de Madrid - Septiembre 2022.jpg",
+        "CC BY-SA 4.0",
+        "Cabeza2000",
+        "https://commons.wikimedia.org/wiki/File:Estadio_Metropolitano_-_Atl%C3%A9tico_de_Madrid_-_Septiembre_2022.jpg",
+        "2022-09-16"
+      ],
+      [
+        "crest_liverpool.png",
+        "Logo Liverpool FC (2024).png",
+        "Public domain",
+        "Liverpool FC",
+        "https://commons.wikimedia.org/wiki/File:Logo_Liverpool_FC_(2024).png",
+        "2024-11-27"
+      ],
+      [
+        "crest_bayern.png",
+        "FC Bayern München logo (2024).svg",
+        "Public domain",
+        "FC Bayern Munich",
+        "https://commons.wikimedia.org/wiki/File:FC_Bayern_M%C3%BCnchen_logo_(2024).svg",
+        "2024-10-17"
+      ],
+      [
+        "crest_dortmund.png",
+        "Borussia Dortmund logo.svg",
+        "Public domain",
+        "Lispir (Lispir)",
+        "https://commons.wikimedia.org/wiki/File:Borussia_Dortmund_logo.svg",
+        ""
+      ],
+      [
+        "crest_inter.png",
+        "FC Internazionale Milano 2021.svg",
+        "Public domain",
+        "FC Internazionale Milano S.p.A. / Bureau Borsche",
+        "https://commons.wikimedia.org/wiki/File:FC_Internazionale_Milano_2021.svg",
+        "2021-03-30"
+      ],
+      [
+        "crest_napoli.png",
+        "SSC Neapel.svg",
+        "Public domain",
+        "Unknown authorUnknown author",
+        "https://commons.wikimedia.org/wiki/File:SSC_Neapel.svg",
+        ""
+      ]
+    ],
+    "crest_note": "엠블럼 5개(리버풀·바이에른·도르트문트·인터·나폴리)는 위키미디어 공용의 퍼블릭 도메인 파일(단순 문자·도형 로고 · 저작권 보호 기준 미달)을 구단 식별 목적으로만 사용 · 상표권은 각 구단에 있음 · 나머지 11개 구단 엠블럼은 공용에 자유 이용 파일이 없고(영어 위키백과의 비자유 파일은 위키 밖 재사용 불가), 공식 사이트·UEFA 이용약관도 사용 권리를 주지 않아 이니셜로 유지 · 구단 유니폼 사진도 자유 이용 파일을 찾지 못해 넣지 않음",
+    "disclaimer_img": "개인 비상업 포트폴리오의 가상 기획 · 넥슨·EA·UEFA·각 구단과 제휴하거나 실제로 진행하는 이벤트가 아님"
   },
   "fair": {
     "name": "FAIR PLAY PROJECT",

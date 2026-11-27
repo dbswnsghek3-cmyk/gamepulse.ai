@@ -61,6 +61,22 @@ def fig(im: dict, cls: str = "") -> str:
             f'<figcaption><b>공식 이미지</b>{escape(im["cap"])} · {src(im["url"], im["credit"])}</figcaption></figure>')
 
 
+def ofig(im: dict, cls: str = "") -> str:
+    """공식·실제 이미지 (확대 가능 · 출처·날짜 표기)."""
+    p = ASSETS / im["file"]
+    if not p.is_file():
+        return ""
+    return (f'<figure class="df2-fig {cls}"><details class="ox-zoom"><summary title="클릭하면 크게 보기"><img src="data:image/jpeg;base64,{_img(im["file"], p.stat().st_mtime)}" '
+            f'alt="{escape(im["cap"])}" loading="lazy"></summary></details><figcaption><b>공식 자료</b>{escape(im["cap"])} · {src(im["url"], im["credit"])}</figcaption></figure>')
+
+
+def vcard(f: str, title: str, ch: str, url: str, note: str) -> str:
+    p = ASSETS / f
+    im = f'<img src="data:image/jpeg;base64,{_img(f, p.stat().st_mtime)}" alt="{escape(title)} 썸네일" loading="lazy">' if p.is_file() else ""
+    return (f'<a class="df2-yt" href="{escape(url, quote=True)}" target="_blank" rel="noopener">{im}<b>{escape(title)}</b>'
+            f'<small>유튜브 · {escape(ch)} · {escape(note)} · 원본 영상 ↗</small></a>')
+
+
 def gallery(key: str, items: list, folder: str = "evidence") -> str:
     slides = []
     for f, cap, credit in items:
@@ -125,10 +141,12 @@ def t2(d: dict, old: dict) -> None:
     h("성장은 '확률 보상 + 일부 교환'으로 돌아가고, 수리비는 골드를 회수하는 장치다", "real", num="02", name="기존 BM 및 성장 구조",
       lead="공식 가이드·공지·보도 기준 · 유료 상품과 게임 내 골드 소비를 나눠 본다")
     html(flow_html([(escape(a), escape(b)) for a, b, _ in d["growth"]], title="고난도 성장 구조 (2026-11) · 보장 문구가 있는 콘텐츠는 확인 못함"))
+    html('<div class="df2-pair">' + ofig(d["img"]["mikaela"]) + ofig(d["img"]["nightmare"]) + "</div>")
     table(["콘텐츠", "보상 방식 (공식 · 보도)", "출처"], [[f"<b>{escape(a)}</b>", escape(b), escape(c)] for a, b, c in d["growth"]], cls="ox-mops")
     html(fig(old["reward_img"], "sm"))
     h("BM: 현금 상품과 골드 소비를 구분한다", "interp", lead=escape(d["bm_note"]))
     table(["구분", "결제 수단", "내용", "확인 수준"], [[f"<b>{escape(a)}</b>", escape(b), escape(c), escape(e)] for a, b, c, e in d["bm"]], cls="ox-mops")
+    html('<div class="df2-pair">' + ofig(d["img"]["seria"]) + ofig(d["img"]["mileage"]) + "</div>")
     rp = d["repair"]
     h("수리비 · 이미 있었던 개선과 지금의 지원", "real", lead=escape(rp["pm"]))
     html('<div class="df2-tl">' + "".join(f'<div><em>{escape(a)}</em><p>{escape(b)}</p><small>{src(u, s)}</small></div>' for a, b, s, u in rp["facts"]) + "</div>")
@@ -182,6 +200,8 @@ def t3(d: dict, old: dict) -> None:
     h("현역 이용자 1명 인터뷰 (카카오톡 · 공개 표본과 별도)", "real", lead="1명의 개인 경험 · 대표 의견이 아님 · 캡처에 이름·프로필이 있어 이미지는 공개하지 않고 원문 문구만 인용")
     table(["질문 상황", "원문", "해석 (분석자)"], [[escape(a), f"<b>“{escape(b)}”</b>", escape(c)] for a, b, c in fr["items"]], cls="ox-mops")
     h("유튜브 댓글 원본 캡처 · 실제 레이드 장면", "real", lead="기존에 받은 댓글 캡처(2026-11-23 · 아이디·아바타 블러) · 제3자 유저 영상 캡처 (본인 플레이 아님)")
+    html('<div class="df2-yts">' + "".join(vcard(*x) for x in d["videos"]) + "</div>")
+    html(f'<p class="fx-pod-n">{escape(d["video_note"])}</p>')
     html(gallery("dfev", old["evidence_images"]))
     m = old["media"]
     slides, ratios = [], []
@@ -247,6 +267,7 @@ def t5(d: dict, old: dict) -> None:
     h(f"{a['name']} · {a['slogan']}", "mock", num="05", name="대표 개선 전략 ① 성취감 · 랜덤 보상 (40%)", lead="랜덤 보상의 재미는 남기고, 노력의 누적을 보이게 한다")
     html(brief_html(*a["brief"], name=a["name"], tag="기획 시안"))
     html(_ach_ui())
+    html('<div class="df2-pair">' + ofig(d["img"]["result"]) + vcard(*d["video_official"]) + "</div>")
     table(["기존 장치 (공식·유저 글)", "하는 일", "남는 문제"], [[f"<b>{escape(x)}</b>", escape(y), escape(z)] for x, y, z in a["exist"]], cls="ox-mops")
     html(chips_html("추가 제안", a["new"], "kpi"))
     html(f'<div class="ox-purpose fx-risk"><span>경제 영향</span>{escape(a["risk"])} → 06 탭 시뮬레이터</div>')
@@ -262,6 +283,8 @@ def t5(d: dict, old: dict) -> None:
     html(brief_html(*rt["brief"], name=rt["name"], tag="기획 시안"))
     html(_retrust_ui(rt))
     html(f'<p class="fx-pod-n">{escape(rt["note"])} · {escape(rt["avoid"])}</p>')
+    html('<ul class="ox-facts"><li><b>운영 비판 여론 예시 (유튜브)</b> · ' + " · ".join(f'{src(u, f"{ch} 「{t}」")}' for t, ch, u in d["video_opinion"])
+         + ' · 제목·채널만 표기, 주장 내용은 검증하지 않음</li></ul>')
 
     h(f"{cr['name']} · 유지비를 벌려고 하는 게임이 되지 않게", "mock", num="05", name="대표 개선 전략 ④ 수리비 · 지속 가능한 BM (15%)", lead=escape(cr["slogan"]))
     html(brief_html(*cr["brief"], name=cr["name"], tag="기획 시안"))
@@ -324,5 +347,6 @@ def t7(d: dict, old: dict) -> None:
     table(["기획", "실험 방식", "주요 지표", "부작용 감시"], [[f"<b>{escape(a)}</b>", escape(b), escape(c), escape(e)] for a, b, c, e in d["tests"]], cls="ox-mops")
     html(flow_html([(escape(a), f"{escape(b)} · {escape(c)}") for a, b, c in d["roadmap"]], title="실행 로드맵 (가정 · 실제 일정 아님)", hl=0))
     table(["리스크", "대응"], [[f"<b>{escape(a)}</b>", escape(b)] for a, b in d["risks"]], cls="ox-mops")
-    with st.expander("추가로 필요한 실제 자료"):
+    with st.expander("추가로 필요한 실제 자료 · 확보하지 못한 이미지"):
         html("<ul class='ox-facts'>" + "".join(f"<li>{escape(x)}</li>" for x in d["need"]) + "</ul>")
+        html("<ul class='ox-facts'>" + "".join(f"<li>이미지 미확보 · {escape(x)}</li>" for x in d["img_missing"]) + "</ul>")
