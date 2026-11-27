@@ -1064,12 +1064,13 @@ OW_REDESIGN_CSS += """
 """
 
 
-# 17차: FC·PUBG·던파 첫 화면 공식 로고 (오버워치 .owx-logo 기준 높이 63px · 모바일 40.5px · 왼쪽 정렬 · 원본 비율 유지)
+
+# 17차: FC·PUBG·던파 메인 제목 바로 왼쪽 공식 로고 (오버워치 .owx-logo 기준 높이 63px · 모바일 40.5px · 원본 비율 유지)
 OW_REDESIGN_CSS += """
-.gx-brand { display: flex; align-items: center; gap: 1rem; padding: 0.4rem 0 0.9rem; margin: 0 0 0.9rem; border-bottom: 1px solid #E5E7EB; }
-.gx-logo { display: inline-flex; align-items: center; height: 63px; flex: 0 0 auto; }
+.gx-tl { display: flex; align-items: center; gap: 1rem; }
+.gx-tl > :not(.gx-logo) { min-width: 0; word-break: keep-all; }
+.gx-logo { display: inline-flex; align-items: center; height: 63px; flex: 0 0 auto; font-style: normal; }
 .gx-logo img { height: 100%; width: auto; display: block; }
-.gx-logo.tile { background: var(--tile); border-radius: 10px; padding: 12px 16px; box-sizing: border-box; }
-.gx-brand small { font-size: 0.74rem; color: #94A3B8; }
-@media (max-width: 760px) { .gx-logo { height: 40.5px; } .gx-logo.tile { padding: 8px 10px; border-radius: 8px; } .gx-brand { padding: 0.2rem 0 0.7rem; } }
+.gx-logo.tile { background: var(--tile); border-radius: 10px; padding: 12px 14px; box-sizing: border-box; }
+@media (max-width: 760px) { .gx-tl { gap: 0.7rem; } .gx-logo { height: 40.5px; } .gx-logo.tile { padding: 8px 9px; border-radius: 8px; } }
 """

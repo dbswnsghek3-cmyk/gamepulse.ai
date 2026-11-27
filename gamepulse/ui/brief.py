@@ -36,10 +36,13 @@ def chips_html(label: str, items: list[str], cls: str = "") -> str:
             + "".join(f"<i>{escape(x)}</i>" for x in items) + "</div>")
 
 
-def brand_html(b64: str, alt: str, credit: str, tile: str = "", mime: str = "png") -> str:
-    """첫 화면 최상단 공식 로고 (오버워치 로고와 같은 위치·높이: PC 63px · 모바일 40.5px · 왼쪽 정렬).
-    흰색 로고는 원본을 바꾸지 않고 테마색 타일 위에 올린다 (tile = 배경색)."""
+def logo_html(b64: str, alt: str, credit: str, tile: str = "", mime: str = "png") -> str:
+    """메인 제목 바로 왼쪽 공식 로고 (오버워치 .owx-logo 기준 높이 63px · 모바일 40.5px · 원본 비율 유지).
+    흰색 로고를 밝은 배경에 둘 때만 원본을 바꾸지 않고 테마색 타일 위에 올린다 (tile = 배경색). credit은 title 툴팁."""
     style = f' style="--tile:{tile}"' if tile else ""
     cls = "gx-logo tile" if tile else "gx-logo"
-    return (f'<div class="gx-brand"><span class="{cls}"{style}><img src="data:image/{mime};base64,{b64}" alt="{escape(alt)}"></span>'
-            f'<small>{escape(credit)}</small></div>')
+    return (f'<i class="{cls}"{style} title="{escape(credit, quote=True)}"><img src="data:image/{mime};base64,{b64}" alt="{escape(alt)}"></i>')
+
+
+def title_row(logo: str, title: str) -> str:
+    return f'<div class="gx-tl">{logo}{title}</div>' if logo else title

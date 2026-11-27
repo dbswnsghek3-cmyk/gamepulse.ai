@@ -20,7 +20,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from gamepulse.sim import fc_biz as B
-from gamepulse.ui.brief import brand_html, brief_html, chips_html, flow_html
+from gamepulse.ui.brief import brief_html, logo_html, title_row, chips_html, flow_html
 from gamepulse.ui.components import html
 from gamepulse.views.overwatch import _jpg_b64, bullets, h, ox_badge_legend, ox_chart_card, stats, table
 from gamepulse.views.overwatch import won as owon
@@ -121,11 +121,10 @@ def render() -> None:
     html('<div class="gp-ow-page gp-fc-page"></div>')   # 오버워치와 같은 개편 레이아웃 · 색은 FC 테마(#16A34A)
     cv, mc = d["cover"], d["mcw"]
     img = fig("main_screen.jpg", "FC 온라인 메인 화면")
-    lg = ASSETS / "brand" / "fc_online_logo.png"
-    if lg.is_file():   # 공식 홈페이지(fconline.nexon.com) 헤더 로고 원본 · 흰색 → FC 테마색 타일 위
-        html(brand_html(_png64(str(lg), lg.stat().st_mtime), "EA SPORTS FC ONLINE 로고", "로고 © NEXON · EA · 식별 목적 인용", tile="#16A34A"))
+    lg = ASSETS / "brand" / "fc_online_logo.png"   # 공식 홈페이지(fconline.nexon.com) 헤더 로고 원본 · 흰색 → FC 테마색 타일 위
+    logo = logo_html(_png64(str(lg), lg.stat().st_mtime), "EA SPORTS FC ONLINE 로고", "로고 © NEXON · EA · 식별 목적 인용", tile="#16A34A") if lg.is_file() else ""
     html(f'<div class="owx-hero ox-cover fx-cover"><div class="owx-t"><div class="ow-cover-t">{escape(cv["kicker"])}</div>'
-         f'<div class="owx-q" role="heading" aria-level="1">{escape(cv["title"])}</div><p class="owx-s">{escape(cv["subtitle"])}</p>'
+         + title_row(logo, f'<div class="owx-q" role="heading" aria-level="1">{escape(cv["title"])}</div>') + f'<p class="owx-s">{escape(cv["subtitle"])}</p>'
          '<div class="fx-dirs">' + "".join(f'<span><b>{n}</b>{escape(t)}</span>' for n, t in cv["directions"]) + "</div></div>"
          + (f'<div class="fx-cover-img">{img}</div>' if img else "") + "</div>")
     html('<div class="fx-nums">' + "".join(f'<div><b>{escape(v)}</b><span>{escape(l)}</span><small>{escape(s)}</small></div>'

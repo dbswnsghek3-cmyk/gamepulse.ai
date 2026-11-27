@@ -21,7 +21,7 @@ from PIL import Image
 
 from gamepulse.data.overwatch_images import web_jpeg_b64
 from gamepulse.sim import dnf_biz as B   # gold() 는 ARAD CARE 백업용으로 남김 (archive/dnf_arad_care_backup)
-from gamepulse.ui.brief import brand_html, brief_html, chips_html, flow_html
+from gamepulse.ui.brief import brief_html, logo_html, title_row, chips_html, flow_html
 from gamepulse.ui.components import html
 from gamepulse.ui.gallery import gallery_html, pair_html
 from gamepulse.views.fconline import _sim_inputs, js, js_end, mock, src
@@ -113,10 +113,8 @@ def render() -> None:
     cv = d["cover"]
     lp = ASSETS / "logo.png"
     html('<div class="gp-ow-page gp-dnf-page"></div>')
-    if lp.is_file():   # 공식 로고 원본(컬러) · 흰 배경 · 히어로 오른쪽 중복 로고는 제거
-        html(brand_html(_png("logo.png", lp.stat().st_mtime), "던전앤파이터 로고", "로고 © NEOPLE · NEXON · 식별 목적 인용"))
-    html(f'<div class="df2-hero"><div class="df2-hero-t"><span>{escape(cv["kicker"])}</span><b role="heading" aria-level="1">{escape(cv["title"])}</b>'
-         f'<p>{escape(cv["subtitle"])}</p><small>{escape(cv["note"])}</small></div></div>')
+    logo = logo_html(_png("logo.png", lp.stat().st_mtime), "던전앤파이터 로고", "로고 © NEOPLE · NEXON · 식별 목적 인용") if lp.is_file() else ""   # 공식 로고 원본(컬러)
+    html(f'<div class="df2-hero"><div class="df2-hero-t"><span>{escape(cv["kicker"])}</span>' + title_row(logo, f'<b role="heading" aria-level="1">{escape(cv["title"])}</b>') + f'<p>{escape(cv["subtitle"])}</p><small>{escape(cv["note"])}</small></div></div>')
     html('<div class="df2-w">' + "".join(f'<div style="flex:{w} 1 0"><b>{escape(n)}</b><span>{w}% · {escape(t)}</span></div>' for n, w, t in d["weights"])
          + f'</div><p class="df2-wn">{escape(d["weights_note"])}</p>')
     i = tab_nav()

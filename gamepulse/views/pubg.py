@@ -23,7 +23,7 @@ import streamlit as st
 
 from gamepulse.data.overwatch_images import web_jpeg_b64
 from gamepulse.sim import newstart_sim as S
-from gamepulse.ui.brief import brand_html, brief_html, chips_html, flow_html
+from gamepulse.ui.brief import brief_html, logo_html, title_row, chips_html, flow_html
 from gamepulse.ui.gallery import gallery_html
 from gamepulse.ui.components import html
 from gamepulse.views.overwatch import (C_CTRL, C_MUTED, C_TREAT, KIND, b_hypo, b_interp, b_mock, b_real, b_sample, b_sim,
@@ -205,12 +205,12 @@ def _tier(t: dict) -> str:
 def _cover(ns: dict) -> None:
     cv = ns["cover"]
     logo, drop = ASSETS / "brand" / "pubg_logo.png", ASSETS / "drop.png"
-    if logo.is_file():   # 공식 로고 원본(흰색) → PUBG 테마색 타일 위 · 히어로 안의 중복 로고는 제거
-        html(brand_html(_png_b64(str(logo), logo.stat().st_mtime), "PUBG: BATTLEGROUNDS 로고", "로고 © KRAFTON · 식별 목적 인용", tile="#142D50"))
+    # 공식 로고 원본(흰색) · 어두운 히어로 배경 위라 타일 없이 그대로
+    logo_i = logo_html(_png_b64(str(logo), logo.stat().st_mtime), "PUBG: BATTLEGROUNDS 로고", "로고 © KRAFTON · 식별 목적 인용") if logo.is_file() else ""
     pk = ns["peak"]
     bg = f"url(data:image/jpeg;base64,{_jpeg_b64(str(drop), drop.stat().st_mtime, 1600)})" if drop.is_file() else "none"
     html(f'<div class="pn-hero pn-peakhero" style="--bg:{bg}"><div class="pn-hero-t"><div class="pg-cover-k">{escape(cv["title"])}</div>'
-         '<div class="pn-big" role="heading" aria-level="1">325만 명</div>'
+         + title_row(logo_i, '<div class="pn-big" role="heading" aria-level="1">325만 명</div>') +
          '<p class="pn-big-l1">한때 325만 명이 동시에 낙하했던 전장.</p>'
          '<p class="pn-big-l2">이제 중요한 건, 새로운 유저를 정착시키고 떠난 유저를 다시 불러오는 것.</p>'
          f'<p class="pn-big-src">Steam 역대 최고 동시접속 {pk["value"]:,}명 · {escape(pk["date"])} 기록 · '
