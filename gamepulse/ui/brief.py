@@ -34,3 +34,12 @@ def flow_html(steps: list[tuple[str, str]], *, title: str = "", cls: str = "", h
 def chips_html(label: str, items: list[str], cls: str = "") -> str:
     return (f'<div class="gb-chips {cls}"><span>{escape(label)}</span>'
             + "".join(f"<i>{escape(x)}</i>" for x in items) + "</div>")
+
+
+def brand_html(b64: str, alt: str, credit: str, tile: str = "", mime: str = "png") -> str:
+    """첫 화면 최상단 공식 로고 (오버워치 로고와 같은 위치·높이: PC 63px · 모바일 40.5px · 왼쪽 정렬).
+    흰색 로고는 원본을 바꾸지 않고 테마색 타일 위에 올린다 (tile = 배경색)."""
+    style = f' style="--tile:{tile}"' if tile else ""
+    cls = "gx-logo tile" if tile else "gx-logo"
+    return (f'<div class="gx-brand"><span class="{cls}"{style}><img src="data:image/{mime};base64,{b64}" alt="{escape(alt)}"></span>'
+            f'<small>{escape(credit)}</small></div>')
