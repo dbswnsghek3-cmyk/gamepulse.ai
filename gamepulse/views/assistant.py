@@ -70,7 +70,7 @@ def render() -> None:
 
     game = st.selectbox("직접 질문할 게임 (선택하지 않으면 질문에서 자동 인식)", [None] + GAME_ORDER,
                         format_func=lambda x: "자동 인식 · 공통 질문" if x is None else NAMES[x], key="as_game")
-    prompt = st.chat_input("질문 입력 · 예: 던파 ARAD CARE 골드 영향은?")
+    prompt = st.chat_input("질문 입력 · 예: 던파 PROJECT ACHIEVEMENT 공급 영향은?")
     if prompt or clicked:
         q, g = (prompt, game) if prompt else clicked
         _ask(q, g)

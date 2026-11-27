@@ -387,7 +387,7 @@ def crest(club: str, k: int = 0, cls: str = "") -> str:
     p = CLUBS / f if f else None
     if p and p.is_file():
         return f'<i class="cr {cls}"><img src="data:image/png;base64,{_png64(str(p), p.stat().st_mtime)}" alt="{escape(club)} 엠블럼"></i>'
-    return f'<i class="{cls}" style="--c:{EMB[k % len(EMB)]}">{escape(club[0])}</i>'
+    return ""   # 실제 엠블럼이 없는 구단은 이름만 (가상 배지 사용 안 함)
 
 
 def photo(name: str, cls: str = "") -> str:
@@ -472,10 +472,13 @@ def clubs_html(mc: dict) -> str:
     for r in mc["rivals"]:
         rv[r["a"]] = r["name"]
         rv[r["b"]] = r["name"]
-    cells = "".join(f'<div>{crest(n, k)}<b>{escape(n)}</b>'
-                    f'{f"<small>{escape(rv[n])}</small>" if n in rv else ""}</div>' for k, n in enumerate(mc["clubs16"]))
-    return (f'<div class="fx-16"><div class="fx-16-h">참가 16개 구단 <span class="fx-tag">가상 예시</span></div><div class="fx-16-g">{cells}</div>'
-            f'<p>UEFA 2026/27 챔피언스리그 리그 페이즈 참가 구단 중 선택 · 16강 확정 전 가상 예시 · 엠블럼은 자유 이용 파일이 있는 5개만 이미지, 나머지는 이니셜</p></div>')
+    has = [n for n in mc["clubs16"] if n in mc.get("crests", {})]
+    rest = [n for n in mc["clubs16"] if n not in has]
+    cells = "".join(f'<div>{crest(n)}<b>{escape(n)}</b>{f"<small>{escape(rv[n])}</small>" if n in rv else ""}</div>' for n in has)
+    names = " · ".join(f'{escape(n)}{f" <small>({escape(rv[n])})</small>" if n in rv else ""}' for n in rest)
+    return (f'<div class="fx-16"><div class="fx-16-h">참가 16개 구단 <span class="fx-tag">가상 예시</span></div><div class="fx-16-g top">{cells}</div>'
+            f'<div class="fx-16-rest"><span>그 외 {len(rest)}개 구단</span>{names}</div>'
+            f'<p>UEFA 2026/27 챔피언스리그 리그 페이즈 참가 구단 중 선택 · 16강 확정 전 가상 예시 · 실제 엠블럼은 자유 이용 파일이 있는 5개만 · 나머지는 구단명</p></div>')
 
 
 def room_html(sq: dict) -> str:

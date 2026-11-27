@@ -1,6 +1,6 @@
 """던전앤파이터 — 노력은 남고, 성취는 이어져야 한다. (사업PM 포트폴리오 · 2026-11-27 개편 · 01~07 탭)
 
-01 시장·서비스 · 02 BM·성장 구조 · 03 유저 VOC · 04 핵심 문제 · 05 개선 전략 4종 · 06 사업성·경제 시뮬 · 07 KPI·로드맵
+01 시장·서비스 · 02 BM·성장 구조 · 03 유저 VOC · 04 핵심 문제 · 05 개선 전략 3종 · 06 사업성·경제 시뮬 · 07 KPI·로드맵
 - 사실·출처: data/dnf/dnf2.json (+ 기존 data/dnf/dnf.json 의 영상·보상 관찰·인터뷰·공식 자료) · VOC: data/dnf/voc.json
 - 계산: gamepulse/sim/dnf_biz.py (정적 페이지 JS: scripts/dnf_static_widgets.py 와 같은 식)
 - 작성자는 던파를 직접 플레이하지 않았다 · 지인 카톡은 이미지 비공개(이름·프로필 노출) · 원문 문구만 인용
@@ -20,7 +20,7 @@ import streamlit as st
 from PIL import Image
 
 from gamepulse.data.overwatch_images import web_jpeg_b64
-from gamepulse.sim import dnf_biz as B
+from gamepulse.sim import dnf_biz as B   # gold() 는 ARAD CARE 백업용으로 남김 (archive/dnf_arad_care_backup)
 from gamepulse.ui.brief import brief_html, chips_html, flow_html
 from gamepulse.ui.components import html
 from gamepulse.ui.gallery import gallery_html, pair_html
@@ -30,11 +30,11 @@ from gamepulse.views.overwatch import h, ox_chart_card, table
 ROOT = Path(__file__).resolve().parents[2]
 DATA, ASSETS = ROOT / "data" / "dnf", ROOT / "assets" / "dnf"
 SECTIONS = [("01", "시장·서비스"), ("02", "BM·성장 구조"), ("03", "유저 VOC"), ("04", "핵심 문제"),
-            ("05", "개선 전략 4종"), ("06", "사업성·경제 시뮬"), ("07", "KPI·로드맵")]
+            ("05", "개선 전략 3종"), ("06", "사업성·경제 시뮬"), ("07", "KPI·로드맵")]
 TAB_LABELS = [f"{n} {t}" for n, t in SECTIONS]
 TAB_KEY = "df_tab"
 RED, GRAY, GREEN = "#C62828", "#9CA3AF", "#16A34A"
-REP = ["A", "F1", "IV13", "NB03", "IV11", "DC05"]   # 대표 VOC 6건 (출처 키 · 부정·중립·긍정 섞음)
+REP = ["A", "F1", "IV13", "NB09", "IV11", "DC05"]   # 대표 VOC 6건 (출처 키 · 부정·중립·긍정 섞음)
 
 
 @st.cache_data(show_spinner=False)
@@ -127,14 +127,14 @@ def render() -> None:
 
 # ----------------------------------------------------------------------
 def t1(d: dict, old: dict) -> None:
-    h("시즌 11 천해천 · 최상위 콘텐츠는 확률 보상 · 개발사도 보상 부족을 인정했다", "real", num="01", name="시장 및 서비스 분석",
+    h("시즌 11 천해천 · 최상위 콘텐츠는 확률 보상 · 개발진은 보상 보강 방향을 발표했다", "real", num="01", name="시장 및 서비스 분석",
       lead="2026-11-27 기준 공식 자료·보도로 확인 · 작성자는 직접 플레이하지 않음")
     html(fig(old["hero_img"], "hero"))
     html('<div class="df2-facts">' + "".join(f'<div><span>{escape(k)}</span><b>{escape(v)}</b><small>{escape(n)} · {src(u, s)}</small></div>'
                                              for k, v, n, s, u in d["market"]["facts"]) + "</div>")
+    h("던파의 강점 · 오래 사랑받은 이유", "real", lead="공식 자료·보도·유저 글 근거 · 이 강점 위에 기획을 더한다")
+    html('<div class="df2-str">' + "".join(f'<div><span>{escape(a)}</span><p>{escape(b)}</p><small>{src(u, c)}</small></div>' for a, b, c, u in d["strengths"]) + "</div>")
     html(f'<div class="ox-purpose"><span>사업PM 해석</span>{escape(d["market"]["pm"])}</div>')
-    with st.expander("자세히 보기 · 보조 배경 자료 (영상 제작자 2차 자료 · 원자료 미확인)"):
-        html(gallery("dfsec", old["secondary"]))
 
 
 def t2(d: dict, old: dict) -> None:
@@ -162,7 +162,7 @@ def t3(d: dict, old: dict) -> None:
     cats, srcs = v["categories"], v["sources"]
     ch = Counter(x["channel"] for x in items)
     tone = Counter(x["stance"] for x in items)
-    h(f"공개 VOC {len(items)}건: 보상·시즌·운영 불만이 많고, 클리어 성취·다음 시즌 기대도 있다", "real", num="03", name="실제 VOC 및 유저 여론",
+    h(f"공개 VOC {len(items)}건: 보상·시즌에 대한 아쉬움과 함께 클리어 성취·다음 시즌 기대도 있다", "real", num="03", name="실제 VOC 및 유저 여론",
       lead="원문을 직접 확인한 글·댓글 단위 · 작성자 비공개 · 표본 분포는 전체 이용자 여론이 아님")
     html('<div class="df2-ch">' + "".join(f'<div><b>{ch.get(c, 0)}</b><span>{escape(c)}</span></div>' for c in VOC_CH)
          + '<div class="x"><b>0</b><span>아카라이브 (접근 차단)</span></div></div>')
@@ -200,9 +200,13 @@ def t3(d: dict, old: dict) -> None:
     h("현역 이용자 1명 인터뷰 (카카오톡 · 공개 표본과 별도)", "real", lead="1명의 개인 경험 · 대표 의견이 아님 · 캡처에 이름·프로필이 있어 이미지는 공개하지 않고 원문 문구만 인용")
     table(["질문 상황", "원문", "해석 (분석자)"], [[escape(a), f"<b>“{escape(b)}”</b>", escape(c)] for a, b, c in fr["items"]], cls="ox-mops")
     h("유튜브 댓글 원본 캡처 · 실제 레이드 장면", "real", lead="기존에 받은 댓글 캡처(2026-11-23 · 아이디·아바타 블러) · 제3자 유저 영상 캡처 (본인 플레이 아님)")
-    html('<div class="df2-yts">' + "".join(vcard(*x) for x in d["videos"]) + "</div>")
-    html(f'<p class="fx-pod-n">{escape(d["video_note"])}</p>')
-    html(gallery("dfev", old["evidence_images"]))
+    html('<div class="df2-src">' + "".join(f'<a href="{escape(u, quote=True)}" target="_blank" rel="noopener"><span>유튜브 영상 댓글 · 캡처 출처</span><b>{escape(c)} 채널</b><small>원본 영상 ↗</small></a>'
+                                          for c, u in d["videos"]) + f'</div><p class="fx-pod-n">{escape(d["video_note"])}</p>')
+    html(quotes_html(d["season_quotes"]))
+    with st.expander("장문 댓글 원문 전체 (발췌하지 않은 원본 캡처)"):
+        html(gallery("dfq", d["season_quotes"]["full"]))
+    with st.expander("보상 체감 댓글 원본 캡처"):
+        html(gallery("dfev", old["evidence_images"]))
     m = old["media"]
     slides, ratios = [], []
     for fn, cap, credit in m["shots"]:
@@ -216,12 +220,15 @@ def t3(d: dict, old: dict) -> None:
 
 
 def t4(d: dict, old: dict) -> None:
-    h("투자 → 보상 편차 → 성취감 저하 → 시즌 불안 → 신뢰 저하 → 접속·구매 감소 위험", "hypo", num="04", name="핵심 문제 정의",
+    h("투자 → 보상 편차 → 성취감 저하 → 시즌 불안 → 소통 공백 → 재도전 동기 약화", "hypo", num="04", name="핵심 문제 정의",
       lead="유저 의견과 공식 구조로 만든 가설 흐름 · 모든 유저에게 같은 인과가 생긴다고 단정하지 않는다")
     html(flow_html([(escape(a), escape(b)) for a, b in d["problem_flow"]], hl=2))
     h("문제별 현재 상태 · 이미 개선된 것은 미해결로 쓰지 않는다", "real", lead="과거 · 지속 · 운영진 인지 · 개선 발표 · 개선 적용 · 추가 검증 필요")
-    table(["문제", "발생", "운영진 인지", "개선 상태", "근거"], [[f"<b>{escape(a)}</b>", escape(b), escape(c), escape(e), escape(f)] for a, b, c, e, f in d["status"]],
-          cls="ox-mops")
+    h("운영진이 이미 개선했거나 발표한 것", "real", lead=escape(d["done_note"]))
+    html('<div class="df2-done">' + "".join(f'<div><span>✓ {escape(a)}</span><p>{escape(b)}</p></div>' for a, b in d["done_well"]) + "</div>")
+    with st.expander("문제별 상태표 · 과거·지속·인지·발표·적용·검증 필요"):
+        table(["문제", "발생", "운영진 인지", "개선 상태", "근거"], [[f"<b>{escape(a)}</b>", escape(b), escape(c), escape(e), escape(f)] for a, b, c, e, f in d["status"]],
+              cls="ox-mops")
     html('<div class="df2-w big">' + "".join(f'<div style="flex:{w} 1 0"><b>{escape(n)}</b><span>{w}% · {escape(t)}</span></div>' for n, w, t in d["weights"]) + "</div>")
     st.caption(d["weights_note"])
 
@@ -251,20 +258,12 @@ def _retrust_ui(rt: dict) -> str:
         f'<div class="df2-rt"><div class="df2-rt-s">{"".join(f"<i>{escape(s)}</i>" for s in stg)}</div><div class="df2-rt-b">{rows}</div></div>'), "night")
 
 
-def _care_ui() -> str:
-    return mock("ARAD CARE · 계정 단위 수리 지원 · 가상 기획 UI", (
-        '<div class="df2-care"><div class="df2-care-l"><span>이번 주 수리비 (계정)</span><b>250만 골드</b><small>지원 후 200만 골드</small>'
-        '<div class="ox-bar"><i style="width:50%"></i></div><p>주간 지원 한도 100만 · 남은 지원 50만 · 다음 갱신 목요일 06:00</p></div>'
-        '<div class="df2-care-r"><span>캐릭터별 수리비</span>'
-        + "".join(f'<div><em>{n}</em><b>{g}만</b><small>{s}</small></div>' for n, g, s in
-                  (("본캐 · 버서커", 70, "지원 대상"), ("부캐 1 · 크루세이더", 55, "지원 대상"), ("부캐 2 · 인챈트리스", 50, "지원 대상"), ("부캐 3", 40, "지원 대상"), ("부캐 4", 35, "지원 대상")))
-        + '<small>거래 불가 · 계정당 상한 · 신규·복귀 계정은 첫 4주 추가 지원</small></div></div>'), "night")
-
-
 def t5(d: dict, old: dict) -> None:
     P = d["plans"]
-    a, lg, rt, cr = P["achievement"], P["legacy"], P["retrust"], P["care"]
-    h(f"{a['name']} · {a['slogan']}", "mock", num="05", name="대표 개선 전략 ① 성취감 · 랜덤 보상 (40%)", lead="랜덤 보상의 재미는 남기고, 노력의 누적을 보이게 한다")
+    a, lg, rt = P["achievement"], P["legacy"], P["retrust"]
+    html('<div class="gb-flow-t">3개 전략의 기대 사업 효과 (검증 전 목표) · 작성자 우선순위 50 · 30 · 20</div><div class="df2-eff">'
+         + "".join(f'<div><span>{escape(n)}</span><b>{escape(e)}</b><small>{escape(g)}</small></div>' for n, e, g in d["effects"]) + "</div>")
+    h(f"{a['name']} · {a['slogan']}", "mock", num="05", name="대표 개선 전략 ① 성취감 · 랜덤 보상 (50%)", lead="랜덤 보상의 재미는 남기고, 노력의 누적을 보이게 한다")
     html(brief_html(*a["brief"], name=a["name"], tag="기획 시안"))
     html(_ach_ui())
     html('<div class="df2-pair">' + ofig(d["img"]["result"]) + vcard(*d["video_official"]) + "</div>")
@@ -272,27 +271,17 @@ def t5(d: dict, old: dict) -> None:
     html(chips_html("추가 제안", a["new"], "kpi"))
     html(f'<div class="ox-purpose fx-risk"><span>경제 영향</span>{escape(a["risk"])} → 06 탭 시뮬레이터</div>')
 
-    h(f"{lg['name']} · {lg['slogan']}", "mock", num="05", name="대표 개선 전략 ② 시즌 기대 · 성장 가치 (25%)", lead="시즌제는 유지 · 성능이 아니라 기록과 기대를 잇는다")
+    h(f"{lg['name']} · {lg['slogan']}", "mock", num="05", name="대표 개선 전략 ② 시즌 기대 · 성장 가치 (30%)", lead="시즌제는 유지 · 성능이 아니라 기록과 기대를 잇는다")
     html(brief_html(*lg["brief"], name=lg["name"], tag="기획 시안"))
     html(flow_html([(escape(x), escape(y)) for x, y in lg["flow"]], title="시즌 전환 마케팅 흐름", hl=2))
     html(_legacy_ui())
     html(f'<div class="ox-purpose"><span>기존과의 차이</span>{escape(lg["exist"])} · {escape(lg["avoid"])}</div>')
-    html(gallery("dfleg", [x for x in old["evidence_images"] if x[0].startswith("season")]))
+    html(f'<p class="fx-pod-n">근거: 03 탭 장문 댓글 발췌 · {escape(d["season_quotes"]["pm"])}</p>')
 
-    h(f"{rt['name']} · {rt['slogan']}", "mock", num="05", name="대표 개선 전략 ③ 운영 신뢰 (20%)", lead="방송·개발자 노트의 약속이 어디까지 왔는지 추적할 수 있게")
+    h(f"{rt['name']} · {rt['slogan']}", "mock", num="05", name="대표 개선 전략 ③ 운영 소통 (20%)", lead="방송·개발자 노트의 발표를 진행 상황까지 한곳에")
     html(brief_html(*rt["brief"], name=rt["name"], tag="기획 시안"))
     html(_retrust_ui(rt))
     html(f'<p class="fx-pod-n">{escape(rt["note"])} · {escape(rt["avoid"])}</p>')
-    html('<ul class="ox-facts"><li><b>운영 비판 여론 예시 (유튜브)</b> · ' + " · ".join(f'{src(u, f"{ch} 「{t}」")}' for t, ch, u in d["video_opinion"])
-         + ' · 제목·채널만 표기, 주장 내용은 검증하지 않음</li></ul>')
-
-    h(f"{cr['name']} · 유지비를 벌려고 하는 게임이 되지 않게", "mock", num="05", name="대표 개선 전략 ④ 수리비 · 지속 가능한 BM (15%)", lead=escape(cr["slogan"]))
-    html(brief_html(*cr["brief"], name=cr["name"], tag="기획 시안"))
-    html(_care_ui())
-    html('<div class="df2-dd"><div><span>이렇게 한다</span>' + "".join(f"<p>{escape(x)}</p>" for x in cr["do"]) + '</div><div class="x"><span>하지 않는다</span>'
-         + "".join(f"<p>{escape(x)}</p>" for x in cr["dont"]) + "</div></div>")
-    html(flow_html([(escape(x[0]), "") for x in cr["effect"]], title="사업적 효과 흐름 (가설 · 현금 매출 증가를 보장하지 않음)"))
-    html(f'<div class="ox-purpose fx-risk"><span>함께 볼 위험</span>{escape(cr["caveat"])}</div>')
 
 
 def reward_html(r: dict) -> str:
@@ -308,15 +297,9 @@ def reward_html(r: dict) -> str:
             f'<div class="n"><span>제안 (누적 보장)</span><i style="width:{min(n["zero"], 100):.1f}%"></i><b>{n["zero"]:,.2f}%</b></div><small>막대 = 한 번도 못 얻는 유저 비율</small></div>')
 
 
-def gold_html(g: dict) -> str:
-    np_ = "—" if g["net_pct"] is None else f'{"+" if g["net_pct"] >= 0 else "−"}{abs(g["net_pct"]):,.1f}%'
-    neg = "neg" if g["net_pct"] is not None and g["net_pct"] > 5 else ""
-    return (f'<div class="ox-res"><div><span>계정 주간 수리비</span><b>{gfmt(g["r0"])} → {gfmt(g["r1"])}</b><small>캐릭터 {g["x"]["chars"]:,.0f}개</small></div>'
-            f'<div class="acc"><span>계정당 절감</span><b>주 {gfmt(g["save"])}</b><small>4주 {gfmt(g["save_m"])} · 상한 {gfmt(g["x"]["cap"])}</small></div>'
-            f'<div><span>서버 골드 회수 감소 (주)</span><b>{gfmt(g["drop"])}</b><small>이용 계정 {g["act"]:,.0f}개</small></div>'
-            f'<div class="{neg}"><span>순골드 공급 변화 (주)</span><b>{gfmt(g["net"], True)}</b><small>기존 생산 대비 {np_} · 가드레일 +5%</small></div></div>'
-            f'<div class="df2-flow"><span>회수 감소 {gfmt(g["drop"])}</span><i>+</i><span>추가 생산 {gfmt(g["prod"])}</span><i>−</i>'
-            f'<span>추가 회수 {gfmt(g["rec"])}</span><i>=</i><b>{gfmt(g["net"], True)}</b></div>')
+def quotes_html(q: dict) -> str:
+    return ('<div class="df2-q"><span>장문 댓글 핵심 3줄 · 원문 발췌</span>' + "".join(f"<p>“{escape(x)}”</p>" for x in q["lines"])
+            + f'<small>{escape(q["src"])}</small></div>')
 
 
 def t6(d: dict, old: dict) -> None:
@@ -330,15 +313,6 @@ def t6(d: dict, old: dict) -> None:
     js_end()
     html('<div class="ox-purpose"><span>사업PM 판단</span>확정 보상 공급이 +5%를 넘으면 장비 가치 하락·콘텐츠 소진이 빨라질 수 있다 → K를 늘리거나 확정 보상을 '
          '교환 불가 재료로 제한 · 확률 상승 구간은 보장 직전에만</div>')
-    h("ARAD CARE · 수리 지원은 골드 회수를 줄이고, 늘어난 플레이는 골드를 더 만든다", "sim", lead=escape(S["gold"]["note"]))
-    js("dfgold")
-    box = st.container()
-    g = B.gold(S["gold"], _sim_inputs("dg_", S["gold"], "가정값 바꾸기 · 캐릭터 · 수리비 · 절감률 · 상한 · 이용률 · 플레이 증가 · 골드 획득"))
-    with box:
-        html(gold_html(g))
-    js_end()
-    html('<div class="ox-purpose fx-risk"><span>골드 ≠ 현금</span>위 수치는 게임 내 골드 · 회사 매출이 아님 · 순골드 공급이 늘면 골드 가치가 떨어질 수 있어 '
-         '지원 상한과 이용률을 먼저 정한다 · 수리 관련 유료 상품이 있으면 매출 잠식도 함께 확인</div>')
 
 
 def t7(d: dict, old: dict) -> None:

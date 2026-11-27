@@ -1029,3 +1029,36 @@ OW_REDESIGN_CSS += """
 .df2-yt b { font-size: 0.92rem; line-height: 1.4; } .df2-yt small { font-size: 0.78rem; color: #B71C1C; }
 @media (max-width: 760px) { .df2-pair, .df2-yts { grid-template-columns: 1fr; } }
 """
+OW_REDESIGN_CSS += """
+.fx-16-g.top { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.7rem; }
+.fx-16-g.top > div { padding: 0.8rem 0.4rem; background: #FFFFFF; } .fx-16-g.top i.cr { width: 3.6rem; height: 3.6rem; border-radius: 50%; border: 1px solid #E2E8F0; box-shadow: none; }
+.fx-16-g.top b { font-size: 0.92rem; } .fx-16-g.top small { font-size: 0.72rem; }
+.fx-16-rest { margin-top: 0.6rem; font-size: 0.92rem; line-height: 1.7; color: #1E293B; word-break: keep-all; }
+.fx-16-rest span { display: inline-block; font-size: 0.78rem; font-weight: 800; color: #15803D; background: #F0FDF4; border-radius: 999px; padding: 0.05rem 0.6rem; margin-right: 0.5rem; }
+.fx-16-rest small { color: #B91C1C; font-size: 0.74rem; }
+.df2-q { border-left: 4px solid #C62828; background: #FEF2F2; border-radius: 0 12px 12px 0; padding: 0.8rem 1rem; margin: 0.6rem 0 1rem; }
+.df2-q span { font-size: 0.8rem; font-weight: 900; color: #B71C1C; } .df2-q p { margin: 0.35rem 0 0; font-size: 0.98rem; line-height: 1.55; color: #1F2937; }
+.df2-q small { display: block; margin-top: 0.4rem; font-size: 0.78rem; color: #64748B; }
+@media (max-width: 760px) { .fx-16-g.top { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+"""
+OW_REDESIGN_CSS += """
+.df2-str { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.6rem; margin: 0.4rem 0 0.9rem; }
+.df2-str > div { background: #FFFFFF; border: 1px solid #FECACA; border-top: 4px solid #C62828; border-radius: 0 0 12px 12px; padding: 0.7rem 0.8rem; min-width: 0; }
+.df2-str span { font-size: 0.86rem; font-weight: 900; color: #B71C1C; } .df2-str p { margin: 0.3rem 0; font-size: 0.9rem; line-height: 1.5; color: #1F2937; word-break: keep-all; }
+.df2-str small { font-size: 0.74rem; }
+.df2-done { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.6rem; margin: 0.4rem 0 0.9rem; }
+.df2-done > div { background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 12px; padding: 0.7rem 0.8rem; min-width: 0; }
+.df2-done span { font-size: 0.86rem; font-weight: 900; color: #15803D; } .df2-done p { margin: 0.3rem 0 0; font-size: 0.88rem; line-height: 1.5; word-break: keep-all; }
+.df2-eff { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; margin: 0.3rem 0 1.2rem; }
+.df2-eff > div { border-radius: 12px; padding: 0.8rem 0.9rem; background: linear-gradient(135deg, #7F1D1D, #2A0A0A); color: #FFFFFF; min-width: 0; }
+.df2-eff span { font-size: 0.78rem; font-weight: 900; color: #FCA5A5; } .df2-eff b { display: block; font-size: 1rem; line-height: 1.45; margin: 0.3rem 0; word-break: keep-all; }
+.df2-eff small { font-size: 0.78rem; color: #FECACA; }
+.df2-src { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; margin: 0.4rem 0 0.2rem; }
+.df2-src a { display: flex; flex-direction: column; gap: 0.15rem; text-decoration: none; border: 1px solid #E2E8F0; border-radius: 10px; padding: 0.6rem 0.8rem; background: #F8FAFC; color: #0F172A; }
+.df2-src span { font-size: 0.74rem; color: #64748B; font-weight: 700; } .df2-src b { font-size: 0.95rem; } .df2-src small { font-size: 0.76rem; color: #B71C1C; }
+@media (max-width: 760px) { .df2-str, .df2-done, .df2-eff, .df2-src { grid-template-columns: 1fr; } }
+"""
+OW_REDESIGN_CSS += """
+.df2-fig.hero img { max-height: 380px; object-fit: cover; object-position: center 40%; }
+.df2-fig.hero .ox-zoom[open] img, .df2-fig.hero img:hover { max-height: none; }
+"""

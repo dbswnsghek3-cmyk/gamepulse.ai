@@ -734,9 +734,9 @@ def index_html(gen: str) -> str:
                  'FAIR PLAY (키보드·패드 경쟁 환경). 공식 배너·작성자 캡처·UEFA 등록 명단·VOC 50건을 근거로 했습니다.</p></a>')
     dn = json.loads((ROOT / "data" / "dnf" / "dnf.json").read_text(encoding="utf-8"))
     cards.append('<a class="sx-card feature" href="dnf.html"><div class="k">네 번째 프로젝트 · 실제 자료 기반</div>'
-                 f'<h3>던전앤파이터 · 노력은 남고, 성취는 이어져야 한다</h3><p><b>어려운 콘텐츠를 깨도 운에 갈리는 보상 · 시즌 전환 불안 · 운영 신뢰 · 수리비 부담</b> — '
+                 f'<h3>던전앤파이터 · 노력은 남고, 성취는 이어져야 한다</h3><p><b>어려운 콘텐츠를 깨도 운에 갈리는 보상 · 다음 시즌으로 이어지는 성취</b> — '
                  '공식 공지·가이드, 10/27 D-Note Live 보도, 공개 VOC 130건(유튜브·공식 게시판·인벤·디시), 현역 이용자 인터뷰를 근거로 '
-                 'PROJECT ACHIEVEMENT · SEASON LEGACY · DNF RE:TRUST · ARAD CARE와 보상·골드 경제 시뮬레이터를 만들었습니다.</p></a>')
+                 'PROJECT ACHIEVEMENT(50%) · SEASON LEGACY(30%) · DNF RE:TRUST(20%)와 누적 보장 보상 시뮬레이터를 만들었습니다.</p></a>')
     for pid, f, name, _ in PAGES[4:]:
         one = GAMES[pid].get("one_liner", "") if pid in GAMES else {
             "home": "프로젝트 소개 · 4개 게임 핵심 문제 · 사업PM 어시스턴트 바로가기",
@@ -814,7 +814,7 @@ def main() -> int:
             body = recolor_scripts(body, pid)   # JavaScript 데모·차트의 기본 파랑 → 게임 테마 색
             desc = {"overwatch": GAMES[pid].get("theme", name), "pubg": "신규 유저 정착과 휴면 유저 재활성화 전략",
                     "fconline": "구단 가치 하락에 따른 이탈 방지 · 축구 팬덤 마케팅 · 키보드·패드 경쟁 환경",
-                    "dnf": "노력은 남고, 성취는 이어져야 한다 · 성취감 · 시즌 기대 · 운영 신뢰 · 수리비 BM"}[pid]
+                    "dnf": "노력은 남고, 성취는 이어져야 한다 · 성취감 · 시즌 기대 · 운영 소통"}[pid]
             doc = save_images(page_html(name, desc, fname, body, [], n_charts > 0, gen))
             (DOCS / fname).write_text(doc, encoding="utf-8")
             written.append(DOCS / fname)

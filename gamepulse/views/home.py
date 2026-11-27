@@ -64,8 +64,8 @@ def _games() -> list[dict]:
          "credit": "로고 © KRAFTON", "problem": pb["cover"]["copy"], "answer": "다음 경기 코치(NEXT MATCH COACH)로 신규 정착 + 복귀 캠페인 «야, 배그 한 판 할래?»는 디지털 파일럿부터",
          "kpi": "신규 D7 · 순증 D30 재정착 유저당 비용"},
         {"id": "dnf", "name": "던전앤파이터", "proj": "노력은 남고, 성취는 이어져야 한다", "img": dn["cover"]["logo"] if "/" in dn["cover"]["logo"] else f"assets/dnf/{dn['cover']['logo']}",
-         "png": True, "blur": (), "credit": "로고 © NEOPLE", "problem": "어려운 콘텐츠를 깨도 보상이 운에 갈리고, 시즌 전환·운영 신뢰·수리비 부담이 겹친다",
-         "answer": "PROJECT ACHIEVEMENT(누적 보장) · SEASON LEGACY · DNF RE:TRUST · ARAD CARE — 확률 보상은 유지하고 노력이 쌓이게", "kpi": "레이드 재참여율 · 장기 미획득 비율 · 신규 시즌 접속률 · 순골드 공급"},
+         "png": True, "blur": (), "credit": "로고 © NEOPLE", "problem": "어려운 콘텐츠를 깨도 보상이 운에 갈리고, 다음 시즌으로 이어지는 성취가 약하다",
+         "answer": "PROJECT ACHIEVEMENT(누적 보장) 50% · SEASON LEGACY 30% · DNF RE:TRUST 20% — 확률 보상은 유지하고 노력이 쌓이게", "kpi": "레이드 재참여율 · 장기 미획득 비율 · 신규 시즌 접속률 · 운영 만족도"},
     ]
 
 

@@ -84,4 +84,4 @@ def voc(root: Path) -> str:
 
 def widgets(root: Path) -> dict[str, str]:
     d = json.loads((root / "data" / "dnf" / "dnf2.json").read_text(encoding="utf-8"))
-    return {"dfreward": reward(d), "dfgold": gold(d), "dfvoc": voc(root)}
+    return {"dfreward": reward(d), "dfvoc": voc(root)}   # gold() 는 ARAD CARE 백업용 (공개 화면 제외)

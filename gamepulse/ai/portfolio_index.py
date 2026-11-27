@@ -221,8 +221,15 @@ def _dnf() -> list[Entry]:
     out = [Entry("dnf", "problem", "던전앤파이터 핵심 문제", f"{d['cover']['title']} {d['cover']['title2']}",
                  [f"{s[0]}: {s[1]} ({s[2]})" for s in i["season"]],
                  [f"{p[0]}. {p[1]} — {p[2]} ({p[3]})" for p in d["problems"]], [], "01", i["line"] + " " + i["question"])]
+    n2 = _load("dnf/dnf2.json")
+    out.append(Entry("dnf", "strategy", "던파 핵심 전략 3개 (작성자 우선순위)", n2["weights_note"],
+                     [f"{n} {w}% · {t}" for n, w, t in n2["weights"]], [], [], "05", "전략 비중 3개 ACHIEVEMENT LEGACY RE:TRUST"))
+    for key in ("achievement", "legacy", "retrust"):
+        pl = n2["plans"][key]
+        out.append(Entry("dnf", "strategy", f"{pl['name']} · {pl['slogan']}", _clean(pl["brief"][0]),
+                         [_clean(x) for x in pl["brief"][1:2]], [_clean(pl["brief"][2])], [_clean(pl["brief"][3])], "05", pl["name"]))
     prob = {p[0]: f"{p[1]} {p[2]}" for p in d["problems"]}
-    for s in d["solutions"]:
+    for s in d["solutions"][:0]:   # 이전 버전 개선안 A·B·C 는 3개 전략으로 대체 (dnf_v1 보관)
         ops = [op_line(o) + f" → {o['pm']}" for o in ops_all if o["sol"] == s["k"]]
         out.append(Entry("dnf", "strategy", f"{s['k']}. {_clean(s['name'])}", _clean(s["p"]), ops or [f"문제 {s['k']}: {prob.get(s['k'], '')}"],
                          [_clean(s["c"])], [_clean(s.get("v", "")) or next((k[1] for k in d["kpis"] if k[0] == s["k"]), "")], "04",
@@ -299,16 +306,13 @@ def _dnf() -> list[Entry]:
                      [f"{r[0]} {r[1]}: {r[2]}" for r in d["roadmap"]] + list(d["experiment"][:3]),
                      ["VOC 102건은 문제를 찾는 출발점 · 이탈률·불만 비율은 단정하지 않음"],
                      [k[1] for k in d.get("kpi_main", [])], "06", "실제 이탈 데이터 없이 검증 방법 어떻게 검증 로그 실험"))
-    out.append(Entry("dnf", "priority", "우선 실행: PROJECT ACHIEVEMENT(누적 보장) 소규모 파일럿", d["decision"],
-                     [f"{r[0]} {r[1]}: {r[2]}" for r in d["roadmap"]][:3],
-                     [d["decision"]], [f"{k[1]}" for k in d.get("kpi_main", [])], "06", "우선 먼저 순서 1순위"))
-    out.append(Entry("dnf", "kpi", "KPI · 실험", "개선안별 측정 지표와 실험 설계", list(d["experiment"]), [],
-                     [f"{k[1]} ({k[0]})" for k in d.get("kpi_main", [])], "05"))
+    out.append(Entry("dnf", "priority", "실행 순서: LEGACY·RE:TRUST 먼저 · ACHIEVEMENT는 테스트 서버부터", n2["decision"],
+                     [f"{r[0]} · {r[1]} · {r[2]}" for r in n2["roadmap"]], [n2["decision"]], [], "07", "우선 먼저 순서 1순위"))
+    out.append(Entry("dnf", "kpi", "KPI · 실험 (3개 전략)", n2["tests_note"], [f"{g}: " + " · ".join(ks) for g, ks in n2["kpis"]], [],
+                     [f"{t[0]}: {t[2]} (감시 {t[3]})" for t in n2["tests"]], "07"))
     out.append(Entry("dnf", "evidence", "근거의 범위와 한계", "2026 공식 게시판 글 3건과 공식 발표 · 정성 근거", list(d["limits"]), [], [], "02"))
-    out.append(Entry("dnf", "plan", "로드맵 · 판단 · 예산", d["decision"],
-                     ["예산(인월): " + " · ".join(f"{c[0]} {c[1]}" for c in d["cost"]["items"]) + f" × 월 {d['cost']['monthly'] // 10000}만 원"]
-                     + [f"리스크: {r[0]} → {r[1]}" for r in d["risks"]],
-                     [" · ".join(map(str, r)) for r in d["roadmap"]], [], "06", "예산 비용 일정 리스크 로드맵"))
+    out.append(Entry("dnf", "plan", "로드맵 · 판단 · 리스크", n2["decision"], [f"리스크: {r[0]} → {r[1]}" for r in n2["risks"]],
+                     [" · ".join(map(str, r)) for r in n2["roadmap"]], [], "07", "일정 리스크 로드맵"))
     return out
 
 
