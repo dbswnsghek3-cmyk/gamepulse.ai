@@ -730,7 +730,7 @@ def index_html(gen: str) -> str:
              '다음 경기 코치(NEXT MATCH COACH) 데모, 복귀 캠페인 «야, 배그 한 판 할래?» 광고 3종과 클릭 가능한 랜딩페이지, A/B 테스트 설계를 만들었습니다.</p></a>']
     cards.append('<a class="sx-card feature" href="fconline.html"><div class="k">세 번째 프로젝트 · 실제 자료 기반</div>'
                  '<h3>FC 온라인 · 축구 게임인가, 주식 게임인가?</h3><p><b>구단 가치 하락에 따른 이탈은 막고, 축구 팬덤으로 새 고객을 데려온다</b> — '
-                 'CLUB CARE · CLUB REBUILD (이탈 방지) · MY CLUB WAR «답답해서 내가 뛴다» (UCL 리그 페이즈 구단 기반 16개 구단 감독형 챔피언십 · 우승 구단 홈경기 직관) · '
+                 'CLUB CARE · CLUB REBUILD (이탈 방지) · MY CLUB WAR «답답해서 내가 뛴다» (유럽 인기 구단 10개 가상 팬덤 챔피언십 · 우승 구단 홈경기 직관) · '
                  'FAIR PLAY (키보드·패드 경쟁 환경). 공식 배너·작성자 캡처·UEFA 등록 명단·VOC 50건을 근거로 했습니다.</p></a>')
     dn = json.loads((ROOT / "data" / "dnf" / "dnf.json").read_text(encoding="utf-8"))
     cards.append('<a class="sx-card feature" href="dnf.html"><div class="k">네 번째 프로젝트 · 실제 자료 기반</div>'

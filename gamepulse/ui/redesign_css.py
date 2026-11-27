@@ -908,7 +908,7 @@ OW_REDESIGN_CSS += """
 """
 OW_REDESIGN_CSS += """
 .fx-lg-r.cut { border-bottom: 2px dashed #FACC15; padding-bottom: 0.55rem; margin-bottom: 0.15rem; }
-.fx-lg-r.cut::after { content: "8강 진출선"; grid-column: 1 / -1; font-size: 0.7rem; font-weight: 800; color: #FACC15; text-align: right; margin-top: 0.15rem; }
+.fx-lg-r.cut::after { content: "4강 진출선"; grid-column: 1 / -1; font-size: 0.7rem; font-weight: 800; color: #FACC15; text-align: right; margin-top: 0.15rem; }
 """
 
 
@@ -1073,4 +1073,27 @@ OW_REDESIGN_CSS += """
 .gx-logo img { height: 100%; width: auto; display: block; }
 .gx-logo.tile { background: var(--tile); border-radius: 10px; padding: 12px 14px; box-sizing: border-box; }
 @media (max-width: 760px) { .gx-tl { gap: 0.7rem; } .gx-logo { height: 40.5px; } .gx-logo.tile { padding: 8px 9px; border-radius: 8px; } }
+"""
+
+
+# 18차: MY CLUB WAR 10개 구단 (엠블럼 카드 5×2 · 4강 대진 · 10개 구단 경쟁 점수)
+OW_REDESIGN_CSS += """
+.fx-10 .fx-16-g.top { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.7rem; }
+.fx-10 .fx-16-g.top > div { min-height: 8.6rem; justify-content: flex-start; padding: 0.9rem 0.4rem 0.7rem; }
+.fx-10 .fx-16-g.top i.cr { width: 4.4rem; height: 4.4rem; border-radius: 14px; border: 1px solid #E2E8F0; background: #FFFFFF !important; }
+.fx-10 .fx-16-g.top i.cr img { width: 84%; height: 84%; object-fit: contain; }
+.fx-10 .fx-16-g.top small { min-height: 1em; }
+.fx-bk.four { grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 0.8fr); }
+.fx-pod:has(> div:nth-child(6)) { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.55rem; }
+.fx-pod:has(> div:nth-child(6)) > div { padding: 0.7rem 0.75rem; }
+.fx-pod:has(> div:nth-child(6)) b { font-size: 0.9rem; word-break: keep-all; } .fx-pod:has(> div:nth-child(6)) strong { font-size: 1.5rem; }
+.fx-pod:has(> div:nth-child(6)) small { font-size: 0.74rem; }
+@media (max-width: 760px) {
+  .fx-10 .fx-16-g.top { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.35rem; }
+  .fx-10 .fx-16-g.top > div { min-height: 0; padding: 0.5rem 0.15rem; }
+  .fx-10 .fx-16-g.top i.cr { width: 2.7rem; height: 2.7rem; border-radius: 10px; }
+  .fx-10 .fx-16-g.top b { font-size: 0.66rem; } .fx-10 .fx-16-g.top small { display: none; }
+  .fx-bk.four { grid-template-columns: 1fr; }
+  .fx-pod:has(> div:nth-child(6)) { grid-template-columns: 1fr; }
+}
 """

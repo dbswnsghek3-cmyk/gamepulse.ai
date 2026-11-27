@@ -7,14 +7,6 @@
   "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
   "date": "2012-08-01"
  },
- "stadium_metropolitano.jpg": {
-  "title": "Estadio Metropolitano - Atlético de Madrid - Septiembre 2022.jpg",
-  "license": "CC BY-SA 4.0",
-  "artist": "Cabeza2000",
-  "page": "https://commons.wikimedia.org/wiki/File:Estadio_Metropolitano_-_Atl%C3%A9tico_de_Madrid_-_Septiembre_2022.jpg",
-  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
-  "date": "2022-09-16"
- },
  "crest_liverpool.png": {
   "title": "Logo Liverpool FC (2024).png",
   "license": "Public domain",
@@ -52,6 +44,46 @@
   "license": "Public domain",
   "artist": "Unknown authorUnknown author",
   "page": "https://commons.wikimedia.org/wiki/File:SSC_Neapel.svg",
+  "license_url": "",
+  "date": ""
+ },
+ "crest_barcelona.png": {
+  "title": "FC Barcelona (crest).svg",
+  "license": "Public domain (영어 위키백과 표시)",
+  "artist": "FC Barcelona",
+  "page": "https://en.wikipedia.org/wiki/File:FC_Barcelona_(crest).svg",
+  "license_url": "",
+  "date": ""
+ },
+ "crest_psg.png": {
+  "title": "Paris Saint-Germain F.C..svg",
+  "license": "Public domain (영어 위키백과 표시)",
+  "artist": "Paris Saint-Germain F.C.",
+  "page": "https://en.wikipedia.org/wiki/File:Paris_Saint-Germain_F.C..svg",
+  "license_url": "",
+  "date": ""
+ },
+ "crest_realmadrid.png": {
+  "title": "Real Madrid CF.svg",
+  "license": "비자유 · 공정 이용 (Fair use) · 재사용 허락 없음",
+  "artist": "Real Madrid CF",
+  "page": "https://en.wikipedia.org/wiki/File:Real_Madrid_CF.svg",
+  "license_url": "",
+  "date": ""
+ },
+ "crest_manutd.png": {
+  "title": "Manchester United FC crest.svg",
+  "license": "비자유 · 공정 이용 (Fair use) · 재사용 허락 없음",
+  "artist": "Manchester United F.C.",
+  "page": "https://en.wikipedia.org/wiki/File:Manchester_United_FC_crest.svg",
+  "license_url": "",
+  "date": ""
+ },
+ "crest_mancity.png": {
+  "title": "Manchester City FC badge.svg",
+  "license": "비자유 · 공정 이용 (Fair use) · 재사용 허락 없음",
+  "artist": "Manchester City F.C.",
+  "page": "https://en.wikipedia.org/wiki/File:Manchester_City_FC_badge.svg",
   "license_url": "",
   "date": ""
  }

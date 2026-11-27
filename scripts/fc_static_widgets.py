@@ -110,8 +110,9 @@ def fandom(d: dict) -> str:
                   f'<label class="ox-f"><span>{H.escape(n)} 1인당 평균 점수</span><input type="number" data-r="{k}" data-c="a" value="{a}" min="0" max="10000" step="1"></label>'
                   for k, (n, p, a) in enumerate(fs["rows"]))
     chart = ('<div class="ox-chart"><div class="ow-chart-h"><div class="ow-chart-t">최종 경쟁 점수 (0~100) <span class="ox-k sim">가정 시뮬레이션</span></div>'
-             '<div class="ow-chart-u">점 · 가상 팬덤 3개</div></div><div id="fxFanC" class="sx-chart-c" style="height:260px"></div></div>')
+             '<div class="ow-chart-u">점 · 10개 구단 · 가정값</div></div><div id="fxFanC" class="sx-chart-c" style="height:260px"></div></div>')
     return (f'<div class="ox-w" id="fxFan"><div id="fxFanB"></div><details class="sx-exp" id="fxFanD"><summary>가정값 바꾸기 · 계산 과정 · 반영 비중 슬라이더 <span class="sx-more">펼쳐보기</span></summary><div class="sx-exp-b">'
+            f'<p class="ox-note">{H.escape(fs["note"])}</p>'
             '<p class="ox-note">최종 = 정규화 누적 × 규모 비중 + 정규화 평균 × 활동 비중 · 정규화 = 해당 값 ÷ 최고값 × 100 · 기본 30:70은 테스트용 가정</p>'
             f'<label class="ox-f"><span>누적 활동 점수 반영 비중 (%) · 평균 비중은 100 − 이 값 : <b id="fxFanWv">{fs["w_total"]}</b></span>'
             f'<input type="range" id="fxFanW" min="0" max="100" step="1" value="{fs["w_total"]}"></label>'
@@ -124,14 +125,14 @@ def fandom(d: dict) -> str:
             "window.fxFandom=sim;var W=document.getElementById('fxFanW'),ins=document.querySelectorAll('#fxFan input[data-r]');"
             "function draw(){var rows=N.map(function(n){return [n,0,0];});ins.forEach(function(i){rows[+i.dataset.r][i.dataset.c==='p'?1:2]=i.value;});"
             "var w=+W.value,r=sim(rows,w),f=function(x){return x.toFixed(1);};document.getElementById('fxFanWv').textContent=w;"
-            "document.getElementById('fxFanT').innerHTML='<div class=\"gp-table-wrap\"><table class=\"gp-table ow-table ox-mops\"><tr><th>팬덤 (가상)</th><th>누적 점수</th><th>정규화 누적</th><th>정규화 평균</th><th>최종 ('+w+':'+(100-w)+')</th><th>누적만 순위</th><th>평균만 순위</th><th>최종 순위</th></tr>'"
+            "document.getElementById('fxFanT').innerHTML='<div class=\"gp-table-wrap\"><table class=\"gp-table ow-table ox-mops\"><tr><th>구단 (가정값)</th><th>누적 점수</th><th>정규화 누적</th><th>정규화 평균</th><th>최종 ('+w+':'+(100-w)+')</th><th>누적만 순위</th><th>평균만 순위</th><th>최종 순위</th></tr>'"
             "+r.map(function(x){return '<tr><td>'+x.name+'</td><td>'+Math.round(x.total).toLocaleString('en-US')+'</td><td>'+f(x.n_total)+'</td><td>'+f(x.n_avg)+'</td><td><b>'+f(x.score)+'</b></td><td>'+x.rank_total+'위</td><td>'+x.rank_avg+'위</td><td><b>'+x.rank_score+'위</b></td></tr>';}).join('')+'</table></div>';"
             "var o=r.slice().sort(function(a,b){return a.rank_score-b.rank_score;}),big=r.filter(function(x){return x.rank_total===1;})[0];"
             "document.getElementById('fxFanB').innerHTML='<div class=\"fx-pod\">'+o.map(function(x){var one=x.rank_score===1;return '<div class=\"'+(one?'r1':'')+'\"><em>'+(one?'🏆 ':'')+x.rank_score+'위</em><b>'+x.name+'</b><strong>'+f(x.score)+'</strong>'"
             "+'<i><span style=\"width:'+Math.round(Math.min(x.score,100))+'%\"></span></i><small>누적만 '+x.rank_total+'위 · 평균만 '+x.rank_avg+'위</small></div>';}).join('')+'</div>'"
             "+'<p class=\"fx-pod-n\">'+(big?'반영 비중 누적 '+w+' : 평균 '+(100-w)+' · 사람 수가 가장 많은 '+big.name+'(누적 1위)는 최종 '+big.rank_score+'위':'')+' · <span class=\"ox-k sim\">가정 시뮬레이션</span></p>';"
             "if(window.Plotly)Plotly.react('fxFanC',[{type:'bar',x:r.map(function(x){return x.name;}),y:r.map(function(x){return x.score;}),marker:{color:'#16A34A'},text:r.map(function(x){return f(x.score);}),textposition:'outside',cliponaxis:false}],"
-            "{margin:{l:50,r:16,t:20,b:40},yaxis:{title:'최종 경쟁 점수',range:[0,110],gridcolor:'#EEF2F7'},plot_bgcolor:'#fff',paper_bgcolor:'#fff',font:{size:12},showlegend:false},{displayModeBar:false,responsive:true});}"
+            "{margin:{l:50,r:16,t:20,b:90},xaxis:{tickangle:-35},yaxis:{title:'최종 경쟁 점수',range:[0,110],gridcolor:'#EEF2F7'},plot_bgcolor:'#fff',paper_bgcolor:'#fff',font:{size:12},showlegend:false},{displayModeBar:false,responsive:true});}"
             "W.addEventListener('input',draw);ins.forEach(function(i){i.addEventListener('input',draw);});"
             "document.getElementById('fxFanD').addEventListener('toggle',function(){if(window.Plotly&&this.open)Plotly.Plots.resize('fxFanC');});draw();})();</script>")
 
